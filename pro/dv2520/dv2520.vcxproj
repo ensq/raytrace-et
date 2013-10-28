@@ -82,10 +82,12 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\dv2520\main.cpp" />
     <ClCompile Include="..\..\src\dv2520\Util.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
     <ClInclude Include="..\..\src\dv2520\Util.h" />
+    <ClInclude Include="..\..\src\dv2520\Win.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

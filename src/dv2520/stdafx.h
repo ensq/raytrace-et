@@ -18,7 +18,7 @@
 #include <d3dcommon.h>
 #include <d3dcompiler.h>
 
-// Win:
+// Windows:
 #include <windows.h>
 
 // Application:

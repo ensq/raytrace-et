@@ -8,6 +8,10 @@
 class Util {
 public:
 	static void crtMemLeakDetectionIfDebug();
+	
+	static void msgBoxShow( std::string p_what );
+	static void getLastErrorAndTerminateProcess( LPTSTR p_function );
+	static void terminateProcess();
 protected:
 private:
 };
