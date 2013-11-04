@@ -80,14 +80,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\dv2520\Buf.cpp" />
+    <ClCompile Include="..\..\src\dv2520\BufUav.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogD3d.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogFx.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Dx.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Dv2520.cpp" />
+    <ClCompile Include="..\..\src\dv2520\ExceptionDv2520.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Fx.cpp" />
+    <ClCompile Include="..\..\src\dv2520\FxCs.cpp" />
     <ClCompile Include="..\..\src\dv2520\main.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Timer.cpp" />
+    <ClCompile Include="..\..\src\dv2520\TimerDelta.cpp" />
     <ClCompile Include="..\..\src\dv2520\Util.cpp" />
     <ClCompile Include="..\..\src\dv2520\Win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\dv2520\Buf.h" />
+    <ClInclude Include="..\..\src\dv2520\BufUav.h" />
+    <ClInclude Include="..\..\src\dv2520\CogD3d.h" />
+    <ClInclude Include="..\..\src\dv2520\CogFx.h" />
+    <ClInclude Include="..\..\src\dv2520\Dx.h" />
+    <ClInclude Include="..\..\src\dv2520\Dv2520.h" />
+    <ClInclude Include="..\..\src\dv2520\ExceptionDv2520.h" />
+    <ClInclude Include="..\..\src\dv2520\Fx.h" />
+    <ClInclude Include="..\..\src\dv2520\FxCs.h" />
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
+    <ClInclude Include="..\..\src\dv2520\Timer.h" />
+    <ClInclude Include="..\..\src\dv2520\TimerDelta.h" />
     <ClInclude Include="..\..\src\dv2520\Util.h" />
     <ClInclude Include="..\..\src\dv2520\Win.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\fxs\Test.fx">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

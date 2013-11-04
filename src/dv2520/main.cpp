@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <Win.h>
+#include <Dv2520.h>
 
 static const LPCTSTR g_winTitle		= "dv2520";
 static const LPCTSTR g_winClassName	= "dv2520Win";
@@ -11,7 +12,6 @@ int WINAPI wWinMain( HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev, LPWSTR p_
 	Util::crtMemLeakDetectionIfDebug();
 	HRESULT hr = S_FALSE;
 
-	// Create window:
 	WinDesc desc; ZERO_MEM( desc );
 	desc.title			= g_winTitle;
 	desc.className		= g_winClassName;
@@ -24,14 +24,15 @@ int WINAPI wWinMain( HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev, LPWSTR p_
 	Win win( desc );
 	hr = win.init();
 
-	MSG msgWin = { 0 };
-	while( WM_QUIT!=msgWin.message ) {
-		if( PeekMessage( &msgWin, NULL, 0, 0, PM_REMOVE ) ) {
-			TranslateMessage( &msgWin );
-			DispatchMessage( &msgWin );
-		} else {
-			// Dispatch and things.
-		}
+	Dv2520 dv2520( win );
+	if( SUCCEEDED( hr ) ) {
+		hr = dv2520.init();
 	}
-	return (int)msgWin.wParam;
+	int retVal = 1;
+	if( SUCCEEDED( hr ) ) {
+		retVal = dv2520.run();
+	} else {
+		retVal = hr;
+	}
+	return retVal;
 }

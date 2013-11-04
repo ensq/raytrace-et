@@ -1,7 +1,5 @@
 #include <stdafx.h>
 
-#include <strsafe.h>
-
 void Util::crtMemLeakDetectionIfDebug() {
 #ifdef DV2520_DEBUG
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
@@ -9,14 +7,28 @@ void Util::crtMemLeakDetectionIfDebug() {
 #endif // DV2520_DEBUG
 }
 
-void Util::msgBoxShow( std::string p_what ) {
+void Util::errHr( HRESULT p_hr ) {
+	_com_error comError( p_hr );
+	LPCTSTR errorString = comError.ErrorMessage();
+
+	msgBoxShowAndTerminateProcess( errorString );
+}
+
+void Util::msgBoxShowAndTerminateProcess( const char* p_what ) {
 	MessageBoxA(
 		NULL,
-		p_what.c_str(),
+		p_what,
 		"dv2520",
 		MB_OK | MB_ICONEXCLAMATION );
 	Util::terminateProcess();
 }
+void Util::msgBoxShowAndTerminateProcess( std::string p_what ) {
+	msgBoxShowAndTerminateProcess( p_what.c_str() );
+}
+//static void msgBoxShowAndTerminateProcess( LPCTSTR p_what ) {
+//	msgBoxShowAndTerminateProcess( p_what );
+//}
+
 void Util::getLastErrorAndTerminateProcess( LPTSTR p_function ) {
 	// Retrieve the system error message for the last-error code:
 	LPVOID lpMsgBuf;

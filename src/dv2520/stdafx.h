@@ -19,10 +19,13 @@
 #include <d3dcompiler.h>
 
 // Windows:
+#include <comdef.h>
+#include <strsafe.h>
 #include <windows.h>
 
 // Application:
 #include <Util.h> // Utility methods included for brevity.
+#include <ExceptionDv2520.h>
 
 // Conditionals:
 #ifdef DV2520_DEBUG

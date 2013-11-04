@@ -3,20 +3,77 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\dv2520\main.cpp" />
     <ClCompile Include="..\..\src\dv2520\Util.cpp" />
-    <ClCompile Include="..\..\src\dv2520\Win.cpp">
-      <Filter>Win</Filter>
+    <ClCompile Include="..\..\src\dv2520\Dv2520.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Win.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Dx.cpp">
+      <Filter>Dx</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Fx.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\FxCs.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Buf.cpp">
+      <Filter>Dx\Buf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\BufUav.cpp">
+      <Filter>Dx\Buf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\CogD3d.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\CogFx.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\ExceptionDv2520.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Timer.cpp" />
+    <ClCompile Include="..\..\src\dv2520\TimerDelta.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
     <ClInclude Include="..\..\src\dv2520\Util.h" />
-    <ClInclude Include="..\..\src\dv2520\Win.h">
-      <Filter>Win</Filter>
+    <ClInclude Include="..\..\src\dv2520\Dv2520.h" />
+    <ClInclude Include="..\..\src\dv2520\Win.h" />
+    <ClInclude Include="..\..\src\dv2520\Dx.h">
+      <Filter>Dx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Fx.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\FxCs.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\BufUav.h">
+      <Filter>Dx\Buf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Buf.h">
+      <Filter>Dx\Buf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogD3d.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogFx.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\ExceptionDv2520.h" />
+    <ClInclude Include="..\..\src\dv2520\Timer.h" />
+    <ClInclude Include="..\..\src\dv2520\TimerDelta.h" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Win">
-      <UniqueIdentifier>{e6d78c9c-013c-47db-bcbb-79e83978c29d}</UniqueIdentifier>
+    <Filter Include="Dx">
+      <UniqueIdentifier>{563156b1-52b9-48ab-a86a-d857fe31465f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dx\Buf">
+      <UniqueIdentifier>{fee822fa-0297-4763-8504-6a575944ae8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fxs">
+      <UniqueIdentifier>{4a4af484-e8bb-4ce3-833a-b54b476c8da4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\fxs\Test.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
