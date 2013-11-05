@@ -9,20 +9,6 @@
 #endif // _WIN32
 
 class Timer {
-private:
-	bool m_ticking;
-	double m_startTimeMicroSec;
-	double m_endTimeMicroSec;
-
-#ifdef _WIN32
-	LARGE_INTEGER m_frequency;
-	LARGE_INTEGER m_startCount;
-	LARGE_INTEGER m_endCount;
-#else
-	timeval m_startCount;
-	timeval m_endCount;
-#endif // _WIN32
-protected:
 public:
 	Timer();
 	virtual ~Timer();
@@ -42,6 +28,20 @@ public:
 	double getEndTimeMicroSec() const;  
 	double getEndTimeMilliSec() const;
 	double getEndTimeSec() const;
+protected:
+private:
+	bool m_ticking;
+	double m_startTimeMicroSec;
+	double m_endTimeMicroSec;
+
+#ifdef _WIN32
+	LARGE_INTEGER m_frequency;
+	LARGE_INTEGER m_startCount;
+	LARGE_INTEGER m_endCount;
+#else
+	timeval m_startCount;
+	timeval m_endCount;
+#endif // _WIN32
 };
 
 #endif // DV2520_TIMER_H

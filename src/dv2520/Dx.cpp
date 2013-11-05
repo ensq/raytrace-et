@@ -39,9 +39,9 @@ HRESULT Dx::render( double p_delta ) {
 	ID3D11UnorderedAccessView* uav[] = { m_cogD3d->getBackbuffer() };
 	devcon->CSSetUnorderedAccessViews( 0, 1, uav, NULL );
 
-	m_cogFx->fxSet( devcon, Fxs_TEST );
+	m_cogFx->fxSet( devcon, Fxs_CS_LIGHTING );
 	devcon->Dispatch( 25, 25, 1 );
-	m_cogFx->fxUnset( devcon, Fxs_TEST );
+	m_cogFx->fxUnset( devcon, Fxs_CS_LIGHTING );
 
 	return swapchain->Present( 0, 0 );
 }
