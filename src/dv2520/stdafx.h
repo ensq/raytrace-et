@@ -3,6 +3,7 @@
 
 // Std:
 #include <map>
+#include <queue>
 #include <math.h>
 #include <string>
 #include <vector>
@@ -23,6 +24,7 @@
 #include <comdef.h>
 #include <strsafe.h>
 #include <windows.h>
+#include <windowsx.h>
 
 // Application:
 #include <Util.h> // Utility methods included for brevity.

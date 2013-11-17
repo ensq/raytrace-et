@@ -1,13 +1,20 @@
 #ifndef DV2520_CSLIGHTING_FX
 #define DV2520_CSLIGHTING_FX
 
-RWTexture2D< float4 > backbuffer : register( u0 );
-
-#define BLOCK_SIZE 16
+#include <Common.fx>
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
-        backbuffer[ gThreadId.xy ] = float4( 0.0f, 1.0f, 0.0f, 1.0f );
+	unsigned int pixelIndex = gThreadId.y * screenWidth + gThreadId.x;
+
+	//Ray ray = rays[pixel];
+	Intersection intersection = uavIntersections[ pixelIndex ];
+
+	if( intersection.primId!=-1 ) {
+		uavBackbuffer[ gThreadId.xy ] = float4( 0.0f, 1.0f, 0.0f, 1.0f );
+	} else {
+		uavBackbuffer[ gThreadId.xy ] = float4( 1.0f, 0.0f, 0.0f, 1.0f );
+	}
 }
 
 #endif // DV2520_CSLIGHTING_FX

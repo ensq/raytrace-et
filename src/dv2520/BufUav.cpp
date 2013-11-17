@@ -28,6 +28,8 @@ HRESULT BufUav::initBuf( ID3D11Device* p_device ) {
 	desc.ByteWidth	= getByteWidth();
 	desc.BindFlags	= D3D11_BIND_UNORDERED_ACCESS;
 	desc.Usage		= D3D11_USAGE_DEFAULT;
+	desc.MiscFlags	= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	desc.StructureByteStride = getTSize();
 
 	return Buf::initBuf( p_device, desc );
 }

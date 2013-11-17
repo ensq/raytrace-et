@@ -1,4 +1,5 @@
 #include <stdafx.h>
+#include <DirectXMath.h>
 
 #include <MathSimple.h>
 
@@ -15,7 +16,9 @@ Vec2F::~Vec2F() {
 Vec3F::Vec3F() {
 	ZERO_MEM( *this );
 }
-Vec3F::Vec3F( float p_x, float p_y, float p_z ) : Vec2F( p_x, p_y ) {
+Vec3F::Vec3F( float p_x, float p_y, float p_z ) {
+	x = p_x;
+	y = p_y;
 	z = p_z;
 }
 Vec3F::~Vec3F() {
@@ -93,7 +96,10 @@ void Vec3F::rotate( float p_angle, const Vec3F& p_axis ) {
 }
 
 Mat4F::Mat4F() {
-	*this = Identity();
+	_[0][0] = 1.0f; _[0][1] = 0.0f; _[0][2] = 0.0f; _[0][3] = 0.0f;
+	_[1][0] = 0.0f; _[1][1] = 1.0f; _[1][2] = 0.0f; _[1][3] = 0.0f;
+	_[2][0] = 0.0f; _[2][1] = 0.0f; _[2][2] = 1.0f; _[2][3] = 0.0f;
+	_[3][0] = 0.0f; _[3][1] = 0.0f; _[3][2] = 0.0f; _[3][3] = 1.0f;
 }
 Mat4F::~Mat4F() {
 }
@@ -159,6 +165,16 @@ void Mat4F::transpose() {
 			_[i][j] = m[i][j];
 		}
 	}
+}
+void Mat4F::inverse() {
+	DirectX::XMFLOAT4X4 xm4x4( _[0] );
+	DirectX::XMMATRIX xmMat = DirectX::XMLoadFloat4x4( &xm4x4 );
+	DirectX::XMVECTOR xmDet = DirectX::XMMatrixDeterminant( xmMat );
+	DirectX::XMMATRIX xmMatInv	= DirectX::XMMatrixInverse( &xmDet, xmMat );
+
+	DirectX::XMFLOAT4X4 xm4x4Inv;
+	DirectX::XMStoreFloat4x4( &xm4x4Inv, xmMatInv );
+	memcpy( _[0], xm4x4Inv.m[0], sizeof( Mat4F ) );
 }
 void Mat4F::lookAtLH( Vec3F p_eye, Vec3F p_at, Vec3F p_up ) {
 	Vec3F axisZ = ( p_at - p_eye ).normalize();
@@ -242,10 +258,10 @@ Quaternion operator*( const Quaternion& p_l, const Quaternion& p_r ) {
 	const float w = ( p_l.w * p_r.w ) - ( p_l.x * p_r.x ) - ( p_l.y * p_r.y ) - ( p_l.z * p_r.z );
 	return Quaternion( x, y, z, w );
 }
-Quaternion operator*( const Quaternion& p_quaternion, const Vec3F& p_vec ) {
-	const float x = ( p_quaternion.w * p_vec.x ) + ( p_quaternion.y * p_vec.z ) - ( p_quaternion.z * p_vec.y );
-	const float y = ( p_quaternion.w * p_vec.y ) + ( p_quaternion.z * p_vec.x ) - ( p_quaternion.x * p_vec.z );
-	const float z = ( p_quaternion.w * p_vec.z ) + ( p_quaternion.x * p_vec.y ) - ( p_quaternion.y * p_vec.x );
-	const float w = -(p_quaternion.x * p_vec.x ) - ( p_quaternion.y * p_vec.y ) - ( p_quaternion.z * p_vec.z );
+Quaternion operator*( const Quaternion& p_q, const Vec3F& p_v ) {
+	const float x = ( p_q.w * p_v.x ) + ( p_q.y * p_v.z ) - ( p_q.z * p_v.y );
+	const float y = ( p_q.w * p_v.y ) + ( p_q.z * p_v.x ) - ( p_q.x * p_v.z );
+	const float z = ( p_q.w * p_v.z ) + ( p_q.x * p_v.y ) - ( p_q.y * p_v.x );
+	const float w = -(p_q.x * p_v.x ) - ( p_q.y * p_v.y ) - ( p_q.z * p_v.z );
 	return Quaternion( x, y, z, w );
 }

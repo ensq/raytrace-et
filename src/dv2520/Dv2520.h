@@ -5,6 +5,7 @@
 
 class Dx;
 class Win;
+class Cam;
 
 class Dv2520 {
 public:
@@ -13,11 +14,14 @@ public:
 
 	HRESULT init();
 	int run();
+	void gameloop( double p_delta );
 protected:
 private:
 	Dx* m_dx;
-	Win* m_win;
+	Cam* m_cam;
 	TimerDelta m_timerDelta;
+
+	Win* m_win;
 };
 
 #endif // DV2520_DV2520_H

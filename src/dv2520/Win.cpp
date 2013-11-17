@@ -2,6 +2,8 @@
 
 #include <Win.h>
 
+InputQueue Win::m_inputQueue;
+
 Win::Win( WinDesc p_desc ) {
 	m_desc = p_desc;
 }
@@ -70,6 +72,9 @@ unsigned Win::getHeight() {
 HWND Win::getHWnd() const {
 	return m_hWnd;
 }
+InputQueue& Win::getInputQueue() {
+	return m_inputQueue;
+}
 
 LRESULT CALLBACK Win::wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
 	HDC hdc;
@@ -84,13 +89,48 @@ LRESULT CALLBACK Win::wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 		PostQuitMessage( 0 );
 		break;
 	case WM_KEYDOWN:
-		if( wParam==VK_ESCAPE ) {
-			PostQuitMessage( 0 );
-		}
+		wWinKeyProc( wParam );
 		break;
 	default:
 		lResult = DefWindowProc( hWnd, message, wParam, lParam );
 		break;
 	}
 	return lResult;
+}
+void Win::wWinKeyProc( WPARAM wParam ) {
+	InputKeyTypes keyType = InputKeyTypes_NA;
+	switch( wParam ) {
+	case VK_ESCAPE:
+		PostQuitMessage( 0 );
+		break;
+
+	case WinKeyW:
+		keyType = InputKeyTypes_W;
+		break;
+	case WinKeyA:
+		keyType = InputKeyTypes_A;
+		break;
+	case WinKeyS:
+		keyType = InputKeyTypes_S;
+		break;
+	case WinKeyD:
+		keyType = InputKeyTypes_D;
+		break;
+
+	case VK_UP:
+		keyType = InputKeyTypes_UP;
+		break;
+	case VK_LEFT:
+		keyType = InputKeyTypes_LEFT;
+		break;
+	case VK_DOWN:
+		keyType = InputKeyTypes_DOWN;
+		break;
+	case VK_RIGHT:
+		keyType = InputKeyTypes_RIGHT;
+		break;
+	}
+	if( keyType!=InputKeyTypes_NA ) {
+		m_inputQueue.keyPush( InputKey( keyType ) );
+	}
 }

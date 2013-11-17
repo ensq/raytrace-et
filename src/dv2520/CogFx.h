@@ -9,6 +9,8 @@ enum Fxs {
 	Fxs_CS_LIGHTING
 };
 
+static const LPCWSTR gFxCsoPathCsRaysGenerate = L"CsRaysGenerate.cso";
+static const LPCWSTR gFxCsoPathCsRaysIntersect = L"CsRaysIntersect.cso";
 static const LPCWSTR gFxCsoPathCsLighting = L"CsLighting.cso";
 
 class CogFx {
@@ -22,6 +24,8 @@ public:
 	void fxUnset( ID3D11DeviceContext* p_devcon, Fxs p_fx );
 protected:
 private:
+	Fx* m_csRaysGenerate;
+	Fx* m_csRaysIntersect;
 	Fx* m_csLighting;
 };
 

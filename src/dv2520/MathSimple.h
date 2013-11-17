@@ -1,6 +1,11 @@
 #ifndef DV2520_MATHSIMPLE_H
 #define DV2520_MATHSIMPLE_H
 
+/*
+Simple math lib used to demo raytracing. 
+Be careful with virtual methods, as methods declared as virtual allocates a reference table increasing the size of the object.
+*/
+
 #define PI 3.141592654
 #define RADIAN( x ) ( x * PI / 180.0f )
 #define DEGREE( x ) ( x * 180.0f / PI )
@@ -11,19 +16,21 @@ struct Vec2F {
 
 	Vec2F();
 	Vec2F( float p_x, float p_y );
-	virtual ~Vec2F();
+	~Vec2F();
 };
 
-struct Vec3F : public Vec2F {
+struct Vec3F {
+	float x;
+	float y;
 	float z;
 
 	Vec3F();
 	Vec3F( float p_x, float p_y, float p_z );
-	virtual ~Vec3F();
+	~Vec3F();
 
-	virtual Vec3F& operator+=( const Vec3F& p_r );
-	virtual Vec3F& operator-=( const Vec3F& p_r );
-	virtual Vec3F& operator*=( float p_r );
+	Vec3F& operator+=( const Vec3F& p_r );
+	Vec3F& operator-=( const Vec3F& p_r );
+	Vec3F& operator*=( float p_r );
 
 	float length() const;
 	Vec3F cross( const Vec3F& p_r ) const;
@@ -57,12 +64,13 @@ struct Mat4F {
 	float _[4][4];
 
 	Mat4F();
-	virtual ~Mat4F();
+	~Mat4F();
 
 	void scale( float p_x, float p_y, float p_z );
 	void rotate( float p_x, float p_y, float p_z );
 	void translate( float p_x, float p_y, float p_z );
 	void transpose();
+	void inverse();
 	void lookAtLH( Vec3F p_eye, Vec3F p_at, Vec3F p_up );
 
 	static Mat4F Identity();
@@ -100,7 +108,7 @@ struct Quaternion {
 
 };
 Quaternion operator*( const Quaternion& p_l, const Quaternion& p_r );
-Quaternion operator*( const Quaternion& p_quaternion, const Vec3F& p_vec );
+Quaternion operator*( const Quaternion& p_q, const Vec3F& p_v );
 
 #endif // DV2520_MATHSIMPLE_H
 

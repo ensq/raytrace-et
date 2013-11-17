@@ -31,6 +31,14 @@
     <ClCompile Include="..\..\src\dv2520\TimerDelta.cpp" />
     <ClCompile Include="..\..\src\dv2520\Cam.cpp" />
     <ClCompile Include="..\..\src\dv2520\MathSimple.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogCb.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Cb.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Input.cpp" />
+    <ClCompile Include="..\..\src\dv2520\InputQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -63,6 +71,26 @@
     <ClInclude Include="..\..\src\dv2520\TimerDelta.h" />
     <ClInclude Include="..\..\src\dv2520\Cam.h" />
     <ClInclude Include="..\..\src\dv2520\MathSimple.h" />
+    <ClInclude Include="..\..\src\dv2520\Cbs.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogCb.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Cb.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Intersection.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Ray.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Vertex.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Input.h" />
+    <ClInclude Include="..\..\src\dv2520\InputQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -74,9 +102,30 @@
     <Filter Include="Fxs">
       <UniqueIdentifier>{4a4af484-e8bb-4ce3-833a-b54b476c8da4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fxs\Cs">
+      <UniqueIdentifier>{4515f496-47d7-4859-9548-c9d976f7ea77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\fxs\Common.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\Ray.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\CsRaysIntersect.fx">
+      <Filter>Fxs\Cs</Filter>
+    </FxCompile>
     <FxCompile Include="..\..\fxs\CsLighting.fx">
+      <Filter>Fxs\Cs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\CsRaysGenerate.fx">
+      <Filter>Fxs\Cs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\Intersection.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\Vertex.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
   </ItemGroup>
