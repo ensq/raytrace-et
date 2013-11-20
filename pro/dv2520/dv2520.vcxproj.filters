@@ -39,6 +39,10 @@
     </ClCompile>
     <ClCompile Include="..\..\src\dv2520\Input.cpp" />
     <ClCompile Include="..\..\src\dv2520\InputQueue.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Ant.cpp" />
+    <ClCompile Include="..\..\src\dv2520\TimerD3d.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -91,6 +95,11 @@
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\Input.h" />
     <ClInclude Include="..\..\src\dv2520\InputQueue.h" />
+    <ClInclude Include="..\..\src\dv2520\Singleton.h" />
+    <ClInclude Include="..\..\src\dv2520\Ant.h" />
+    <ClInclude Include="..\..\src\dv2520\TimerD3d.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">

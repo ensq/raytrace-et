@@ -41,14 +41,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProgramFiles)\Windows Kits\8.0\lib\win8\um\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\include\;$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProgramFiles)\Windows Kits\8.0\lib\win8\um\x86;$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProgramFiles)\Windows Kits\8.0\lib\win8\um\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\include\;$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProgramFiles)\Windows Kits\8.0\lib\win8\um\x86;$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -60,8 +61,11 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DXGI.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\AntTweakBar.dll" "$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\AntTweakBar.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -76,10 +80,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DXGI.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\AntTweakBar.dll" "$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\AntTweakBar.dll"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\dv2520\Ant.cpp" />
     <ClCompile Include="..\..\src\dv2520\Buf.cpp" />
     <ClCompile Include="..\..\src\dv2520\BufUav.cpp" />
     <ClCompile Include="..\..\src\dv2520\Cam.cpp" />
@@ -97,11 +105,13 @@
     <ClCompile Include="..\..\src\dv2520\main.cpp" />
     <ClCompile Include="..\..\src\dv2520\MathSimple.cpp" />
     <ClCompile Include="..\..\src\dv2520\Timer.cpp" />
+    <ClCompile Include="..\..\src\dv2520\TimerD3d.cpp" />
     <ClCompile Include="..\..\src\dv2520\TimerDelta.cpp" />
     <ClCompile Include="..\..\src\dv2520\Util.cpp" />
     <ClCompile Include="..\..\src\dv2520\Win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\dv2520\Ant.h" />
     <ClInclude Include="..\..\src\dv2520\Buf.h" />
     <ClInclude Include="..\..\src\dv2520\BufUav.h" />
     <ClInclude Include="..\..\src\dv2520\Cam.h" />
@@ -120,8 +130,10 @@
     <ClInclude Include="..\..\src\dv2520\Intersection.h" />
     <ClInclude Include="..\..\src\dv2520\MathSimple.h" />
     <ClInclude Include="..\..\src\dv2520\Ray.h" />
+    <ClInclude Include="..\..\src\dv2520\Singleton.h" />
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
     <ClInclude Include="..\..\src\dv2520\Timer.h" />
+    <ClInclude Include="..\..\src\dv2520\TimerD3d.h" />
     <ClInclude Include="..\..\src\dv2520\TimerDelta.h" />
     <ClInclude Include="..\..\src\dv2520\Util.h" />
     <ClInclude Include="..\..\src\dv2520\Vertex.h" />

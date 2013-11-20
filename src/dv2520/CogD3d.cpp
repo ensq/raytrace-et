@@ -21,36 +21,23 @@ D3d::D3d() {
 	ZERO_MEM( *(this) );
 }
 D3d::~D3d() {
-	ASSERT_RELEASE( device );
-	ASSERT_RELEASE( devcon );
-	ASSERT_RELEASE( swapChain );
 }
 
 CogD3d::CogD3d( Win& p_win ) {
 	m_win = &p_win;
-
-	m_uavBackbuffer = nullptr;
 }
 CogD3d::~CogD3d() {
-	ASSERT_RELEASE( m_uavBackbuffer );
+	ASSERT_RELEASE( m_d3d.device );
+	ASSERT_RELEASE( m_d3d.devcon );
+	ASSERT_RELEASE( m_d3d.swapChain );
 }
 
 HRESULT CogD3d::init() {
-	HRESULT hr = initD3d();
-	if( SUCCEEDED( hr ) ) {
-		hr = initBackbuffer( m_d3d.device );
-	}
-	return hr;
+	return initD3d();
 }
 
-ID3D11Device* CogD3d::getDevice() {
-	return m_d3d.device;
-}
-ID3D11DeviceContext* CogD3d::getDevcon() {
-	return m_d3d.devcon;
-}
-IDXGISwapChain* CogD3d::getSwapChain() {
-	return m_d3d.swapChain;
+D3d CogD3d::getD3d() {
+	return m_d3d;
 }
 
 HRESULT CogD3d::initD3d() {
@@ -100,16 +87,6 @@ HRESULT CogD3d::initD3d() {
 	} else {
 		// Log instantiated device type and driver.
 	}
-
-	return hr;
-}
-HRESULT CogD3d::initBackbuffer( ID3D11Device* p_device ) {
-	ID3D11Texture2D* backbufferTex;
-	HRESULT hr = m_d3d.swapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), (LPVOID*)&backbufferTex );
-	if( SUCCEEDED( hr ) ) {
-		hr = p_device->CreateUnorderedAccessView( backbufferTex, NULL, &m_uavBackbuffer );
-	}
-	ASSERT_RELEASE( backbufferTex );
 
 	return hr;
 }

@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <Win.h>
+#include <Ant.h>
 
 InputQueue Win::m_inputQueue;
 
@@ -80,20 +81,23 @@ LRESULT CALLBACK Win::wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 	HDC hdc;
 	PAINTSTRUCT ps;
 	LRESULT lResult = 0;
-	switch ( message ) {
-	case WM_PAINT:
-		hdc = BeginPaint( hWnd, &ps );
-		EndPaint( hWnd, &ps );
-		break;
-	case WM_DESTROY:
-		PostQuitMessage( 0 );
-		break;
-	case WM_KEYDOWN:
-		wWinKeyProc( wParam );
-		break;
-	default:
-		lResult = DefWindowProc( hWnd, message, wParam, lParam );
-		break;
+	if( Singleton< Ant >::get().eventWin( hWnd, message, wParam, lParam )==false ) {
+		// If message not handled by AntTweakBar
+		switch ( message ) {
+		case WM_PAINT:
+			hdc = BeginPaint( hWnd, &ps );
+			EndPaint( hWnd, &ps );
+			break;
+		case WM_DESTROY:
+			PostQuitMessage( 0 );
+			break;
+		case WM_KEYDOWN:
+			wWinKeyProc( wParam );
+			break;
+		default:
+			lResult = DefWindowProc( hWnd, message, wParam, lParam );
+			break;
+		}
 	}
 	return lResult;
 }
