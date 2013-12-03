@@ -4,14 +4,17 @@
 #include <Ant.h>
 #include <Win.h>
 #include <Ray.h>
+#include <Obj.h>
 #include <CogFx.h>
 #include <CogCb.h>
 #include <CogD3d.h>
 #include <BufUav.h>
+#include <BufSrv.h>
 #include <TimerD3d.h>
 #include <Intersection.h>
 
-#include <Vertex.h> // Remove me.
+#include <RdrObj.h> // Remove us.
+#include <Vertex.h> 
 
 Dx::Dx( Win& p_win ) {
 	m_win = &p_win;
@@ -20,11 +23,10 @@ Dx::Dx( Win& p_win ) {
 	m_rtvBackbuffer = nullptr;
 	m_uavRays = nullptr;
 	m_uavIntersections = nullptr;
+	m_objTest = nullptr;
 	m_cogD3d = nullptr;
 	m_cogFx = nullptr;
 	m_cogCb = nullptr;
-	m_srvTempVertices = nullptr;
-	m_srvTempIndices = nullptr;
 	m_timer = nullptr;
 }
 Dx::~Dx() {
@@ -34,12 +36,11 @@ Dx::~Dx() {
 	ASSERT_DELETE( m_uavRays );
 	ASSERT_DELETE( m_uavIntersections );
 
+	ASSERT_DELETE( m_objTest );
+
 	ASSERT_DELETE( m_cogD3d );
 	ASSERT_DELETE( m_cogFx );
 	ASSERT_DELETE( m_cogCb );
-
-	ASSERT_RELEASE( m_srvTempVertices );
-	ASSERT_RELEASE( m_srvTempIndices );
 
 	ASSERT_DELETE( m_timer );
 }
@@ -92,9 +93,8 @@ HRESULT Dx::init() {
 	}
 
 	// Initialize temporary vertex- and index-buffers:
-	hr = initTempVertexBuffer( d3d.device );
 	if( SUCCEEDED( hr ) ) {
-		hr = initTempIndexBuffer( d3d.device );
+		hr = initObjTest( d3d.device );
 	}
 
 	// Initialize timer
@@ -143,8 +143,8 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 
 	// Set SRVs:
 	ID3D11ShaderResourceView* srvs[] = {
-		m_srvTempVertices,
-		m_srvTempIndices
+		m_objTest->getBufferVertex()->getSrv(),
+		m_objTest->getBufferIndex()->getSrv()
 	};
 	d3d.devcon->CSSetShaderResources( 0, 2, srvs );
 
@@ -186,13 +186,16 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 	return m_timer->time( p_devcon );
 }
 
-HRESULT Dx::initTempVertexBuffer( ID3D11Device* p_device ) {
-	HRESULT hr = S_OK;
+HRESULT Dx::initObjTest( ID3D11Device* p_device ) {
+	//RdrObj rdr( "../../../res/", "bunny.obj" );
+	//bool sucess = true;
+	//m_objTest = rdr.read( sucess );
+	//return m_objTest->init( p_device );
 
+	// Vertices
 	float width = 20.0f;
 	float offset = width / 2.0f;
 
-	std::vector< Vertex > vertices;
 	Vec3F p1 = Vec3F( -offset, offset, -offset );
 	Vec3F p2 = Vec3F( -offset, offset, offset );
 	Vec3F p3 = Vec3F( offset, offset, offset );
@@ -206,87 +209,34 @@ HRESULT Dx::initTempVertexBuffer( ID3D11Device* p_device ) {
 	Vec2F tex = Vec2F( 1.0f, 1.0f );
 
 	Vertex pos; UINT noVertices = 8;
+	Vertex* vertices = new Vertex[ noVertices ];
 	pos.nor = nor; pos.tex = tex;
-	pos.pos = p1; vertices.push_back( pos );
-	pos.pos = p2; vertices.push_back( pos );
-	pos.pos = p3; vertices.push_back( pos );
-	pos.pos = p4; vertices.push_back( pos );
-	pos.pos = p5; vertices.push_back( pos );
-	pos.pos = p6; vertices.push_back( pos );
-	pos.pos = p7; vertices.push_back( pos );
-	pos.pos = p8; vertices.push_back( pos );
+	pos.pos = p1; vertices[0] = pos;
+	pos.pos = p2; vertices[1] = pos;
+	pos.pos = p3; vertices[2] = pos;
+	pos.pos = p4; vertices[3] = pos;
+	pos.pos = p5; vertices[4] = pos;
+	pos.pos = p6; vertices[5] = pos;
+	pos.pos = p7; vertices[6] = pos;
+	pos.pos = p8; vertices[7] = pos;
 
-	D3D11_BUFFER_DESC inputDesc;
-	inputDesc.Usage = D3D11_USAGE_DEFAULT;
-	inputDesc.ByteWidth = sizeof( Vertex ) * noVertices;
-	inputDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	inputDesc.CPUAccessFlags = 0;
-	inputDesc.StructureByteStride = sizeof( Vertex );
-	inputDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &vertices.at( 0 );
-
-	ID3D11Buffer* vertexBuffer = NULL;
-	hr = p_device->CreateBuffer( &inputDesc, &vinitData, &vertexBuffer );
-	if( SUCCEEDED( hr ) ) {
-		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-		srvDesc.BufferEx.FirstElement = 0;
-		srvDesc.BufferEx.Flags = 0;
-		srvDesc.BufferEx.NumElements = noVertices;
-
-		hr = p_device->CreateShaderResourceView( vertexBuffer, &srvDesc, &m_srvTempVertices );
-	}
-	ASSERT_RELEASE( vertexBuffer );
-
-	return hr;
-}
-HRESULT Dx::initTempIndexBuffer( ID3D11Device* p_device ) {
-	HRESULT hr = S_OK;
-
-	std::vector< unsigned > indices;
-
+	// Indices
 	unsigned numIndices = 36;
-	indices.push_back( 0 ); indices.push_back( 1 ); indices.push_back( 2 );
-	indices.push_back( 0 ); indices.push_back( 2 ); indices.push_back( 3 );
-	indices.push_back( 4 ); indices.push_back( 6 ); indices.push_back( 5 );
-	indices.push_back( 4 ); indices.push_back( 7 ); indices.push_back( 6 );
-	indices.push_back( 4 ); indices.push_back( 5 ); indices.push_back( 1 );
-	indices.push_back( 4 ); indices.push_back( 1 ); indices.push_back( 0 );
-	indices.push_back( 3 ); indices.push_back( 2 ); indices.push_back( 6 );
-	indices.push_back( 3 ); indices.push_back( 6 ); indices.push_back( 7 );
-	indices.push_back( 1 ); indices.push_back( 5 ); indices.push_back( 6 );
-	indices.push_back( 1 ); indices.push_back( 6 ); indices.push_back( 2 );
-	indices.push_back( 4 ); indices.push_back( 0 ); indices.push_back( 3 );
-	indices.push_back( 4 ); indices.push_back( 3 ); indices.push_back( 7 );
+	unsigned* indices = new unsigned[ numIndices ];
+	indices[0] = 0; indices[1] = 1; indices[2] = 2;
+	indices[3] = 0; indices[4] = 2; indices[5] = 3;
+	indices[6] = 4; indices[7] = 6; indices[8] = 5;
+	indices[9] = 4; indices[10] = 7; indices[11] = 6;
+	indices[12] = 4; indices[13] = 5; indices[14] = 1;
+	indices[15] = 4; indices[16] = 1; indices[17] = 0;
+	indices[18] = 3; indices[19] = 2; indices[20] = 6;
+	indices[21] = 3; indices[22] = 6; indices[23] = 7;
+	indices[24] = 1; indices[25] = 5; indices[26] = 6;
+	indices[27] = 1; indices[28] = 6; indices[29] = 2;
+	indices[30] = 4; indices[31] = 0; indices[32] = 3;
+	indices[33] = 4; indices[34] = 3; indices[35] = 7;
 
-	D3D11_BUFFER_DESC inputDesc;
-	inputDesc.Usage = D3D11_USAGE_DEFAULT;
-	inputDesc.ByteWidth = sizeof( unsigned ) * indices.size();
-	inputDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	inputDesc.CPUAccessFlags = 0;
-	inputDesc.StructureByteStride = sizeof( unsigned );
-	inputDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &indices.at( 0 );
-
-	ID3D11Buffer* indexBuffer = NULL;
-	hr = p_device->CreateBuffer( &inputDesc, &vinitData, &indexBuffer );
-
-	if( SUCCEEDED( hr ) ) {
-		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-		srvDesc.BufferEx.FirstElement = 0;
-		srvDesc.BufferEx.Flags = 0;
-		srvDesc.BufferEx.NumElements = indices.size();
-
-		hr = p_device->CreateShaderResourceView( indexBuffer, &srvDesc, &m_srvTempIndices );
-	}
-	ASSERT_RELEASE( indexBuffer );
-
-	return hr;
+	// Obj
+	m_objTest = new Obj( noVertices, numIndices, vertices, indices );
+	return m_objTest->init( p_device );
 }

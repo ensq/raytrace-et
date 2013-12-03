@@ -4,7 +4,7 @@
 #include <MathSimple.h>
 
 Vec2F::Vec2F() {
-	ZERO_MEM( *this );
+	x = y = 0.0f;
 }
 Vec2F::Vec2F( float p_x, float p_y ) {
 	x = p_x;
@@ -14,7 +14,7 @@ Vec2F::~Vec2F() {
 }
 
 Vec3F::Vec3F() {
-	ZERO_MEM( *this );
+	x = y = z = 0.0f;
 }
 Vec3F::Vec3F( float p_x, float p_y, float p_z ) {
 	x = p_x;

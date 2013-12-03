@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\dv2520\Ant.cpp" />
     <ClCompile Include="..\..\src\dv2520\Buf.cpp" />
+    <ClCompile Include="..\..\src\dv2520\BufSrv.cpp" />
     <ClCompile Include="..\..\src\dv2520\BufUav.cpp" />
     <ClCompile Include="..\..\src\dv2520\Cam.cpp" />
     <ClCompile Include="..\..\src\dv2520\Cb.cpp" />
@@ -104,6 +105,9 @@
     <ClCompile Include="..\..\src\dv2520\InputQueue.cpp" />
     <ClCompile Include="..\..\src\dv2520\main.cpp" />
     <ClCompile Include="..\..\src\dv2520\MathSimple.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Obj.cpp" />
+    <ClCompile Include="..\..\src\dv2520\ObjFace.cpp" />
+    <ClCompile Include="..\..\src\dv2520\RdrObj.cpp" />
     <ClCompile Include="..\..\src\dv2520\Timer.cpp" />
     <ClCompile Include="..\..\src\dv2520\TimerD3d.cpp" />
     <ClCompile Include="..\..\src\dv2520\TimerDelta.cpp" />
@@ -113,6 +117,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\Ant.h" />
     <ClInclude Include="..\..\src\dv2520\Buf.h" />
+    <ClInclude Include="..\..\src\dv2520\BufSrv.h" />
     <ClInclude Include="..\..\src\dv2520\BufUav.h" />
     <ClInclude Include="..\..\src\dv2520\Cam.h" />
     <ClInclude Include="..\..\src\dv2520\Cb.h" />
@@ -129,7 +134,10 @@
     <ClInclude Include="..\..\src\dv2520\InputQueue.h" />
     <ClInclude Include="..\..\src\dv2520\Intersection.h" />
     <ClInclude Include="..\..\src\dv2520\MathSimple.h" />
+    <ClInclude Include="..\..\src\dv2520\Obj.h" />
+    <ClInclude Include="..\..\src\dv2520\ObjFace.h" />
     <ClInclude Include="..\..\src\dv2520\Ray.h" />
+    <ClInclude Include="..\..\src\dv2520\RdrObj.h" />
     <ClInclude Include="..\..\src\dv2520\Singleton.h" />
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
     <ClInclude Include="..\..\src\dv2520\Timer.h" />

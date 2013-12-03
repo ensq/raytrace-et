@@ -6,6 +6,7 @@ enum Fxs;
 struct ID3D11ShaderResourceView;
 
 class Win;
+class Obj;
 class CogFx;
 class CogCb;
 class CogD3d;
@@ -24,8 +25,7 @@ public:
 	double dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx );
 protected:
 private:
-	HRESULT initTempVertexBuffer( ID3D11Device* p_device );
-	HRESULT initTempIndexBuffer( ID3D11Device* p_device );
+	HRESULT initObjTest( ID3D11Device* p_device );
 
 	ID3D11UnorderedAccessView* m_uavBackbuffer;
 	ID3D11RenderTargetView* m_rtvBackbuffer;
@@ -33,8 +33,7 @@ private:
 	BufUav* m_uavRays;
 	BufUav* m_uavIntersections;
 
-	ID3D11ShaderResourceView* m_srvTempVertices;
-	ID3D11ShaderResourceView* m_srvTempIndices;
+	Obj* m_objTest;
 
 	CogD3d* m_cogD3d;
 	CogFx* m_cogFx;

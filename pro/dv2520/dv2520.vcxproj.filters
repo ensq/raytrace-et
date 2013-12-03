@@ -43,6 +43,18 @@
     <ClCompile Include="..\..\src\dv2520\TimerD3d.cpp">
       <Filter>Dx</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Obj.cpp">
+      <Filter>Dx\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\RdrObj.cpp">
+      <Filter>Dx\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\BufSrv.cpp">
+      <Filter>Dx\Buf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\ObjFace.cpp">
+      <Filter>Dx\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -100,6 +112,18 @@
     <ClInclude Include="..\..\src\dv2520\TimerD3d.h">
       <Filter>Dx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Obj.h">
+      <Filter>Dx\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\RdrObj.h">
+      <Filter>Dx\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\BufSrv.h">
+      <Filter>Dx\Buf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\ObjFace.h">
+      <Filter>Dx\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -113,6 +137,9 @@
     </Filter>
     <Filter Include="Fxs\Cs">
       <UniqueIdentifier>{4515f496-47d7-4859-9548-c9d976f7ea77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dx\IO">
+      <UniqueIdentifier>{98f834e3-cb3e-47e1-91fa-2380100739eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

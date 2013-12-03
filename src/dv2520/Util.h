@@ -7,7 +7,7 @@
 
 #ifdef DV2520_DEBUG
 #define ERR_HR( hr ) Util::errHr( hr );
-#elif
+#else
 #define ERR_HR( hr ) ;
 #endif // DV2520_DEBUG
 
