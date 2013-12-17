@@ -16,8 +16,8 @@ Obj::Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertice
 	m_bufferIndex = nullptr;
 }
 Obj::~Obj() {
-	delete[] m_vertices;
-	delete[] m_indices;
+	// delete[] m_vertices;
+	// delete[] m_indices;
 
 	ASSERT_DELETE( m_bufferVertex );
 	ASSERT_DELETE( m_bufferIndex );

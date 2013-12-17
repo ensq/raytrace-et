@@ -55,6 +55,15 @@
     <ClCompile Include="..\..\src\dv2520\ObjFace.cpp">
       <Filter>Dx\IO</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\CogTex.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\dv2520\DDSTextureLoader\include\DDSTextureLoader.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\CogSS.cpp">
+      <Filter>Dx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -124,6 +133,15 @@
     <ClInclude Include="..\..\src\dv2520\ObjFace.h">
       <Filter>Dx\IO</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogTex.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\dv2520\DDSTextureLoader\include\DDSTextureLoader.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogSS.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -140,6 +158,9 @@
     </Filter>
     <Filter Include="Dx\IO">
       <UniqueIdentifier>{98f834e3-cb3e-47e1-91fa-2380100739eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{6eef1891-0c44-4435-91e1-46ba31baf98b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,8 @@ public:
 
 	static void getLastErrorAndTerminateProcess( LPTSTR p_function );
 	static void terminateProcess();
+
+	static wchar_t* stringToWstr( std::string string );
 protected:
 private:
 };

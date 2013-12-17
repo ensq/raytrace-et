@@ -50,37 +50,34 @@ int Dv2520::run() {
 void Dv2520::gameloop( double p_delta ) {
 	InputQueue inputQueue = m_win->getInputQueue();
 
-#define TempWalkVelocity 0.5f
-#define TempRotateVelcoty 0.1f
-
 	InputKey key;
 	while( inputQueue.keyPop( key )==false ) {
 		switch( key.getType() ) {
 		case InputKeyTypes_W:
-			m_cam->walk( TempWalkVelocity );
+			m_cam->walk( VELOCITY_WALK );
 			break;
 		case InputKeyTypes_A:
-			m_cam->strafe( -TempWalkVelocity/2 );
+			m_cam->strafe( -VELOCITY_WALK/2 );
 			break;
 		case InputKeyTypes_S:
-			m_cam->walk( -TempWalkVelocity );
+			m_cam->walk( -VELOCITY_WALK );
 			break;
 		case InputKeyTypes_D:
-			m_cam->strafe( TempWalkVelocity/2 );
+			m_cam->strafe( VELOCITY_WALK/2 );
 			break;
 
 		// Because I can't be bothered.
 		case InputKeyTypes_UP:
-			m_cam->pitch( -TempRotateVelcoty );
+			m_cam->pitch( -VELOCITY_ROTATE );
 			break;
 		case InputKeyTypes_LEFT:
-			m_cam->yaw( -TempRotateVelcoty );
+			m_cam->yaw( -VELOCITY_ROTATE );
 			break;
 		case InputKeyTypes_DOWN:
-			m_cam->pitch( TempRotateVelcoty );
+			m_cam->pitch( VELOCITY_ROTATE );
 			break;
 		case InputKeyTypes_RIGHT:
-			m_cam->yaw( TempRotateVelcoty );
+			m_cam->yaw( VELOCITY_ROTATE );
 			break;
 		}
 	}

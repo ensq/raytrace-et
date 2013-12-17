@@ -78,11 +78,11 @@ struct Mat4F {
 		Mat4F m;
 		for( unsigned i = 0 ; i < 4 ; i++ ) {
 			for( unsigned j = 0 ; j < 4 ; j++ ) {
-				m._[i][j] =
-					_[i][0] * p_r._[0][j] +
-					_[i][1] * p_r._[1][j] +
-					_[i][2] * p_r._[2][j] +
-					_[i][3] * p_r._[3][j];
+				m._[ i ][ j ] =
+					_[ i ][ 0 ] * p_r._[ 0 ][ j ] +
+					_[ i ][ 1 ] * p_r._[ 1 ][ j ] +
+					_[ i ][ 2 ] * p_r._[ 2 ][ j ] +
+					_[ i ][ 3 ] * p_r._[ 3 ][ j ];
 			}
 		}
 		return m;

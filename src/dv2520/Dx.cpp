@@ -7,7 +7,9 @@
 #include <Obj.h>
 #include <CogFx.h>
 #include <CogCb.h>
+#include <CogSS.h>
 #include <CogD3d.h>
+#include <CogTex.h>
 #include <BufUav.h>
 #include <BufSrv.h>
 #include <TimerD3d.h>
@@ -27,6 +29,8 @@ Dx::Dx( Win& p_win ) {
 	m_cogD3d = nullptr;
 	m_cogFx = nullptr;
 	m_cogCb = nullptr;
+	m_cogSS = nullptr;
+	m_cogTex = nullptr;
 	m_timer = nullptr;
 }
 Dx::~Dx() {
@@ -35,13 +39,12 @@ Dx::~Dx() {
 
 	ASSERT_DELETE( m_uavRays );
 	ASSERT_DELETE( m_uavIntersections );
-
 	ASSERT_DELETE( m_objTest );
-
 	ASSERT_DELETE( m_cogD3d );
 	ASSERT_DELETE( m_cogFx );
 	ASSERT_DELETE( m_cogCb );
-
+	ASSERT_DELETE( m_cogSS );
+	ASSERT_DELETE( m_cogTex );
 	ASSERT_DELETE( m_timer );
 }
 
@@ -79,6 +82,14 @@ HRESULT Dx::init() {
 	if( SUCCEEDED( hr ) ) {
 		m_cogCb = new CogCb();
 		hr = m_cogCb->init( d3d.device );
+	}
+	if( SUCCEEDED( hr ) ) {
+		m_cogSS = new CogSS();
+		hr = m_cogSS->init( d3d.device );
+	}
+	if( SUCCEEDED( hr ) ) {
+		m_cogTex = new CogTex();
+		hr = m_cogTex->init( d3d.device );
 	}
 
 	// Initialize buffers:
@@ -144,9 +155,10 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	// Set SRVs:
 	ID3D11ShaderResourceView* srvs[] = {
 		m_objTest->getBufferVertex()->getSrv(),
-		m_objTest->getBufferIndex()->getSrv()
+		m_objTest->getBufferIndex()->getSrv(),
+		m_cogTex->getTex( d3d.device, Texs_default )->getSrv() // Make this more general.
 	};
-	d3d.devcon->CSSetShaderResources( 0, 2, srvs );
+	d3d.devcon->CSSetShaderResources( 0, 3, srvs );
 
 	// Set UAVs:
 	ID3D11UnorderedAccessView* uavs[] = { 
@@ -156,13 +168,25 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	};
 	d3d.devcon->CSSetUnorderedAccessViews( 0, 3, uavs, NULL );
 
+	// Set Samplerstates:
+	ID3D11SamplerState* sss[] = { m_cogSS->getSamplerState( SSs_default ) };
+	d3d.devcon->CSSetSamplers( 0, 1, sss );
+
 	Singleton< Ant >::get().setTimeRaysGenerate( dispatch( d3d.devcon, Fxs_CS_RAYSGENERATE ) );
 	Singleton< Ant >::get().setTimeRaysInterect( dispatch( d3d.devcon, Fxs_CS_RAYSINTERSECT ) );
 	Singleton< Ant >::get().setTimeLighting( dispatch( d3d.devcon, Fxs_CS_LIGHTING ) );
+	
+	// Unset SRVs:
+	ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL };
+	d3d.devcon->CSSetShaderResources( 0, 3, srvsUnset );
 
 	// Unset UAVs:
 	ID3D11UnorderedAccessView* uavsUnset[] = { NULL, NULL, NULL };
 	d3d.devcon->CSSetUnorderedAccessViews( 0, 3, uavsUnset, NULL );
+
+	// Unset Samplerstates:
+	ID3D11SamplerState* sssUnset[] = { NULL };
+	d3d.devcon->CSSetSamplers( 0, 1, sssUnset );
 
 	// Render GUI
 	d3d.devcon->OMSetRenderTargets( 1, &m_rtvBackbuffer, NULL);
@@ -172,8 +196,6 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	return d3d.swapChain->Present( 0, 0 );
 }
 double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
-	// Temp:
-#define BLOCK_SIZE 16
 	unsigned dX = (unsigned)ceil( (float)m_win->getWidth() / (float)BLOCK_SIZE );
 	unsigned dY = (unsigned)ceil( (float)m_win->getHeight() / (float)BLOCK_SIZE );
 
@@ -187,56 +209,56 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 }
 
 HRESULT Dx::initObjTest( ID3D11Device* p_device ) {
-	//RdrObj rdr( "../../../res/", "bunny.obj" );
-	//bool sucess = true;
-	//m_objTest = rdr.read( sucess );
-	//return m_objTest->init( p_device );
+	RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
+	bool sucess = true;
+	m_objTest = rdr.read( sucess );
+	return m_objTest->init( p_device );
 
 	// Vertices
-	float width = 20.0f;
-	float offset = width / 2.0f;
-
-	Vec3F p1 = Vec3F( -offset, offset, -offset );
-	Vec3F p2 = Vec3F( -offset, offset, offset );
-	Vec3F p3 = Vec3F( offset, offset, offset );
-	Vec3F p4 = Vec3F( offset, offset, -offset );
-	Vec3F p5 = Vec3F( -offset, -offset, -offset );
-	Vec3F p6 = Vec3F( -offset, -offset, offset );
-	Vec3F p7 = Vec3F( offset, -offset, offset );
-	Vec3F p8 = Vec3F( offset, -offset, -offset );
-
-	Vec3F nor = Vec3F( 1.0f, 1.0f, 1.0f );
-	Vec2F tex = Vec2F( 1.0f, 1.0f );
-
-	Vertex pos; UINT noVertices = 8;
-	Vertex* vertices = new Vertex[ noVertices ];
-	pos.nor = nor; pos.tex = tex;
-	pos.pos = p1; vertices[0] = pos;
-	pos.pos = p2; vertices[1] = pos;
-	pos.pos = p3; vertices[2] = pos;
-	pos.pos = p4; vertices[3] = pos;
-	pos.pos = p5; vertices[4] = pos;
-	pos.pos = p6; vertices[5] = pos;
-	pos.pos = p7; vertices[6] = pos;
-	pos.pos = p8; vertices[7] = pos;
-
-	// Indices
-	unsigned numIndices = 36;
-	unsigned* indices = new unsigned[ numIndices ];
-	indices[0] = 0; indices[1] = 1; indices[2] = 2;
-	indices[3] = 0; indices[4] = 2; indices[5] = 3;
-	indices[6] = 4; indices[7] = 6; indices[8] = 5;
-	indices[9] = 4; indices[10] = 7; indices[11] = 6;
-	indices[12] = 4; indices[13] = 5; indices[14] = 1;
-	indices[15] = 4; indices[16] = 1; indices[17] = 0;
-	indices[18] = 3; indices[19] = 2; indices[20] = 6;
-	indices[21] = 3; indices[22] = 6; indices[23] = 7;
-	indices[24] = 1; indices[25] = 5; indices[26] = 6;
-	indices[27] = 1; indices[28] = 6; indices[29] = 2;
-	indices[30] = 4; indices[31] = 0; indices[32] = 3;
-	indices[33] = 4; indices[34] = 3; indices[35] = 7;
-
-	// Obj
-	m_objTest = new Obj( noVertices, numIndices, vertices, indices );
-	return m_objTest->init( p_device );
+	//float width = 20.0f;
+	//float offset = width / 2.0f;
+	//
+	//Vec3F p1 = Vec3F( -offset, offset, -offset );
+	//Vec3F p2 = Vec3F( -offset, offset, offset );
+	//Vec3F p3 = Vec3F( offset, offset, offset );
+	//Vec3F p4 = Vec3F( offset, offset, -offset );
+	//Vec3F p5 = Vec3F( -offset, -offset, -offset );
+	//Vec3F p6 = Vec3F( -offset, -offset, offset );
+	//Vec3F p7 = Vec3F( offset, -offset, offset );
+	//Vec3F p8 = Vec3F( offset, -offset, -offset );
+	//
+	//Vec3F nor = Vec3F( 1.0f, 1.0f, 1.0f );
+	//Vec2F tex = Vec2F( 0.0f, 0.0f );
+	//
+	//Vertex pos; UINT noVertices = 8;
+	//Vertex* vertices = new Vertex[ noVertices ];
+	//pos.nor = nor; pos.tex = tex;
+	//pos.pos = p1; vertices[0] = pos; pos.tex = Vec2F( 0.0f, 0.0f );
+	//pos.pos = p2; vertices[1] = pos; pos.tex = Vec2F( 0.0f, 1.0f );
+	//pos.pos = p3; vertices[2] = pos; pos.tex = Vec2F( 1.0f, 0.0f );
+	//pos.pos = p4; vertices[3] = pos; pos.tex = Vec2F( 1.0f, 1.0f );
+	//pos.pos = p5; vertices[4] = pos; pos.tex = Vec2F( 0.0f, 0.0f );
+	//pos.pos = p6; vertices[5] = pos; pos.tex = Vec2F( 0.0f, 1.0f );
+	//pos.pos = p7; vertices[6] = pos; pos.tex = Vec2F( 1.0f, 0.0f );
+	//pos.pos = p8; vertices[7] = pos; pos.tex = Vec2F( 1.0f, 1.0f );
+	//
+	//// Indices
+	//unsigned numIndices = 36;
+	//unsigned* indices = new unsigned[ numIndices ];
+	//indices[0] = 0; indices[1] = 1; indices[2] = 2;
+	//indices[3] = 0; indices[4] = 2; indices[5] = 3;
+	//indices[6] = 4; indices[7] = 6; indices[8] = 5;
+	//indices[9] = 4; indices[10] = 7; indices[11] = 6;
+	//indices[12] = 4; indices[13] = 5; indices[14] = 1;
+	//indices[15] = 4; indices[16] = 1; indices[17] = 0;
+	//indices[18] = 3; indices[19] = 2; indices[20] = 6;
+	//indices[21] = 3; indices[22] = 6; indices[23] = 7;
+	//indices[24] = 1; indices[25] = 5; indices[26] = 6;
+	//indices[27] = 1; indices[28] = 6; indices[29] = 2;
+	//indices[30] = 4; indices[31] = 0; indices[32] = 3;
+	//indices[33] = 4; indices[34] = 3; indices[35] = 7;
+	//
+	//// Obj
+	//m_objTest = new Obj( noVertices, numIndices, vertices, indices );
+	//return m_objTest->init( p_device );
 }

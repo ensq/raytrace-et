@@ -8,20 +8,26 @@
 #include <Vertex.fx>
 #include <Intersection.fx>
 
-StructuredBuffer< Vertex > srvVertices : register( s0 );
-StructuredBuffer< uint > srvIndices : register( s1 );
+// t
+StructuredBuffer< Vertex > srvVertices : register( t0 );
+StructuredBuffer< uint > srvIndices : register( t1 );
+Texture2D texAlbedo : register( t2 ); // In the future, texture arrays may be added to support materials.
 
+// u
 RWStructuredBuffer< Ray > uavRays : register( u0 );
 RWStructuredBuffer< Intersection > uavIntersections : register( u1 );
 RWTexture2D< float4 > uavBackbuffer : register( u2 );
 
+// s
+SamplerState ssDefault : register( s0 );
+
+// b
 cbuffer CbPerInstance : register( b0 ) {
 	uint screenWidth;
 	uint screenHeight;
 	float aspect;
 	float fov;
 };
-
 cbuffer CbPerFrame : register( b1 ) {
 	row_major float4x4 view;
 	row_major float4x4 viewInv;
@@ -32,7 +38,6 @@ cbuffer CbPerFrame : register( b1 ) {
 	float3 pos;
 	uint pad0;
 };
-
 cbuffer CbPerObject : register( b2 ) {
 	uint numVertices;
 	uint numIndices;

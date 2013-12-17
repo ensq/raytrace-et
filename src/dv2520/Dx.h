@@ -1,6 +1,8 @@
 #ifndef DV2520_DX_H
 #define DV2520_DX_H
 
+#define BLOCK_SIZE 16
+
 enum Fxs;
 
 struct ID3D11ShaderResourceView;
@@ -9,7 +11,9 @@ class Win;
 class Obj;
 class CogFx;
 class CogCb;
+class CogSS;
 class CogD3d;
+class CogTex;
 class BufUav;
 class TimerD3d;
 
@@ -38,6 +42,8 @@ private:
 	CogD3d* m_cogD3d;
 	CogFx* m_cogFx;
 	CogCb* m_cogCb;
+	CogSS* m_cogSS;
+	CogTex* m_cogTex;
 
 	TimerD3d* m_timer;
 

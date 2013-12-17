@@ -41,15 +41,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\include\;$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\lib\$(ProjectName)\DDSTextureLoader\include\;$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\include\;$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProgramFiles)\Windows Kits\8.0\lib\win8\um\x86;$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\include\;$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\lib\$(ProjectName)\DDSTextureLoader\include\;$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\include\;$(ProgramFiles)\Windows Kits\8.0\Include\um;$(ProgramFiles)\Windows Kits\8.0\Include\shared;$(SolutionDir)..\src\$(ProjectName)\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProgramFiles)\Windows Kits\8.0\lib\win8\um\x86;$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -87,6 +89,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lib\dv2520\DDSTextureLoader\include\DDSTextureLoader.cpp" />
     <ClCompile Include="..\..\src\dv2520\Ant.cpp" />
     <ClCompile Include="..\..\src\dv2520\Buf.cpp" />
     <ClCompile Include="..\..\src\dv2520\BufSrv.cpp" />
@@ -96,6 +99,8 @@
     <ClCompile Include="..\..\src\dv2520\CogCb.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogD3d.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogFx.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogSS.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogTex.cpp" />
     <ClCompile Include="..\..\src\dv2520\Dx.cpp" />
     <ClCompile Include="..\..\src\dv2520\Dv2520.cpp" />
     <ClCompile Include="..\..\src\dv2520\ExceptionDv2520.cpp" />
@@ -115,6 +120,7 @@
     <ClCompile Include="..\..\src\dv2520\Win.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\dv2520\DDSTextureLoader\include\DDSTextureLoader.h" />
     <ClInclude Include="..\..\src\dv2520\Ant.h" />
     <ClInclude Include="..\..\src\dv2520\Buf.h" />
     <ClInclude Include="..\..\src\dv2520\BufSrv.h" />
@@ -125,6 +131,8 @@
     <ClInclude Include="..\..\src\dv2520\CogCb.h" />
     <ClInclude Include="..\..\src\dv2520\CogD3d.h" />
     <ClInclude Include="..\..\src\dv2520\CogFx.h" />
+    <ClInclude Include="..\..\src\dv2520\CogSS.h" />
+    <ClInclude Include="..\..\src\dv2520\CogTex.h" />
     <ClInclude Include="..\..\src\dv2520\Dx.h" />
     <ClInclude Include="..\..\src\dv2520\Dv2520.h" />
     <ClInclude Include="..\..\src\dv2520\ExceptionDv2520.h" />

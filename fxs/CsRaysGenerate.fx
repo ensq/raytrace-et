@@ -6,7 +6,6 @@
 float3 getNormalizedScreenCoordinates( uint3 screenPos ) {
 	float x = screenPos.x;
 	float y = screenPos.y;
-
 	float halfWidth = screenWidth / 2.0f;
 	float halfHeight = screenHeight / 2.0f;
 

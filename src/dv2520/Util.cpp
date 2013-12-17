@@ -68,3 +68,23 @@ void Util::terminateProcess() {
 	ExitProcess(dw); 
 }
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms680582%28v=vs.85%29.aspx
+
+wchar_t* Util::stringToWstr( std::string string ) {
+	int wchars_num = MultiByteToWideChar(
+		CP_UTF8, 
+		0, 
+		string.c_str(), 
+		-1, 
+		NULL, 
+		0 );
+	
+	wchar_t* wstr = new wchar_t[ wchars_num ];
+	MultiByteToWideChar(
+		CP_UTF8, 
+		0,
+		string.c_str(),
+		-1, 
+		wstr, 
+		wchars_num);
+	return wstr;
+}
