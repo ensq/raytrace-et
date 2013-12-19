@@ -4,12 +4,24 @@
 #define ZERO_MEM( arg ) ZeroMemory( &arg, sizeof( arg ) );
 #define ASSERT_DELETE( arg ) assert( arg ); delete arg; arg = nullptr;
 #define ASSERT_RELEASE( arg ) assert( arg ); arg->Release(); arg = nullptr;
+#define SAFE_DELETE( arg ) if( arg!=nullptr ) { ASSERT_DELETE( arg ) };
+#define SAFE_RELEASE( arg ) if( arg!=nullptr ) { ASSERT_RELEASE( arg ) };
 
 #ifdef DV2520_DEBUG
 #define ERR_HR( hr ) Util::errHr( hr );
+#define SET_D3D_OBJECT_NAME( resource, name ) SetD3dObjectName( resource, name );
 #else
 #define ERR_HR( hr ) ;
+#define SET_D3D_OBJECT_NAME( resource, name ) ;
 #endif // DV2520_DEBUG
+
+// Make this inaccessible.
+template< UINT TNameLength >
+inline void SetD3dObjectName( 
+	_In_ ID3D11DeviceChild* p_resource, 
+	_In_z_ const char ( &name )[ TNameLength ] ) {
+	p_resource->SetPrivateData( WKPDID_D3DDebugObjectName, TNameLength - 1, name );
+}
 
 class Util {
 public:

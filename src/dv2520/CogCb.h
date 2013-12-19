@@ -15,7 +15,6 @@ public:
 
 	HRESULT mapCbPerInstance( ID3D11DeviceContext* p_devcon, CbPerInstance& p_new );
 	HRESULT mapCbPerFrame( ID3D11DeviceContext* p_devcon, CbPerFrame& p_new );
-	HRESULT mapCbPerObject( ID3D11DeviceContext* p_devcon, CbPerObject& p_new );
 
 	template < class T >
 	HRESULT mapCb( ID3D11DeviceContext* p_devcon, Cb< T >* p_cb, T* p_new ) {
@@ -35,7 +34,6 @@ protected:
 private:
 	Cb< CbPerInstance >* m_cbPerInstance;
 	Cb< CbPerFrame >* m_cbPerFrame;
-	Cb< CbPerObject >* m_cbPerObject;
 };
 
 #endif // DV2520_COGCB_H

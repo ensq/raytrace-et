@@ -18,13 +18,7 @@ struct CbPerFrame {
 	Mat4F projInv;
 
 	Vec3F pos;
-	unsigned pad;
-};
-
-struct CbPerObject {
-	unsigned numVertices;
-	unsigned numIndices;
-	unsigned pad[ 2 ];
+	unsigned instancesCnt;
 };
 
 #endif // DV2520_CBS_H

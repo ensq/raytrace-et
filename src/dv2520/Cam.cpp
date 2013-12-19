@@ -58,33 +58,32 @@ void Cam::updateView() {
 	float y = -m_pos.dot( m_up );
 	float z = -m_pos.dot( m_look );
 
-	m_view._[0][0] = m_right.x;
-	m_view._[1][0] = m_right.y;
-	m_view._[2][0] = m_right.z;
-	m_view._[3][0] = x;
-
-	m_view._[0][1] = m_up.x;
-	m_view._[1][1] = m_up.y;
-	m_view._[2][1] = m_up.z;
-	m_view._[3][1] = y;
-
-	m_view._[0][2] = m_look.x;
-	m_view._[1][2] = m_look.y;
-	m_view._[2][2] = m_look.z;
-	m_view._[3][2] = z;
-
-	m_view._[0][3] = 0.0f;
-	m_view._[1][3] = 0.0f;
-	m_view._[2][3] = 0.0f;
-	m_view._[3][3] = 1.0f;
+	m_view._[ 0 ][ 0 ] = m_right.x;
+	m_view._[ 1 ][ 0 ] = m_right.y;
+	m_view._[ 2 ][ 0 ] = m_right.z;
+	m_view._[ 3 ][ 0 ] = x;
+			       	 
+	m_view._[ 0 ][ 1 ] = m_up.x;
+	m_view._[ 1 ][ 1 ] = m_up.y;
+	m_view._[ 2 ][ 1 ] = m_up.z;
+	m_view._[ 3 ][ 1 ] = y;
+			       	 
+	m_view._[ 0 ][ 2 ] = m_look.x;
+	m_view._[ 1 ][ 2 ] = m_look.y;
+	m_view._[ 2 ][ 2 ] = m_look.z;
+	m_view._[ 3 ][ 2 ] = z;
+			       	 
+	m_view._[ 0 ][ 3 ] = 0.0f;
+	m_view._[ 1 ][ 3 ] = 0.0f;
+	m_view._[ 2 ][ 3 ] = 0.0f;
+	m_view._[ 3 ][ 3 ] = 1.0f;
 }
 void Cam::updateProj() {
 	Mat4F perspective; ZERO_MEM( perspective );
-	perspective._[0][0] = 1 / ( m_aspect * ( tan( m_fov / 2 ) ) );
-	perspective._[1][1] = 1 / ( tan( m_fov / 2 ) );
-	perspective._[2][2] = m_zFar / ( m_zFar - m_zNear );
-	perspective._[2][3] = 1.0f;
-	perspective._[3][2] = ( -m_zNear * m_zFar ) / ( m_zFar - m_zNear );
-	
+	perspective._[ 0 ][ 0 ] = 1 / ( m_aspect * ( tan( m_fov / 2 ) ) );
+	perspective._[ 1 ][ 1 ] = 1 / ( tan( m_fov / 2 ) );
+	perspective._[ 2 ][ 2 ] = m_zFar / ( m_zFar - m_zNear );
+	perspective._[ 2 ][ 3 ] = 1.0f;
+	perspective._[ 3 ][ 2 ] = ( -m_zNear * m_zFar ) / ( m_zFar - m_zNear );
 	m_proj = perspective;
 }

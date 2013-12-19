@@ -1,44 +1,45 @@
 #include <stdafx.h>
 
 #include <Obj.h>
-#include <BufSrv.h>
 #include <Vertex.h>
 
-Obj::Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertices, const unsigned* p_indices ) : m_vertices( p_vertices ), m_indices( p_indices ) {
+Obj::Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertices, const unsigned* p_indices ) {
 	m_verticesCnt = p_verticesCnt;
 	m_indicesCnt = p_indicesCnt;
+
+	// Allocate space for unique copy of vertices and indices for Object:
+	m_vertices = (Vertex*)calloc( m_verticesCnt, sizeof( Vertex ) );
+	m_indices = (unsigned*)calloc( m_indicesCnt, sizeof( unsigned ) );
+	// Copy vertices and indices to newly allocated space:
+	memcpy( m_vertices, p_vertices, sizeof( Vertex ) * m_verticesCnt );
+	memcpy( m_indices, p_indices, sizeof( unsigned ) * m_indicesCnt );
 
 	m_translation = Mat4F::Identity();
 	m_rotation = Mat4F::Identity();
 	m_scaling = Mat4F::Identity();
 
-	m_bufferVertex = nullptr;
-	m_bufferIndex = nullptr;
+	// Test:
+	m_scaling.scale( 1.0, 2.0f, 1.0f );
+	m_translation.translate( 0.0f, 0.0f, -45.0f );
+	m_rotation.rotate( 0.0f, 0.0f, 0.0f );
 }
 Obj::~Obj() {
-	// delete[] m_vertices;
-	// delete[] m_indices;
-
-	ASSERT_DELETE( m_bufferVertex );
-	ASSERT_DELETE( m_bufferIndex );
+	free( m_vertices );
+	free( m_indices );
 }
 
-HRESULT Obj::init( ID3D11Device* p_device ) {
-	HRESULT hr = S_OK;
-
-	m_bufferVertex = new BufSrv( m_verticesCnt, sizeof( Vertex ), (void*)m_vertices );
-	hr = m_bufferVertex->init( p_device );
-
-	if( SUCCEEDED( hr )==true ) {
-		m_bufferIndex = new BufSrv( m_indicesCnt, sizeof( unsigned ), (void*)m_indices );
-		hr = m_bufferIndex->init( p_device );
-	}
-	return hr;
+unsigned Obj::getVerticesCnt() const {
+	return m_verticesCnt;
 }
-
-BufSrv* Obj::getBufferVertex() const {
-	return m_bufferVertex;
+unsigned Obj::getIndicesCnt() const {
+	return m_indicesCnt;
 }
-BufSrv* Obj::getBufferIndex() const {
-	return m_bufferIndex;
+Vertex* Obj::getVertices() const {
+	return m_vertices;
+}
+unsigned* Obj::getIndices() const {
+	return m_indices;
+}
+Mat4F Obj::getWorldTransform() const {
+	return ( m_scaling * m_rotation ) * m_translation;
 }

@@ -3,8 +3,6 @@
 
 struct Vertex;
 
-class BufSrv;
-
 #include <MathSimple.h>
 
 class Obj {
@@ -12,20 +10,18 @@ public:
 	Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertices, const unsigned* p_indices );
 	~Obj();
 
-	HRESULT init( ID3D11Device* p_device );
-
-	BufSrv* getBufferVertex() const;
-	BufSrv* getBufferIndex() const;
+	unsigned getVerticesCnt() const;
+	unsigned getIndicesCnt() const;
+	Vertex* getVertices() const;
+	unsigned* getIndices() const;
+	Mat4F getWorldTransform() const;
 protected:
 private:
 	unsigned m_verticesCnt;
 	unsigned m_indicesCnt;
 
-	const Vertex* m_vertices;
-	const unsigned* m_indices;
-
-	BufSrv* m_bufferVertex;
-	BufSrv* m_bufferIndex;
+	Vertex* m_vertices;
+	unsigned* m_indices;
 
 	Mat4F m_translation;
 	Mat4F m_rotation;

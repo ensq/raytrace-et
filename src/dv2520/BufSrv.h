@@ -5,6 +5,7 @@
 
 class BufSrv : public Buf {
 public:
+	BufSrv( unsigned p_tNum, unsigned p_tSize );
 	BufSrv( unsigned p_tNum, unsigned p_tSize, void* p_data );
 	virtual ~BufSrv();
 

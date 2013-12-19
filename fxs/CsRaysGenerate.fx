@@ -23,7 +23,7 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
 	float3 pixelPos	= getNormalizedScreenCoordinates( gThreadId );
 	pixelPos = mul( float4( pixelPos, 1.0f ), viewInv ).xyz;
 	
-	float4 aux = ( mul( float4( 0.0f, 0.0f, 0.0f, 1.0f ), viewInv ) );
+	float4 aux = mul( float4( 0.0f, 0.0f, 0.0f, 1.0f ), viewInv );
 	
 	Ray ray;
 	ray.pos = aux.xyz / aux.w;

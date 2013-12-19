@@ -11,8 +11,8 @@
 #include <CogD3d.h>
 #include <CogTex.h>
 #include <BufUav.h>
-#include <BufSrv.h>
 #include <TimerD3d.h>
+#include <ObjInstance.h>
 #include <Intersection.h>
 
 #include <RdrObj.h> // Remove us.
@@ -23,6 +23,9 @@ Dx::Dx( Win& p_win ) {
 
 	m_uavBackbuffer = nullptr;
 	m_rtvBackbuffer = nullptr;
+	m_srvStreamVertices = nullptr;
+	m_srvStreamIndices = nullptr;
+	m_srvStreamInstances = nullptr;
 	m_uavRays = nullptr;
 	m_uavIntersections = nullptr;
 	m_objTest = nullptr;
@@ -36,7 +39,10 @@ Dx::Dx( Win& p_win ) {
 Dx::~Dx() {
 	ASSERT_RELEASE( m_uavBackbuffer );
 	ASSERT_RELEASE( m_rtvBackbuffer );
-
+	
+	ASSERT_DELETE( m_srvStreamVertices );
+	ASSERT_DELETE( m_srvStreamIndices );
+	ASSERT_DELETE( m_srvStreamInstances );
 	ASSERT_DELETE( m_uavRays );
 	ASSERT_DELETE( m_uavIntersections );
 	ASSERT_DELETE( m_objTest );
@@ -92,7 +98,7 @@ HRESULT Dx::init() {
 		hr = m_cogTex->init( d3d.device );
 	}
 
-	// Initialize buffers:
+	// Initialize UAVs:
 	unsigned numPixels = m_win->getWidth() * m_win->getHeight();
 	if( SUCCEEDED( hr ) ) {
 		m_uavRays = new BufUav( numPixels, sizeof( Ray ), DXGI_FORMAT_UNKNOWN );
@@ -103,10 +109,34 @@ HRESULT Dx::init() {
 		hr = m_uavIntersections->init( d3d.device );
 	}
 
-	// Initialize temporary vertex- and index-buffers:
+	// Initialize SRVs:
 	if( SUCCEEDED( hr ) ) {
-		hr = initObjTest( d3d.device );
+		m_srvStreamVertices = new BufStreamSrv< Vertex >();
+		m_srvStreamIndices = new BufStreamSrv< unsigned >();
+		m_srvStreamInstances = new BufStreamSrv< ObjInstance >();
+
+		//ObjInstance* instances = new ObjInstance[ 1 ];
+		//
+		//Mat4F scaling = Mat4F::Identity();
+		//Mat4F translation = Mat4F::Identity();
+		//Mat4F rotation = Mat4F::Identity();
+		//
+		//scaling.scale( 1.0, 2.0f, 1.0f );
+		//translation.translate( 0.0f, 0.0f, -45.0f );
+		//rotation.rotate( 0.0f, 0.0f, 0.0f );
+		//
+		//instances[ 0 ].worldInv = ( scaling * rotation ) * translation; // Something messes up the order in-between these.
+		//instances[ 0 ].worldInv.inverse();
+		//instances[ 0 ].indexStart = 0;
+		//instances[ 0 ].indexCnt = 36;
+		//instances[ 0 ].vertexCnt = 8;
+		//m_srvInstances = new BufSrv( 1, sizeof( ObjInstance ), (void*)instances );
+		//hr = m_srvInstances->init( d3d.device );
+		//delete[] instances;
 	}
+
+	// Initialize demo object:
+	initObjTest( d3d.device );
 
 	// Initialize timer
 	if( SUCCEEDED( hr ) ) {
@@ -119,13 +149,34 @@ HRESULT Dx::init() {
 HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	D3d d3d = m_cogD3d->getD3d();
 
-	// Rubbish:
+	// Rubbish, get rid of this:
 	float aspect = ( (float)m_win->getWidth() ) / ( (float)m_win->getHeight() );
 	float fov = (float)PI/4;
 	float zFar = 1000;
 	float zNear = 1;
 
-	// Update constant buffers:
+	// Prepare render by clearing streams and updating them with new data:
+	m_srvStreamVertices->reset();
+	m_srvStreamIndices->reset();
+	m_srvStreamInstances->reset();
+
+	// At the moment, we're only adding a lone object to the scene
+	m_srvStreamVertices->pushElements( m_objTest->getVertices(), m_objTest->getVerticesCnt() );
+	m_srvStreamIndices->pushElements( m_objTest->getIndices(), m_objTest->getIndicesCnt() );
+	ObjInstance objInstance;
+	objInstance.indexStart = 0;
+	objInstance.indexCnt = m_objTest->getIndicesCnt();
+	objInstance.vertexCnt = m_objTest->getVerticesCnt();
+	objInstance.worldInv = m_objTest->getWorldTransform();
+	objInstance.worldInv.inverse();
+	m_srvStreamInstances->pushElement( objInstance );
+
+	// Update streams:
+	m_srvStreamVertices->updateBufStream( d3d.device, d3d.devcon );
+	m_srvStreamIndices->updateBufStream( d3d.device, d3d.devcon );
+	m_srvStreamInstances->updateBufStream( d3d.device, d3d.devcon );
+
+	// Update CBs:
 	CbPerInstance cbPerInstance;
 	cbPerInstance.screenWidth = m_win->getWidth();
 	cbPerInstance.screenHeight = m_win->getHeight();
@@ -143,22 +194,20 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	cbPerFrame.viewInv = viewInv;
 	cbPerFrame.proj = p_proj;
 	cbPerFrame.projInv = projInv;
+	cbPerFrame.instancesCnt = 1;
 	m_cogCb->mapCbPerFrame( d3d.devcon, cbPerFrame );
 
-	CbPerObject cbPerObject;
-	cbPerObject.numVertices = 8;
-	cbPerObject.numIndices = 36;
-	m_cogCb->mapCbPerObject( d3d.devcon, cbPerObject );
-
+	// Set CBs:
 	m_cogCb->setCbs( d3d.devcon );
 
 	// Set SRVs:
 	ID3D11ShaderResourceView* srvs[] = {
-		m_objTest->getBufferVertex()->getSrv(),
-		m_objTest->getBufferIndex()->getSrv(),
+		m_srvStreamVertices->getSrv(),
+		m_srvStreamIndices->getSrv(),
+		m_srvStreamInstances->getSrv(),
 		m_cogTex->getTex( d3d.device, Texs_default )->getSrv() // Make this more general.
 	};
-	d3d.devcon->CSSetShaderResources( 0, 3, srvs );
+	d3d.devcon->CSSetShaderResources( 0, 4, srvs );
 
 	// Set UAVs:
 	ID3D11UnorderedAccessView* uavs[] = { 
@@ -177,8 +226,8 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	Singleton< Ant >::get().setTimeLighting( dispatch( d3d.devcon, Fxs_CS_LIGHTING ) );
 	
 	// Unset SRVs:
-	ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL };
-	d3d.devcon->CSSetShaderResources( 0, 3, srvsUnset );
+	ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL, NULL };
+	d3d.devcon->CSSetShaderResources( 0, 4, srvsUnset );
 
 	// Unset UAVs:
 	ID3D11UnorderedAccessView* uavsUnset[] = { NULL, NULL, NULL };
@@ -208,57 +257,9 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 	return m_timer->time( p_devcon );
 }
 
-HRESULT Dx::initObjTest( ID3D11Device* p_device ) {
+bool Dx::initObjTest( ID3D11Device* p_device ) {
 	RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
 	bool sucess = true;
 	m_objTest = rdr.read( sucess );
-	return m_objTest->init( p_device );
-
-	// Vertices
-	//float width = 20.0f;
-	//float offset = width / 2.0f;
-	//
-	//Vec3F p1 = Vec3F( -offset, offset, -offset );
-	//Vec3F p2 = Vec3F( -offset, offset, offset );
-	//Vec3F p3 = Vec3F( offset, offset, offset );
-	//Vec3F p4 = Vec3F( offset, offset, -offset );
-	//Vec3F p5 = Vec3F( -offset, -offset, -offset );
-	//Vec3F p6 = Vec3F( -offset, -offset, offset );
-	//Vec3F p7 = Vec3F( offset, -offset, offset );
-	//Vec3F p8 = Vec3F( offset, -offset, -offset );
-	//
-	//Vec3F nor = Vec3F( 1.0f, 1.0f, 1.0f );
-	//Vec2F tex = Vec2F( 0.0f, 0.0f );
-	//
-	//Vertex pos; UINT noVertices = 8;
-	//Vertex* vertices = new Vertex[ noVertices ];
-	//pos.nor = nor; pos.tex = tex;
-	//pos.pos = p1; vertices[0] = pos; pos.tex = Vec2F( 0.0f, 0.0f );
-	//pos.pos = p2; vertices[1] = pos; pos.tex = Vec2F( 0.0f, 1.0f );
-	//pos.pos = p3; vertices[2] = pos; pos.tex = Vec2F( 1.0f, 0.0f );
-	//pos.pos = p4; vertices[3] = pos; pos.tex = Vec2F( 1.0f, 1.0f );
-	//pos.pos = p5; vertices[4] = pos; pos.tex = Vec2F( 0.0f, 0.0f );
-	//pos.pos = p6; vertices[5] = pos; pos.tex = Vec2F( 0.0f, 1.0f );
-	//pos.pos = p7; vertices[6] = pos; pos.tex = Vec2F( 1.0f, 0.0f );
-	//pos.pos = p8; vertices[7] = pos; pos.tex = Vec2F( 1.0f, 1.0f );
-	//
-	//// Indices
-	//unsigned numIndices = 36;
-	//unsigned* indices = new unsigned[ numIndices ];
-	//indices[0] = 0; indices[1] = 1; indices[2] = 2;
-	//indices[3] = 0; indices[4] = 2; indices[5] = 3;
-	//indices[6] = 4; indices[7] = 6; indices[8] = 5;
-	//indices[9] = 4; indices[10] = 7; indices[11] = 6;
-	//indices[12] = 4; indices[13] = 5; indices[14] = 1;
-	//indices[15] = 4; indices[16] = 1; indices[17] = 0;
-	//indices[18] = 3; indices[19] = 2; indices[20] = 6;
-	//indices[21] = 3; indices[22] = 6; indices[23] = 7;
-	//indices[24] = 1; indices[25] = 5; indices[26] = 6;
-	//indices[27] = 1; indices[28] = 6; indices[29] = 2;
-	//indices[30] = 4; indices[31] = 0; indices[32] = 3;
-	//indices[33] = 4; indices[34] = 3; indices[35] = 7;
-	//
-	//// Obj
-	//m_objTest = new Obj( noVertices, numIndices, vertices, indices );
-	//return m_objTest->init( p_device );
+	return sucess;
 }

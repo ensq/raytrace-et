@@ -142,6 +142,15 @@
     <ClInclude Include="..\..\src\dv2520\CogSS.h">
       <Filter>Dx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\BufStream.h">
+      <Filter>Dx\Buf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\BufStreamSrv.h">
+      <Filter>Dx\Buf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\ObjInstance.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -183,6 +192,9 @@
       <Filter>Fxs</Filter>
     </FxCompile>
     <FxCompile Include="..\..\fxs\Vertex.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\ObjInstance.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
   </ItemGroup>

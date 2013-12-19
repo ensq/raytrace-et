@@ -124,6 +124,8 @@
     <ClInclude Include="..\..\src\dv2520\Ant.h" />
     <ClInclude Include="..\..\src\dv2520\Buf.h" />
     <ClInclude Include="..\..\src\dv2520\BufSrv.h" />
+    <ClInclude Include="..\..\src\dv2520\BufStream.h" />
+    <ClInclude Include="..\..\src\dv2520\BufStreamSrv.h" />
     <ClInclude Include="..\..\src\dv2520\BufUav.h" />
     <ClInclude Include="..\..\src\dv2520\Cam.h" />
     <ClInclude Include="..\..\src\dv2520\Cb.h" />
@@ -140,6 +142,7 @@
     <ClInclude Include="..\..\src\dv2520\FxCs.h" />
     <ClInclude Include="..\..\src\dv2520\Input.h" />
     <ClInclude Include="..\..\src\dv2520\InputQueue.h" />
+    <ClInclude Include="..\..\src\dv2520\ObjInstance.h" />
     <ClInclude Include="..\..\src\dv2520\Intersection.h" />
     <ClInclude Include="..\..\src\dv2520\MathSimple.h" />
     <ClInclude Include="..\..\src\dv2520\Obj.h" />
@@ -182,6 +185,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\ObjInstance.fx">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="..\..\fxs\Intersection.fx">

@@ -6,12 +6,14 @@
 
 #include <Ray.fx>
 #include <Vertex.fx>
+#include <ObjInstance.fx>
 #include <Intersection.fx>
 
 // t
 StructuredBuffer< Vertex > srvVertices : register( t0 );
 StructuredBuffer< uint > srvIndices : register( t1 );
-Texture2D texAlbedo : register( t2 ); // In the future, texture arrays may be added to support materials.
+StructuredBuffer< ObjInstance > srvInstances : register( t2 );
+Texture2D texAlbedo : register( t3 ); // In the future, texture arrays may be added to support materials.
 
 // u
 RWStructuredBuffer< Ray > uavRays : register( u0 );
@@ -36,12 +38,7 @@ cbuffer CbPerFrame : register( b1 ) {
 	row_major float4x4 projInv;
 
 	float3 pos;
-	uint pad0;
-};
-cbuffer CbPerObject : register( b2 ) {
-	uint numVertices;
-	uint numIndices;
-	uint pad1[ 2 ];
+	uint instancesCnt;
 };
 
 #endif // DV2520_COMMON_FX

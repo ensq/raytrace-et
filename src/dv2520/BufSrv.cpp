@@ -2,6 +2,9 @@
 
 #include <BufSrv.h>
 
+BufSrv::BufSrv( unsigned p_tNum, unsigned p_tSize ) : Buf( p_tNum, p_tSize ) {
+	m_data = nullptr;
+}
 BufSrv::BufSrv( unsigned p_tNum, unsigned p_tSize, void* p_data ) : Buf( p_tNum, p_tSize ) {
 	m_data = p_data;
 }
@@ -30,10 +33,15 @@ HRESULT BufSrv::initBuf( ID3D11Device* p_device ) {
 	desc.StructureByteStride = getTSize();
 	desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 
-	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = m_data;
-
-	return Buf::initBuf( p_device, desc, initData );
+	HRESULT hr = S_OK;
+	if( m_data!=nullptr ) {
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = m_data;
+		hr = Buf::initBuf( p_device, desc, initData );
+	} else {
+		hr = Buf::initBuf( p_device, desc );
+	}
+	return hr;
 }
 HRESULT BufSrv::initSrv( ID3D11Device* p_device ) {
 	D3D11_SHADER_RESOURCE_VIEW_DESC desc;
