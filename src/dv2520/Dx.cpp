@@ -28,7 +28,6 @@ Dx::Dx( Win& p_win ) {
 	m_srvStreamInstances = nullptr;
 	m_uavRays = nullptr;
 	m_uavIntersections = nullptr;
-	m_objTest = nullptr;
 	m_cogD3d = nullptr;
 	m_cogFx = nullptr;
 	m_cogCb = nullptr;
@@ -45,13 +44,16 @@ Dx::~Dx() {
 	ASSERT_DELETE( m_srvStreamInstances );
 	ASSERT_DELETE( m_uavRays );
 	ASSERT_DELETE( m_uavIntersections );
-	ASSERT_DELETE( m_objTest );
 	ASSERT_DELETE( m_cogD3d );
 	ASSERT_DELETE( m_cogFx );
 	ASSERT_DELETE( m_cogCb );
 	ASSERT_DELETE( m_cogSS );
 	ASSERT_DELETE( m_cogTex );
 	ASSERT_DELETE( m_timer );
+
+	for( unsigned i = 0; i<m_objects.size(); i++ ) {
+		ASSERT_DELETE( m_objects.at( i ) );
+	}
 }
 
 HRESULT Dx::init() {
@@ -88,6 +90,18 @@ HRESULT Dx::init() {
 	if( SUCCEEDED( hr ) ) {
 		m_cogCb = new CogCb();
 		hr = m_cogCb->init( d3d.device );
+
+		float aspect = ( (float)m_win->getWidth() ) / ( (float)m_win->getHeight() ); // Rubbish, get rid of this:
+		float fov = (float)PI/4;
+		float zFar = 1000;
+		float zNear = 1;
+		// Per instance CB only needs to be updated once:
+		CbPerInstance cbPerInstance;
+		cbPerInstance.screenWidth = m_win->getWidth();
+		cbPerInstance.screenHeight = m_win->getHeight();
+		cbPerInstance.aspect = aspect;
+		cbPerInstance.fov = fov;
+		m_cogCb->mapCbPerInstance( d3d.devcon, cbPerInstance );
 	}
 	if( SUCCEEDED( hr ) ) {
 		m_cogSS = new CogSS();
@@ -114,29 +128,10 @@ HRESULT Dx::init() {
 		m_srvStreamVertices = new BufStreamSrv< Vertex >();
 		m_srvStreamIndices = new BufStreamSrv< unsigned >();
 		m_srvStreamInstances = new BufStreamSrv< ObjInstance >();
-
-		//ObjInstance* instances = new ObjInstance[ 1 ];
-		//
-		//Mat4F scaling = Mat4F::Identity();
-		//Mat4F translation = Mat4F::Identity();
-		//Mat4F rotation = Mat4F::Identity();
-		//
-		//scaling.scale( 1.0, 2.0f, 1.0f );
-		//translation.translate( 0.0f, 0.0f, -45.0f );
-		//rotation.rotate( 0.0f, 0.0f, 0.0f );
-		//
-		//instances[ 0 ].worldInv = ( scaling * rotation ) * translation; // Something messes up the order in-between these.
-		//instances[ 0 ].worldInv.inverse();
-		//instances[ 0 ].indexStart = 0;
-		//instances[ 0 ].indexCnt = 36;
-		//instances[ 0 ].vertexCnt = 8;
-		//m_srvInstances = new BufSrv( 1, sizeof( ObjInstance ), (void*)instances );
-		//hr = m_srvInstances->init( d3d.device );
-		//delete[] instances;
 	}
 
-	// Initialize demo object:
-	initObjTest( d3d.device );
+	// Initialize demo objects:
+	initObjects( d3d.device );
 
 	// Initialize timer
 	if( SUCCEEDED( hr ) ) {
@@ -149,41 +144,35 @@ HRESULT Dx::init() {
 HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	D3d d3d = m_cogD3d->getD3d();
 
-	// Rubbish, get rid of this:
-	float aspect = ( (float)m_win->getWidth() ) / ( (float)m_win->getHeight() );
-	float fov = (float)PI/4;
-	float zFar = 1000;
-	float zNear = 1;
-
 	// Prepare render by clearing streams and updating them with new data:
 	m_srvStreamVertices->reset();
 	m_srvStreamIndices->reset();
 	m_srvStreamInstances->reset();
 
 	// At the moment, we're only adding a lone object to the scene
-	m_srvStreamVertices->pushElements( m_objTest->getVertices(), m_objTest->getVerticesCnt() );
-	m_srvStreamIndices->pushElements( m_objTest->getIndices(), m_objTest->getIndicesCnt() );
-	ObjInstance objInstance;
-	objInstance.indexStart = 0;
-	objInstance.indexCnt = m_objTest->getIndicesCnt();
-	objInstance.vertexCnt = m_objTest->getVerticesCnt();
-	objInstance.worldInv = m_objTest->getWorldTransform();
-	objInstance.worldInv.inverse();
-	m_srvStreamInstances->pushElement( objInstance );
+	unsigned indexOffset = 0;
+	for( unsigned i = 0; i<m_objects.size(); i++ ) {
+		Obj* obj = m_objects.at( i );
+
+		ObjInstance instance;
+		instance.indexStart = indexOffset;
+		instance.indexCnt = obj->getIndicesCnt();
+		instance.vertexCnt = obj->getVerticesCnt();
+		instance.worldInv = obj->getWorldTransform();
+		instance.worldInv.inverse();
+		indexOffset += instance.indexCnt;
+
+		m_srvStreamVertices->pushElements( obj->getVertices(), obj->getVerticesCnt() );
+		m_srvStreamIndices->pushElements( obj->getIndices(), obj->getIndicesCnt() );
+		m_srvStreamInstances->pushElement( instance );
+	}
 
 	// Update streams:
 	m_srvStreamVertices->updateBufStream( d3d.device, d3d.devcon );
 	m_srvStreamIndices->updateBufStream( d3d.device, d3d.devcon );
 	m_srvStreamInstances->updateBufStream( d3d.device, d3d.devcon );
 
-	// Update CBs:
-	CbPerInstance cbPerInstance;
-	cbPerInstance.screenWidth = m_win->getWidth();
-	cbPerInstance.screenHeight = m_win->getHeight();
-	cbPerInstance.aspect = aspect;
-	cbPerInstance.fov = fov;
-	m_cogCb->mapCbPerInstance( d3d.devcon, cbPerInstance );
-
+	// Update per-frame CB:
 	Mat4F viewInv = p_view; 
 	viewInv.inverse();
 	Mat4F projInv = p_proj;
@@ -194,7 +183,7 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	cbPerFrame.viewInv = viewInv;
 	cbPerFrame.proj = p_proj;
 	cbPerFrame.projInv = projInv;
-	cbPerFrame.instancesCnt = 1;
+	cbPerFrame.instancesCnt = m_objects.size();
 	m_cogCb->mapCbPerFrame( d3d.devcon, cbPerFrame );
 
 	// Set CBs:
@@ -257,9 +246,18 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 	return m_timer->time( p_devcon );
 }
 
-bool Dx::initObjTest( ID3D11Device* p_device ) {
-	RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
+bool Dx::initObjects( ID3D11Device* p_device ) {
 	bool sucess = true;
-	m_objTest = rdr.read( sucess );
+	for( unsigned i = 0; i<5 && sucess==true; i++ ) {
+		RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
+		Obj* obj = rdr.read( sucess );
+
+		static float xoffset = 0.0f;
+		obj->getTranslation().translate( xoffset, 0.0f, 0.0f );
+		xoffset += 2.0f;
+
+		m_objects.push_back( obj );
+	}
+	
 	return sucess;
 }

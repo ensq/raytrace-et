@@ -19,8 +19,8 @@ Obj::Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertice
 	m_scaling = Mat4F::Identity();
 
 	// Test:
-	m_scaling.scale( 1.0, 2.0f, 1.0f );
-	m_translation.translate( 0.0f, 0.0f, -45.0f );
+	m_scaling.scale( 1.0, 1.0f, 1.0f );
+	m_translation.translate( 0.0f, 0.0f, 0.0f );
 	m_rotation.rotate( 0.0f, 0.0f, 0.0f );
 }
 Obj::~Obj() {
@@ -39,6 +39,16 @@ Vertex* Obj::getVertices() const {
 }
 unsigned* Obj::getIndices() const {
 	return m_indices;
+}
+
+Mat4F& Obj::getTranslation() {
+	return m_translation;
+}
+Mat4F& Obj::getRotation() {
+	return m_rotation;
+}
+Mat4F& Obj::getScaling() {
+	return m_scaling;
 }
 Mat4F Obj::getWorldTransform() const {
 	return ( m_scaling * m_rotation ) * m_translation;

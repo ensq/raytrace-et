@@ -14,6 +14,10 @@ public:
 	unsigned getIndicesCnt() const;
 	Vertex* getVertices() const;
 	unsigned* getIndices() const;
+
+	Mat4F& getTranslation();
+	Mat4F& getRotation();
+	Mat4F& getScaling();
 	Mat4F getWorldTransform() const;
 protected:
 private:

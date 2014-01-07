@@ -33,20 +33,16 @@ public:
 protected:
 private:
 	double dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx );
-	bool initObjTest( ID3D11Device* p_device );
+	bool initObjects( ID3D11Device* p_device );
 
-	// These ought to be put into some sort of class:
-	ID3D11UnorderedAccessView* m_uavBackbuffer;
+	ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of class.
 	ID3D11RenderTargetView* m_rtvBackbuffer;
 	
 	BufStreamSrv< Vertex >* m_srvStreamVertices;
 	BufStreamSrv< unsigned >* m_srvStreamIndices;
 	BufStreamSrv< ObjInstance >* m_srvStreamInstances;
-
 	BufUav* m_uavRays;
 	BufUav* m_uavIntersections;
-
-	Obj* m_objTest;
 
 	CogD3d* m_cogD3d;
 	CogFx* m_cogFx;
@@ -54,8 +50,9 @@ private:
 	CogSS* m_cogSS;
 	CogTex* m_cogTex;
 
-	TimerD3d* m_timer;
+	std::vector< Obj* > m_objects;
 
+	TimerD3d* m_timer;
 	Win* m_win;
 };
 
