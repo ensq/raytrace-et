@@ -53,6 +53,7 @@ HRESULT Win::init() {
 			NULL);
 		if( m_hWnd!=NULL ) { // Return value of CreateWindow is NULL if failed.
 			ShowWindow( m_hWnd, nCmdShow );
+			//SetCapture( m_hWnd );
 			hr = S_OK;
 		}
 	}
@@ -94,6 +95,16 @@ LRESULT CALLBACK Win::wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 		case WM_KEYDOWN:
 			wWinKeyProc( wParam );
 			break;
+		case WM_MOUSEMOVE:
+			wWinMouseProc( wParam, lParam );
+			break;
+		case WM_SIZE: // Sent when user resizes windows. Be sure to implement support for this at some point.
+		case WM_LBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+		case WM_LBUTTONUP:
+		case WM_MBUTTONUP:
+		case WM_RBUTTONUP:
 		default:
 			lResult = DefWindowProc( hWnd, message, wParam, lParam );
 			break;
@@ -137,4 +148,12 @@ void Win::wWinKeyProc( WPARAM wParam ) {
 	if( keyType!=InputKeyTypes_NA ) {
 		m_inputQueue.keyPush( InputKey( keyType ) );
 	}
+}
+void Win::wWinMouseProc( WPARAM wParam, LPARAM lParam ) {
+	float x = GET_X_LPARAM( lParam );
+	float y = GET_Y_LPARAM( lParam );
+	m_inputQueue.mousePush( InputMouse( x, y ) );
+	
+	//if( ( wParam & MK_LBUTTON )!=0 ) {
+	//}
 }

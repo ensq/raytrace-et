@@ -248,7 +248,7 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 
 bool Dx::initObjects( ID3D11Device* p_device ) {
 	bool sucess = true;
-	for( unsigned i = 0; i<5 && sucess==true; i++ ) {
+	for( unsigned i = 0; i<1 && sucess==true; i++ ) {
 		RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
 		Obj* obj = rdr.read( sucess );
 

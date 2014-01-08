@@ -35,6 +35,7 @@ public:
 	// This method is totally off limits. Hands off.
 	static LRESULT CALLBACK wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 	static void wWinKeyProc( WPARAM wParam );
+	static void wWinMouseProc( WPARAM wParam, LPARAM lParam );
 protected:
 private:
 	HWND m_hWnd;

@@ -24,19 +24,19 @@ InputKeyTypes InputKey::getType() const {
 }
 
 InputMouse::InputMouse() {
-	m_dX = 0.0;
-	m_dY = 0.0;
+	m_dX = 0.0f;
+	m_dY = 0.0f;
 }
-InputMouse::InputMouse( double p_dX, double p_dY ) {
+InputMouse::InputMouse( float p_dX, float p_dY ) {
 	m_dX = p_dX;
 	m_dY = p_dY;
 }
 InputMouse::~InputMouse() {
 }
 
-double InputMouse::getDX() const {
+float InputMouse::getDX() const {
 	return m_dX;
 }
-double InputMouse::getDY() const {
+float InputMouse::getDY() const {
 	return m_dY;
 }

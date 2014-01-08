@@ -32,15 +32,15 @@ private:
 class InputMouse {
 public:
 	InputMouse();
-	InputMouse( double p_dX, double p_dY );
+	InputMouse( float p_dX, float p_dY );
 	~InputMouse();
 	
-	double getDX() const;
-	double getDY() const;
+	float getDX() const;
+	float getDY() const;
 protected:
 private:
-	double m_dX;
-	double m_dY;
+	float m_dX;
+	float m_dY;
 };
 
 #endif // DV2520_INPUT_H

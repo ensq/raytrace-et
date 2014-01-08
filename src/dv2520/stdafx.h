@@ -28,7 +28,8 @@
 #include <windowsx.h>
 
 // Application:
-#include <Util.h> // Utility methods included for brevity.
+#include <Util.h> // Utility methods included for simplicity.
+#include <MathSimple.h> // Math methods included for simplicity.
 #include <ExceptionDv2520.h>
 
 // Conditionals:

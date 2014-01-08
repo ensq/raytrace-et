@@ -12,13 +12,14 @@ public:
 	bool keyPop( InputKey& io_key );
 
 	void mousePush( InputMouse p_mouse );
-	InputMouse mousePop();
+	void mousePop( InputMouse& io_mouse );
 
 	void empty();
 protected:
 private:
 	std::queue< InputKey > m_keys;
-	InputMouse m_mouse;
+	InputMouse m_mouseCur;
+	InputMouse m_mousePrev;
 };
 
 #endif // DV2520_INPUTQUEUE_H

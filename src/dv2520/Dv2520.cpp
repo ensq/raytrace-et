@@ -48,8 +48,9 @@ int Dv2520::run() {
 }
 
 void Dv2520::gameloop( double p_delta ) {
-	InputQueue inputQueue = m_win->getInputQueue();
+	InputQueue& inputQueue = m_win->getInputQueue();
 
+	// Keyboard input:
 	InputKey key;
 	while( inputQueue.keyPop( key )==false ) {
 		switch( key.getType() ) {
@@ -81,6 +82,14 @@ void Dv2520::gameloop( double p_delta ) {
 			break;
 		}
 	}
+
+	// Mouse input:
+	InputMouse mouse;
+	inputQueue.mousePop( mouse );
+	m_cam->yaw( mouse.getDX() );
+	m_cam->pitch( mouse.getDY() );
+
+	// Clear input:
 	inputQueue.empty(); // Remember to clear the input.
 	
 	m_cam->update( p_delta );
