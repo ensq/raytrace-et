@@ -105,62 +105,8 @@ struct Quaternion {
 	Mat4F toMatrix();
 
 	static Quaternion Identity();
-
 };
 Quaternion operator*( const Quaternion& p_l, const Quaternion& p_r );
 Quaternion operator*( const Quaternion& p_q, const Vec3F& p_v );
 
 #endif // DV2520_MATHSIMPLE_H
-
-// Devilry:
-/*
-Quaternion(MatF4* pm)
-{
-int i, maxi;
-float maxdiag, S, trace;
-
-trace = pm->m[0][0] + pm->m[1][1] + pm->m[2][2] + 1.0f;
-if (trace > 0.0f)
-{
-x = (pm->m[1][2] - pm->m[2][1]) / (2.0f * sqrt(trace));
-y = (pm->m[2][0] - pm->m[0][2]) / (2.0f * sqrt(trace));
-z = (pm->m[0][1] - pm->m[1][0]) / (2.0f * sqrt(trace));
-w = sqrt(trace) / 2.0f;
-return;
-}
-maxi = 0;
-maxdiag = pm->m[0][0];
-for (i=1; i<3; i++)
-{
-if ( pm->m[i][i] > maxdiag )
-{
-maxi = i;
-maxdiag = pm->m[i][i];
-}
-}
-switch( maxi )
-{
-case 0:
-S = 2.0f * sqrt(1.0f + pm->m[0][0] - pm->m[1][1] - pm->m[2][2]);
-x = 0.25f * S;
-y = ( pm->m[0][1] + pm->m[1][0] ) / S;
-z = ( pm->m[0][2] + pm->m[2][0] ) / S;
-w = ( pm->m[1][2] - pm->m[2][1] ) / S;
-break;
-case 1:
-S = 2.0f * sqrt(1.0f + pm->m[1][1] - pm->m[0][0] - pm->m[2][2]);
-x = ( pm->m[0][1] + pm->m[1][0] ) / S;
-y = 0.25f * S;
-z = ( pm->m[1][2] + pm->m[2][1] ) / S;
-w = ( pm->m[2][0] - pm->m[0][2] ) / S;
-break;
-case 2:
-S = 2.0f * sqrt(1.0f + pm->m[2][2] - pm->m[0][0] - pm->m[1][1]);
-x = ( pm->m[0][2] + pm->m[2][0] ) / S;
-y = ( pm->m[1][2] + pm->m[2][1] ) / S;
-z = 0.25f * S;
-w = ( pm->m[0][1] - pm->m[1][0] ) / S;
-break;
-}
-};
-*/

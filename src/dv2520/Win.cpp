@@ -150,8 +150,8 @@ void Win::wWinKeyProc( WPARAM wParam ) {
 	}
 }
 void Win::wWinMouseProc( WPARAM wParam, LPARAM lParam ) {
-	float x = GET_X_LPARAM( lParam );
-	float y = GET_Y_LPARAM( lParam );
+	float x = (float)GET_X_LPARAM( lParam );
+	float y = (float)GET_Y_LPARAM( lParam );
 	m_inputQueue.mousePush( InputMouse( x, y ) );
 	
 	//if( ( wParam & MK_LBUTTON )!=0 ) {

@@ -8,6 +8,7 @@ struct Intersection {
 	float t;
 	
 	int primId;
+	unsigned primVertexOffset;
 
 	float dist;
 };

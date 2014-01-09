@@ -8,33 +8,39 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
 	uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
 	Ray	ray	= uavRays[ pixelIdx ];
 	
-	Intersection closestIntersection;
+	Intersection curIntersection = ConstructIntersection();
+	Intersection closestIntersection = ConstructIntersection();
 	closestIntersection.dist = ray.distMax;
-	closestIntersection.primId = -1;
 
 	uint indicesOffset = 0;
 	uint verticesOffset = 0;
 	for( uint instancesIdx = 0; instancesIdx<instancesCnt; instancesIdx++ ) {
 		float3 p0, p1, p2;
-		Intersection curIntersection;
-		for( uint vertexIdx = 2; vertexIdx<srvInstances[ instancesIdx ].indexCnt; vertexIdx += 3 ) {
+		uint indicesCnt = srvInstances[ instancesIdx ].indexCnt;
+		for( uint vertexIdx = 2; vertexIdx<indicesCnt; vertexIdx += 3 ) {
 			float3 rayDir = mul( srvInstances[ instancesIdx ].worldInv, float4( ray.dir, 0.0f ) ).xyz;
 			float3 rayPos = mul( srvInstances[ instancesIdx ].worldInv, float4( ray.pos, 1.0f ) ).xyz;
 
-			p0 = srvVertices[ verticesOffset + srvIndices[ indicesOffset + vertexIdx - 2 ]	].pos;
-			p1 = srvVertices[ verticesOffset + srvIndices[ indicesOffset + vertexIdx - 1 ]	].pos;
-			p2 = srvVertices[ verticesOffset + srvIndices[ indicesOffset + vertexIdx ]		].pos;
-			curIntersection = intersectRayTriangle( rayPos, rayDir, p0, p1, p2, indicesOffset + vertexIdx );
+			uint indexId = indicesOffset + vertexIdx;
+			p0 = srvVertices[ verticesOffset + srvIndices[ indexId - 2 ]	].pos;
+			p1 = srvVertices[ verticesOffset + srvIndices[ indexId - 1 ]	].pos;
+			p2 = srvVertices[ verticesOffset + srvIndices[ indexId ]		].pos;
+			curIntersection = intersectRayTriangleRealTimeRendering( rayPos, rayDir, p0, p1, p2, indexId );
 			
-			if( curIntersection.primId<0 || ray.primID==curIntersection.primId || curIntersection.dist>=closestIntersection.dist ) {
-				continue;
+			if( curIntersection.primId>=0 && 
+				ray.primId!=curIntersection.primId &&
+				curIntersection.dist<closestIntersection.dist ) {
+				closestIntersection = curIntersection;
+				closestIntersection.primVertexOffset = verticesOffset;
+
+				ray.primId = curIntersection.primId;
 			}
-			closestIntersection = curIntersection;
 		}
 		indicesOffset += srvInstances[ instancesIdx ].indexCnt;
 		verticesOffset += srvInstances[ instancesIdx ].vertexCnt;
 	}
 
+	uavRays[ pixelIdx ] = ray;
 	uavIntersections[ pixelIdx ] = closestIntersection;
 }
 

@@ -1,8 +1,8 @@
 #ifndef DV2520_DV2520_H
 #define DV2520_DV2520_H
 
-#define VELOCITY_WALK 0.8f
-#define VELOCITY_ROTATE 0.5f
+#define VELOCITY_WALK 1.2f
+#define VELOCITY_ROTATE 2.0f
 
 #include <TimerDelta.h>
 

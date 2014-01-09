@@ -85,7 +85,7 @@ void Vec3F::rotate( float p_angle, const Vec3F& p_axis ) {
 	const float rY = p_axis.y * sinHalfAngle;
 	const float rZ = p_axis.z * sinHalfAngle;
 	const float rW = cosHalfAngle;
-	
+
 	Quaternion rotationQ( rX, rY, rZ, rW );
 	Quaternion conjugateQ = rotationQ.conjugate();
 	Quaternion w = rotationQ * (*this) * conjugateQ;
@@ -96,19 +96,19 @@ void Vec3F::rotate( float p_angle, const Vec3F& p_axis ) {
 }
 
 Mat4F::Mat4F() {
-	_[0][0] = 1.0f; _[0][1] = 0.0f; _[0][2] = 0.0f; _[0][3] = 0.0f;
-	_[1][0] = 0.0f; _[1][1] = 1.0f; _[1][2] = 0.0f; _[1][3] = 0.0f;
-	_[2][0] = 0.0f; _[2][1] = 0.0f; _[2][2] = 1.0f; _[2][3] = 0.0f;
-	_[3][0] = 0.0f; _[3][1] = 0.0f; _[3][2] = 0.0f; _[3][3] = 1.0f;
+	_[ 0 ][ 0 ] = 1.0f; _[ 0 ][ 1 ] = 0.0f; _[ 0 ][ 2 ] = 0.0f; _[ 0 ][ 3 ] = 0.0f;
+	_[ 1 ][ 0 ] = 0.0f; _[ 1 ][ 1 ] = 1.0f; _[ 1 ][ 2 ] = 0.0f; _[ 1 ][ 3 ] = 0.0f;
+	_[ 2 ][ 0 ] = 0.0f; _[ 2 ][ 1 ] = 0.0f; _[ 2 ][ 2 ] = 1.0f; _[ 2 ][ 3 ] = 0.0f;
+	_[ 3 ][ 0 ] = 0.0f; _[ 3 ][ 1 ] = 0.0f; _[ 3 ][ 2 ] = 0.0f; _[ 3 ][ 3 ] = 1.0f;
 }
 Mat4F::~Mat4F() {
 }
 
 void Mat4F::scale( float p_x, float p_y, float p_z ) {
-	_[0][0] = p_x;	_[0][1] = 0.0f;	_[0][2] = 0.0f;	_[0][3] = 0.0f;
-	_[1][0] = 0.0f;	_[1][1] = p_y;	_[1][2] = 0.0f;	_[1][3] = 0.0f;
-	_[2][0] = 0.0f;	_[2][1] = 0.0f;	_[2][2] = p_z;	_[2][3] = 0.0f;
-	_[3][0] = 0.0f;	_[3][1] = 0.0f;	_[3][2] = 0.0f;	_[3][3] = 1.0f;
+	_[ 0 ][ 0 ] = p_x;	_[ 0 ][ 1 ] = 0.0f;	_[ 0 ][ 2 ] = 0.0f;	_[ 0 ][ 3 ] = 0.0f;
+	_[ 1 ][ 0 ] = 0.0f;	_[ 1 ][ 1 ] = p_y;	_[ 1 ][ 2 ] = 0.0f;	_[ 1 ][ 3 ] = 0.0f;
+	_[ 2 ][ 0 ] = 0.0f;	_[ 2 ][ 1 ] = 0.0f;	_[ 2 ][ 2 ] = p_z;	_[ 2 ][ 3 ] = 0.0f;
+	_[ 3 ][ 0 ] = 0.0f;	_[ 3 ][ 1 ] = 0.0f;	_[ 3 ][ 2 ] = 0.0f;	_[ 3 ][ 3 ] = 1.0f;
 }
 void Mat4F::rotate( float p_x, float p_y, float p_z ) {
 	float radX = (float)RADIAN( p_x ); float radXSin = sinf( radX ); float radXCos = cosf( radX );
@@ -116,65 +116,65 @@ void Mat4F::rotate( float p_x, float p_y, float p_z ) {
 	float radZ = (float)RADIAN( p_z ); float radZSin = sinf( radZ ); float radZCos = cosf( radZ );
 
 	Mat4F rX, rY, rZ;
-	rX._[0][0] = 1.0f; rX._[0][1] = 0.0f;		rX._[0][2] = 0.0f;		rX._[0][3] = 0.0f;
-	rX._[1][0] = 0.0f; rX._[1][1] = radXCos;	rX._[1][2] = -radXSin;	rX._[1][3] = 0.0f;
-	rX._[2][0] = 0.0f; rX._[2][1] = radXSin;	rX._[2][2] = radXCos;	rX._[2][3] = 0.0f;
-	rX._[3][0] = 0.0f; rX._[3][1] = 0.0f;		rX._[3][2] = 0.0f;		rX._[3][3] = 1.0f;
+	rX._[ 0 ][ 0 ] = 1.0f; rX._[ 0 ][ 1 ] = 0.0f;		rX._[ 0 ][ 2 ] = 0.0f;		rX._[ 0 ][ 3 ] = 0.0f;
+	rX._[ 1 ][ 0 ] = 0.0f; rX._[ 1 ][ 1 ] = radXCos;	rX._[ 1 ][ 2 ] = -radXSin;	rX._[ 1 ][ 3 ] = 0.0f;
+	rX._[ 2 ][ 0 ] = 0.0f; rX._[ 2 ][ 1 ] = radXSin;	rX._[ 2 ][ 2 ] = radXCos;	rX._[ 2 ][ 3 ] = 0.0f;
+	rX._[ 3 ][ 0 ] = 0.0f; rX._[ 3 ][ 1 ] = 0.0f;		rX._[ 3 ][ 2 ] = 0.0f;		rX._[ 3 ][ 3 ] = 1.0f;
 
-	rY._[0][0] = radYCos;	rY._[0][1] = 0.0f; rY._[0][2] = -radYSin;	rY._[0][3] = 0.0f;
-	rY._[1][0] = 0.0f;		rY._[1][1] = 1.0f; rY._[1][2] = 0.0f;		rY._[1][3] = 0.0f;
-	rY._[2][0] = radYSin;	rY._[2][1] = 0.0f; rY._[2][2] = radYCos;	rY._[2][3] = 0.0f;
-	rY._[3][0] = 0.0f;		rY._[3][1] = 0.0f; rY._[3][2] = 0.0f;		rY._[3][3] = 1.0f;
+	rY._[ 0 ][ 0 ] = radYCos;	rY._[ 0 ][ 1 ] = 0.0f; rY._[ 0 ][ 2 ] = -radYSin;	rY._[ 0 ][ 3 ] = 0.0f;
+	rY._[ 1 ][ 0 ] = 0.0f;		rY._[ 1 ][ 1 ] = 1.0f; rY._[ 1 ][ 2 ] = 0.0f;		rY._[ 1 ][ 3 ] = 0.0f;
+	rY._[ 2 ][ 0 ] = radYSin;	rY._[ 2 ][ 1 ] = 0.0f; rY._[ 2 ][ 2 ] = radYCos;	rY._[ 2 ][ 3 ] = 0.0f;
+	rY._[ 3 ][ 0 ] = 0.0f;		rY._[ 3 ][ 1 ] = 0.0f; rY._[ 3 ][ 2 ] = 0.0f;		rY._[ 3 ][ 3 ] = 1.0f;
 
-	rZ._[0][0] = radZCos;	rZ._[0][1] = -radZSin;	rZ._[0][2] = 0.0f; rZ._[0][3] = 0.0f;
-	rZ._[1][0] = radZSin;	rZ._[1][1] = radZCos;	rZ._[1][2] = 0.0f; rZ._[1][3] = 0.0f;
-	rZ._[2][0] = 0.0f;		rZ._[2][1] = 0.0f;		rZ._[2][2] = 1.0f; rZ._[2][3] = 0.0f;
-	rZ._[3][0] = 0.0f;		rZ._[3][1] = 0.0f;		rZ._[3][2] = 0.0f; rZ._[3][3] = 1.0f;
+	rZ._[ 0 ][ 0 ] = radZCos;	rZ._[ 0 ][ 1 ] = -radZSin;	rZ._[ 0 ][ 2 ] = 0.0f; rZ._[ 0 ][ 3 ] = 0.0f;
+	rZ._[ 1 ][ 0 ] = radZSin;	rZ._[ 1 ][ 1 ] = radZCos;	rZ._[ 1 ][ 2 ] = 0.0f; rZ._[ 1 ][ 3 ] = 0.0f;
+	rZ._[ 2 ][ 0 ] = 0.0f;		rZ._[ 2 ][ 1 ] = 0.0f;		rZ._[ 2 ][ 2 ] = 1.0f; rZ._[ 2 ][ 3 ] = 0.0f;
+	rZ._[ 3 ][ 0 ] = 0.0f;		rZ._[ 3 ][ 1 ] = 0.0f;		rZ._[ 3 ][ 2 ] = 0.0f; rZ._[ 3 ][ 3 ] = 1.0f;
 	*this = rZ * rY * rX;
 }
 void Mat4F::translate( float p_x, float p_y, float p_z ) {
-	_[0][0] = 1.0f; _[0][1] = 0.0f; _[0][2] = 0.0f; _[0][3] = p_x;
-	_[1][0] = 0.0f; _[1][1] = 1.0f; _[1][2] = 0.0f; _[1][3] = p_y;
-	_[2][0] = 0.0f; _[2][1] = 0.0f; _[2][2] = 1.0f; _[2][3] = p_z;
-	_[3][0] = 0.0f; _[3][1] = 0.0f; _[3][2] = 0.0f; _[3][3] = 1.0f;
+	_[ 0 ][ 0 ] = 1.0f; _[ 0 ][ 1 ] = 0.0f; _[ 0 ][ 2 ] = 0.0f; _[ 0 ][ 3 ] = p_x;
+	_[ 1 ][ 0 ] = 0.0f; _[ 1 ][ 1 ] = 1.0f; _[ 1 ][ 2 ] = 0.0f; _[ 1 ][ 3 ] = p_y;
+	_[ 2 ][ 0 ] = 0.0f; _[ 2 ][ 1 ] = 0.0f; _[ 2 ][ 2 ] = 1.0f; _[ 2 ][ 3 ] = p_z;
+	_[ 3 ][ 0 ] = 0.0f; _[ 3 ][ 1 ] = 0.0f; _[ 3 ][ 2 ] = 0.0f; _[ 3 ][ 3 ] = 1.0f;
 }
 void Mat4F::transpose() {
 	float m[4][4];
-	m[0][0] = _[0][0];
-	m[1][0] = _[0][1];
-	m[2][0] = _[0][2];
-	m[3][0] = _[0][3];
+	m[ 0 ][ 0 ] = _[ 0 ][ 0 ];
+	m[ 1 ][ 0 ] = _[ 0 ][ 1 ];
+	m[ 2 ][ 0 ] = _[ 0 ][ 2 ];
+	m[ 3 ][ 0 ] = _[ 0 ][ 3 ];
 
-	m[0][1] = _[1][0];
-	m[1][1] = _[1][1];
-	m[2][1] = _[1][2];
-	m[3][1] = _[1][3];
+	m[ 0 ][ 1 ] = _[ 1 ][ 0 ];
+	m[ 1 ][ 1 ] = _[ 1 ][ 1 ];
+	m[ 2 ][ 1 ] = _[ 1 ][ 2 ];
+	m[ 3 ][ 1 ] = _[ 1 ][ 3 ];
 
-	m[0][2] = _[2][0];
-	m[1][2] = _[2][1];
-	m[2][2] = _[2][2];
-	m[3][2] = _[2][3];
+	m[ 0 ][ 2 ] = _[ 2 ][ 0 ];
+	m[ 1 ][ 2 ] = _[ 2 ][ 1 ];
+	m[ 2 ][ 2 ] = _[ 2 ][ 2 ];
+	m[ 3 ][ 2 ] = _[ 2 ][ 3 ];
 
-	m[0][3] = _[3][0];
-	m[1][3] = _[3][1];
-	m[2][3] = _[3][2];
-	m[3][3] = _[3][3];
+	m[ 0 ][ 3 ] = _[ 3 ][ 0 ];
+	m[ 1 ][ 3 ] = _[ 3 ][ 1 ];
+	m[ 2 ][ 3 ] = _[ 3 ][ 2 ];
+	m[ 3 ][ 3 ] = _[ 3 ][ 3 ];
 
 	for( unsigned i=0; i < 4; i++ ) {
 		for( unsigned j=0; j < 4; j++ ) {
-			_[i][j] = m[i][j];
+			_[ i ][ j ] = m[ i ][ j ];
 		}
 	}
 }
 void Mat4F::inverse() {
-	DirectX::XMFLOAT4X4 xm4x4( _[0] );
+	DirectX::XMFLOAT4X4 xm4x4( _[ 0 ] );
 	DirectX::XMMATRIX xmMat = DirectX::XMLoadFloat4x4( &xm4x4 );
 	DirectX::XMVECTOR xmDet = DirectX::XMMatrixDeterminant( xmMat );
 	DirectX::XMMATRIX xmMatInv	= DirectX::XMMatrixInverse( &xmDet, xmMat );
 
 	DirectX::XMFLOAT4X4 xm4x4Inv;
 	DirectX::XMStoreFloat4x4( &xm4x4Inv, xmMatInv );
-	memcpy( _[0], xm4x4Inv.m[0], sizeof( Mat4F ) );
+	memcpy( _[ 0 ], xm4x4Inv.m[ 0 ], sizeof( Mat4F ) );
 }
 void Mat4F::lookAtLH( Vec3F p_eye, Vec3F p_at, Vec3F p_up ) {
 	Vec3F axisZ = ( p_at - p_eye ).normalize();
@@ -184,18 +184,18 @@ void Mat4F::lookAtLH( Vec3F p_eye, Vec3F p_at, Vec3F p_up ) {
 	float xDotEye = -axisX.dot( p_eye );
 	float yDotEye = -axisY.dot( p_eye );
 	float zDotEye = -axisZ.dot( p_eye );
-	_[0][0] = axisX.x; _[0][1] = axisY.x; _[0][2] = axisZ.x; _[0][3] = 0.0f;
-	_[1][0] = axisX.y; _[1][1] = axisY.y; _[1][2] = axisZ.y; _[1][3] = 0.0f;
-	_[2][0] = axisX.z; _[2][1] = axisY.z; _[2][2] = axisZ.z; _[2][3] = 0.0f;
-	_[3][0] = xDotEye; _[3][1] = yDotEye; _[3][3] = zDotEye; _[3][3] = 1.0f;
+	_[ 0 ][ 0 ] = axisX.x; _[ 0 ][ 1 ] = axisY.x; _[ 0 ][ 2 ] = axisZ.x; _[ 0 ][ 3 ] = 0.0f;
+	_[ 1 ][ 0 ] = axisX.y; _[ 1 ][ 1 ] = axisY.y; _[ 1 ][ 2 ] = axisZ.y; _[ 1 ][ 3 ] = 0.0f;
+	_[ 2 ][ 0 ] = axisX.z; _[ 2 ][ 1 ] = axisY.z; _[ 2 ][ 2 ] = axisZ.z; _[ 2 ][ 3 ] = 0.0f;
+	_[ 3 ][ 0 ] = xDotEye; _[ 3 ][ 1 ] = yDotEye; _[ 3 ][ 3 ] = zDotEye; _[ 3 ][ 3 ] = 1.0f;
 }
 
 Mat4F Mat4F::Identity() {
 	Mat4F m;
-	m._[0][0] = 1.0f; m._[0][1] = 0.0f; m._[0][2] = 0.0f; m._[0][3] = 0.0f;
-	m._[1][0] = 0.0f; m._[1][1] = 1.0f; m._[1][2] = 0.0f; m._[1][3] = 0.0f;
-	m._[2][0] = 0.0f; m._[2][1] = 0.0f; m._[2][2] = 1.0f; m._[2][3] = 0.0f;
-	m._[3][0] = 0.0f; m._[3][1] = 0.0f; m._[3][2] = 0.0f; m._[3][3] = 1.0f;
+	m._[ 0 ][ 0 ] = 1.0f; m._[ 0 ][ 1 ] = 0.0f; m._[ 0 ][ 2 ] = 0.0f; m._[ 0 ][ 3 ] = 0.0f;
+	m._[ 1 ][ 0 ] = 0.0f; m._[ 1 ][ 1 ] = 1.0f; m._[ 1 ][ 2 ] = 0.0f; m._[ 1 ][ 3 ] = 0.0f;
+	m._[ 2 ][ 0 ] = 0.0f; m._[ 2 ][ 1 ] = 0.0f; m._[ 2 ][ 2 ] = 1.0f; m._[ 2 ][ 3 ] = 0.0f;
+	m._[ 3 ][ 0 ] = 0.0f; m._[ 3 ][ 1 ] = 0.0f; m._[ 3 ][ 2 ] = 0.0f; m._[ 3 ][ 3 ] = 1.0f;
 	return m;
 }
 
@@ -226,25 +226,25 @@ Quaternion Quaternion::conjugate() {
 }
 Mat4F Quaternion::toMatrix() {
 	Mat4F m;
-	m._[0][0] = 1.0f - 2.0f * y * y - 2.0f * z * z;
-	m._[0][1] = 2.0f * x * y - 2.0f * z * w;
-	m._[0][2] = 2.0f * x * z + 2.0f * y * w;
-	m._[0][3] = 0.0f;
-
-	m._[1][0] = 2.0f * x * y + 2.0f * z * w;
-	m._[1][1] = 1.0f - 2.0f * x * x - 2.0f * z * z;
-	m._[1][2] = 2.0f * y * z - 2.0f * x * w;
-	m._[1][3] = 0.0f;
-
-	m._[2][0] = 2.0f * x * z - 2.0f * y * w;
-	m._[2][1] = 2.0f * y * z + 2.0f * x * w;
-	m._[2][2] = 1.0f - 2.0f * x * x - 2.0f * y * y;
-	m._[2][3] = 0.0f;
-
-	m._[3][0] = 0.0f;
-	m._[3][1] = 0.0f;
-	m._[3][2] = 0.0f;
-	m._[3][3] = 1.0f;
+	m._[ 0 ][ 0 ] = 1.0f - 2.0f * y * y - 2.0f * z * z;
+	m._[ 0 ][ 1 ] = 2.0f * x * y - 2.0f * z * w;
+	m._[ 0 ][ 2 ] = 2.0f * x * z + 2.0f * y * w;
+	m._[ 0 ][ 3 ] = 0.0f;
+		   	    
+	m._[ 1 ][ 0 ] = 2.0f * x * y + 2.0f * z * w;
+	m._[ 1 ][ 1 ] = 1.0f - 2.0f * x * x - 2.0f * z * z;
+	m._[ 1 ][ 2 ] = 2.0f * y * z - 2.0f * x * w;
+	m._[ 1 ][ 3 ] = 0.0f;
+		   	    
+	m._[ 2 ][ 0 ] = 2.0f * x * z - 2.0f * y * w;
+	m._[ 2 ][ 1 ] = 2.0f * y * z + 2.0f * x * w;
+	m._[ 2 ][ 2 ] = 1.0f - 2.0f * x * x - 2.0f * y * y;
+	m._[ 2 ][ 3 ] = 0.0f;
+		   	    
+	m._[ 3 ][ 0 ] = 0.0f;
+	m._[ 3 ][ 1 ] = 0.0f;
+	m._[ 3 ][ 2 ] = 0.0f;
+	m._[ 3 ][ 3 ] = 1.0f;
 	return m;
 }
 Quaternion Quaternion::Identity() {

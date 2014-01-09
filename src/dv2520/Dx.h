@@ -23,6 +23,15 @@ class TimerD3d;
 #include <ObjInstance.h>
 #include <BufStreamSrv.h>
 
+namespace DxClearColor {
+	const FLOAT Black[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	const FLOAT White[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	
+	const FLOAT Red[ 4 ] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	const FLOAT Green[ 4 ] = { 0.0f, 1.0f, 0.0f, 1.0f };
+	const FLOAT Blue[ 4 ] = { 0.0f, 0.0f, 1.0f, 1.0f };
+}
+
 class Dx {
 public:
 	Dx( Win& p_win );

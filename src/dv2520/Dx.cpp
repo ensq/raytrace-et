@@ -143,6 +143,7 @@ HRESULT Dx::init() {
 }
 HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	D3d d3d = m_cogD3d->getD3d();
+	d3d.devcon->ClearRenderTargetView( m_rtvBackbuffer, DxClearColor::Black );
 
 	// Prepare render by clearing streams and updating them with new data:
 	m_srvStreamVertices->reset();
@@ -151,6 +152,7 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 
 	// At the moment, we're only adding a lone object to the scene
 	unsigned indexOffset = 0;
+	unsigned instancesCnt = 0;
 	for( unsigned i = 0; i<m_objects.size(); i++ ) {
 		Obj* obj = m_objects.at( i );
 
@@ -165,6 +167,8 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 		m_srvStreamVertices->pushElements( obj->getVertices(), obj->getVerticesCnt() );
 		m_srvStreamIndices->pushElements( obj->getIndices(), obj->getIndicesCnt() );
 		m_srvStreamInstances->pushElement( instance );
+
+		instancesCnt++;
 	}
 
 	// Update streams:
@@ -183,7 +187,7 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	cbPerFrame.viewInv = viewInv;
 	cbPerFrame.proj = p_proj;
 	cbPerFrame.projInv = projInv;
-	cbPerFrame.instancesCnt = m_objects.size();
+	cbPerFrame.instancesCnt = instancesCnt;
 	m_cogCb->mapCbPerFrame( d3d.devcon, cbPerFrame );
 
 	// Set CBs:
@@ -248,7 +252,7 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 
 bool Dx::initObjects( ID3D11Device* p_device ) {
 	bool sucess = true;
-	for( unsigned i = 0; i<1 && sucess==true; i++ ) {
+	for( unsigned i = 0; i<5 && sucess==true; i++ ) {
 		RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
 		Obj* obj = rdr.read( sucess );
 

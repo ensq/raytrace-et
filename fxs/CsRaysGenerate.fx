@@ -24,15 +24,9 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
 	pixelPos = mul( float4( pixelPos, 1.0f ), viewInv ).xyz;
 	
 	float4 aux = mul( float4( 0.0f, 0.0f, 0.0f, 1.0f ), viewInv );
-	
-	Ray ray;
-	ray.pos = aux.xyz / aux.w;
-	ray.dir = normalize( pixelPos - ray.pos );
-	ray.light = float3( 0.0f, 0.0f, 0.0f );
-	ray.distMin = 0.0f;
-	ray.distMax = 9999999999.0f;
-	ray.primID = -1.0f;
-	uavRays[ pixelIndex ] = ray;
+
+	float3 rayPos = aux.xyz / aux.w;
+	uavRays[ pixelIndex ] = ConstructRay( rayPos, normalize( pixelPos - rayPos ) );;
 }
 
 #endif // DV2520_CSRAYSGENERATE_FX
