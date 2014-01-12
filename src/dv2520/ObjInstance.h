@@ -4,7 +4,9 @@
 #include <MathSimple.h> // eww.
 
 struct ObjInstance {
+	Mat4F world;
 	Mat4F worldInv;
+
 	unsigned indexStart;
 	unsigned indexCnt;
 	unsigned vertexCnt;

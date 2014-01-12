@@ -4,10 +4,11 @@
 struct Intersection {
 	float u;
 	float v;
-	float t;
+	float t; // Consider removing. May easily be calculated.
 
 	int primId; // primitive id, currently index of the last primitive index plus index offset.
 	uint primVertexOffset;
+	uint instanceIdx;
 
 	float dist; // distance from origin to intersection.
 };
@@ -33,23 +34,22 @@ Intersection intersectRayTriangleRealTimeRendering( float3 p_rOrigin, float3 p_r
 	}
 	float f = 1.0f / a;
 	float3 s = p_rOrigin - p_p0;
-	float u = f * dot( s, q );
-	if( u<0.0f ) {
+	i.u = f * dot( s, q );
+	if( i.u<0.0f ) {
 		return i; // No intersection.
 	}
 	float3 r = cross( s, e1 );
-	float v = f * dot( p_rDir, r );
-	if( v<0.0f || ( u+v )>1.0f ) {
+	i.v = f * dot( p_rDir, r );
+	if( i.v<0.0f || ( i.u+i.v )>1.0f ) {
 		return i; // No intersection.
 	}
-	float t = f * dot( e2, r );
+	i.t = f * dot( e2, r );
+	if( i.t>=0 ) {
+		i.dist = i.t;
+		i.primId = p_primId;
+	} // False intersection.
 	
-	i.primId = p_primId;
-	i.u = u;
-	i.v = v;
-	i.t = t;
-	i.dist = t;
-	return i; // Intersection.
+	return i;
 }
 // Implemented in accordance to the ray/triangle-algorithm in Real-Time Rendering, which is in-and-of-it's-own derived from Möller & Trumbore's algorithm.
 

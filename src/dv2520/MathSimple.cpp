@@ -95,6 +95,18 @@ void Vec3F::rotate( float p_angle, const Vec3F& p_axis ) {
 	z = w.z;
 }
 
+Vec4F::Vec4F() {
+	x = y = z = a = 0.0f;
+}
+Vec4F::Vec4F( float p_x, float p_y, float p_z, float p_a ) {
+	x = p_x;
+	y = p_y;
+	z = p_z;
+	a = p_a;
+}
+Vec4F::~Vec4F() {
+}
+
 Mat4F::Mat4F() {
 	_[ 0 ][ 0 ] = 1.0f; _[ 0 ][ 1 ] = 0.0f; _[ 0 ][ 2 ] = 0.0f; _[ 0 ][ 3 ] = 0.0f;
 	_[ 1 ][ 0 ] = 0.0f; _[ 1 ][ 1 ] = 1.0f; _[ 1 ][ 2 ] = 0.0f; _[ 1 ][ 3 ] = 0.0f;

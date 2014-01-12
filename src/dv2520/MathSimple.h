@@ -60,6 +60,17 @@ inline Vec3F operator*( const Vec3F& p_l, float p_s ) {
 		p_l.z * p_s );
 }
 
+struct Vec4F {
+	float x;
+	float y;
+	float z;
+	float a;
+
+	Vec4F();
+	Vec4F( float p_x, float p_y, float p_z, float p_a );
+	~Vec4F();
+};
+
 struct Mat4F {
 	float _[4][4];
 

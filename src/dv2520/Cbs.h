@@ -13,12 +13,14 @@ struct CbPerInstance {
 struct CbPerFrame {
 	Mat4F view;
 	Mat4F viewInv;
-
 	Mat4F proj;
 	Mat4F projInv;
 
 	Vec3F pos;
 	unsigned instancesCnt;
+
+	unsigned lightsCnt;
+	Vec3F pad;
 };
 
 #endif // DV2520_CBS_H

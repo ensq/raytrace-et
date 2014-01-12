@@ -26,6 +26,7 @@ Dx::Dx( Win& p_win ) {
 	m_srvStreamVertices = nullptr;
 	m_srvStreamIndices = nullptr;
 	m_srvStreamInstances = nullptr;
+	m_srvStreamLights = nullptr;
 	m_uavRays = nullptr;
 	m_uavIntersections = nullptr;
 	m_cogD3d = nullptr;
@@ -42,6 +43,7 @@ Dx::~Dx() {
 	ASSERT_DELETE( m_srvStreamVertices );
 	ASSERT_DELETE( m_srvStreamIndices );
 	ASSERT_DELETE( m_srvStreamInstances );
+	ASSERT_DELETE( m_srvStreamLights );
 	ASSERT_DELETE( m_uavRays );
 	ASSERT_DELETE( m_uavIntersections );
 	ASSERT_DELETE( m_cogD3d );
@@ -128,6 +130,7 @@ HRESULT Dx::init() {
 		m_srvStreamVertices = new BufStreamSrv< Vertex >();
 		m_srvStreamIndices = new BufStreamSrv< unsigned >();
 		m_srvStreamInstances = new BufStreamSrv< ObjInstance >();
+		m_srvStreamLights = new BufStreamSrv< LightPoint >();
 	}
 
 	// Initialize demo objects:
@@ -141,7 +144,7 @@ HRESULT Dx::init() {
 
 	return hr;
 }
-HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
+HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj ) {
 	D3d d3d = m_cogD3d->getD3d();
 	d3d.devcon->ClearRenderTargetView( m_rtvBackbuffer, DxClearColor::Black );
 
@@ -149,17 +152,34 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	m_srvStreamVertices->reset();
 	m_srvStreamIndices->reset();
 	m_srvStreamInstances->reset();
+	m_srvStreamLights->reset();
 
-	// At the moment, we're only adding a lone object to the scene
+	// Add a lone pointlight to the scene:
+	unsigned lightsCnt = 1;
+	LightPoint light;
+	light.pos = Vec3F( 0.0f, 5.0f, 0.0f );
+	light.ambient = Vec4F( 0.2f, 0.0f, 0.0f, 1.0f );
+	light.diffuse = Vec4F( 0.3f, 0.0f, 0.0f, 1.0f );
+	light.specular = Vec4F( 0.2f, 0.0f, 0.0f, 1.0f );
+	light.attenuation = Vec3F( 0.5f, 1.0f, 0.0f );
+	light.dist = 100.0f;
+	m_srvStreamLights->pushElement( light );
+
+	// Add objects to the scene:
 	unsigned indexOffset = 0;
 	unsigned instancesCnt = 0;
 	for( unsigned i = 0; i<m_objects.size(); i++ ) {
 		Obj* obj = m_objects.at( i );
 
+		static float rotate = 0.0f;
+		obj->getRotation().rotate( 0.0f, rotate, 0.0f );
+		rotate += 1.0f;
+
 		ObjInstance instance;
 		instance.indexStart = indexOffset;
 		instance.indexCnt = obj->getIndicesCnt();
 		instance.vertexCnt = obj->getVerticesCnt();
+		instance.world = obj->getWorldTransform();
 		instance.worldInv = obj->getWorldTransform();
 		instance.worldInv.inverse();
 		indexOffset += instance.indexCnt;
@@ -175,6 +195,7 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	m_srvStreamVertices->updateBufStream( d3d.device, d3d.devcon );
 	m_srvStreamIndices->updateBufStream( d3d.device, d3d.devcon );
 	m_srvStreamInstances->updateBufStream( d3d.device, d3d.devcon );
+	m_srvStreamLights->updateBufStream( d3d.device, d3d.devcon );
 
 	// Update per-frame CB:
 	Mat4F viewInv = p_view; 
@@ -187,7 +208,9 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	cbPerFrame.viewInv = viewInv;
 	cbPerFrame.proj = p_proj;
 	cbPerFrame.projInv = projInv;
+	cbPerFrame.pos = p_pos;
 	cbPerFrame.instancesCnt = instancesCnt;
+	cbPerFrame.lightsCnt = lightsCnt;
 	m_cogCb->mapCbPerFrame( d3d.devcon, cbPerFrame );
 
 	// Set CBs:
@@ -198,9 +221,10 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 		m_srvStreamVertices->getSrv(),
 		m_srvStreamIndices->getSrv(),
 		m_srvStreamInstances->getSrv(),
+		m_srvStreamLights->getSrv(),
 		m_cogTex->getTex( d3d.device, Texs_default )->getSrv() // Make this more general.
 	};
-	d3d.devcon->CSSetShaderResources( 0, 4, srvs );
+	d3d.devcon->CSSetShaderResources( 0, 5, srvs );
 
 	// Set UAVs:
 	ID3D11UnorderedAccessView* uavs[] = { 
@@ -219,8 +243,8 @@ HRESULT Dx::render( double p_delta, Mat4F& p_view, Mat4F& p_proj ) {
 	Singleton< Ant >::get().setTimeLighting( dispatch( d3d.devcon, Fxs_CS_LIGHTING ) );
 	
 	// Unset SRVs:
-	ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL, NULL };
-	d3d.devcon->CSSetShaderResources( 0, 4, srvsUnset );
+	ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL, NULL, NULL };
+	d3d.devcon->CSSetShaderResources( 0, 5, srvsUnset );
 
 	// Unset UAVs:
 	ID3D11UnorderedAccessView* uavsUnset[] = { NULL, NULL, NULL };
@@ -252,8 +276,8 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 
 bool Dx::initObjects( ID3D11Device* p_device ) {
 	bool sucess = true;
-	for( unsigned i = 0; i<5 && sucess==true; i++ ) {
-		RdrObj rdr( "../../../obj/dv2520/", "box.obj" );
+	for( unsigned i = 0; i<1 && sucess==true; i++ ) {
+		RdrObj rdr( "../../../obj/dv2520/", "box2.obj" );
 		Obj* obj = rdr.read( sucess );
 
 		static float xoffset = 0.0f;

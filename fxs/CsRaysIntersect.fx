@@ -5,7 +5,7 @@
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
-	uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
+	const uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
 	Ray	ray	= uavRays[ pixelIdx ];
 	
 	Intersection curIntersection = ConstructIntersection();
@@ -30,8 +30,10 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
 			if( curIntersection.primId>=0 && 
 				ray.primId!=curIntersection.primId &&
 				curIntersection.dist<closestIntersection.dist ) {
+				// Update closest intersection with new data:
 				closestIntersection = curIntersection;
 				closestIntersection.primVertexOffset = verticesOffset;
+				closestIntersection.instanceIdx = instancesIdx;
 
 				ray.primId = curIntersection.primId;
 			}

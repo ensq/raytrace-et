@@ -151,6 +151,7 @@
     <ClInclude Include="..\..\src\dv2520\ObjInstance.h">
       <Filter>Dx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -195,6 +196,9 @@
       <Filter>Fxs</Filter>
     </FxCompile>
     <FxCompile Include="..\..\fxs\ObjInstance.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\Light.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
   </ItemGroup>

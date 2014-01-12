@@ -94,7 +94,7 @@ void Dv2520::gameloop( double p_delta ) {
 	
 	m_cam->update( p_delta );
 
-	HRESULT hr = m_dx->render( p_delta, m_cam->getView(), m_cam->getProj() );
+	HRESULT hr = m_dx->render( p_delta, m_cam->getPos(), m_cam->getView(), m_cam->getProj() );
 	if( FAILED( hr ) ) {
 		ERR_HR( hr );
 	}

@@ -18,6 +18,7 @@ class CogTex;
 class BufUav;
 class TimerD3d;
 
+#include <Light.h>
 #include <Vertex.h>
 #include <MathSimple.h>
 #include <ObjInstance.h>
@@ -38,18 +39,19 @@ public:
 	~Dx();
 
 	HRESULT init();
-	HRESULT render( double p_delta, Mat4F& p_view, Mat4F& p_proj );
+	HRESULT render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj );
 protected:
 private:
 	double dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx );
 	bool initObjects( ID3D11Device* p_device );
 
-	ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of class.
+	ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of structure.
 	ID3D11RenderTargetView* m_rtvBackbuffer;
 	
 	BufStreamSrv< Vertex >* m_srvStreamVertices;
 	BufStreamSrv< unsigned >* m_srvStreamIndices;
 	BufStreamSrv< ObjInstance >* m_srvStreamInstances;
+	BufStreamSrv< LightPoint >* m_srvStreamLights;
 	BufUav* m_uavRays;
 	BufUav* m_uavIntersections;
 

@@ -5,6 +5,7 @@
 #define BLOCK_SIZE 16
 
 #include <Ray.fx>
+#include <Light.fx>
 #include <Vertex.fx>
 #include <ObjInstance.fx>
 #include <Intersection.fx>
@@ -13,7 +14,8 @@
 StructuredBuffer< Vertex > srvVertices : register( t0 );
 StructuredBuffer< uint > srvIndices : register( t1 );
 StructuredBuffer< ObjInstance > srvInstances : register( t2 );
-Texture2D texAlbedo : register( t3 ); // In the future, texture arrays may be added to support materials.
+StructuredBuffer< LightPoint > srvLights : register( t3 );
+Texture2D texAlbedo : register( t4 ); // In the future, texture arrays may be added to support materials.
 
 // u
 RWStructuredBuffer< Ray > uavRays : register( u0 );
@@ -33,12 +35,14 @@ cbuffer CbPerInstance : register( b0 ) {
 cbuffer CbPerFrame : register( b1 ) {
 	row_major float4x4 view;
 	row_major float4x4 viewInv;
-
 	row_major float4x4 proj;
 	row_major float4x4 projInv;
 
 	float3 pos;
 	uint instancesCnt;
+
+	uint lightsCnt;
+	float3 pad;
 };
 
 #endif // DV2520_COMMON_FX

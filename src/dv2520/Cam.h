@@ -15,6 +15,7 @@ public:
 	void pitch( const float p_angle );
 	void yaw( const float p_angle );
 
+	Vec3F getPos() const;
 	Mat4F getView() const;
 	Mat4F getProj() const;
 protected:

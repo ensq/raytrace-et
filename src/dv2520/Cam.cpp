@@ -38,6 +38,9 @@ void Cam::yaw( const float p_angle ) {
 	m_look.rotate( p_angle, axisY );
 }
 
+Vec3F Cam::getPos() const {
+	return m_pos;
+}
 Mat4F Cam::getView() const {
 	return m_view;
 }
