@@ -169,15 +169,31 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
 		}
 	}
 
-	unsigned lightsCnt = 1;
+	unsigned lightsCnt = 0;
 	LightPoint light;
-	light.pos = Vec3F( -5.0f * cos(osc), 0.5f, 5.0f * -sin(osc) );
+	light.pos = Vec3F( -10.0f * cos(osc), 0.5f, 0.0f );
 	light.ambient = Vec4F( 0.2f, 0.2f, 0.2f, 1.0f );
 	light.diffuse = Vec4F( 0.0f, 0.6f, 0.0f, 1.0f );
 	light.specular = Vec4F( 0.0f, 0.8f, 0.0f, 1.0f );
 	light.attenuation = Vec3F( 0.5f, 1.0f, 0.0f );
 	light.dist = 100.0f;
-	m_srvStreamLights->pushElement( light );
+	m_srvStreamLights->pushElement( light ); lightsCnt++;
+
+	light.pos = Vec3F( 0.0f, 0.5f, 10.0f * sin(osc) );
+	light.ambient = Vec4F( 0.2f, 0.2f, 0.2f, 1.0f );
+	light.diffuse = Vec4F( 0.6f, 0.0f, 0.0f, 1.0f );
+	light.specular = Vec4F( 0.8f, 0.0f, 0.0f, 1.0f );
+	light.attenuation = Vec3F( 0.5f, 1.0f, 0.0f );
+	light.dist = 100.0f;
+	m_srvStreamLights->pushElement( light ); lightsCnt++;
+
+	light.pos = Vec3F( 0.0f, 0.5f, -10.0f * cos(osc) );
+	light.ambient = Vec4F( 0.2f, 0.2f, 0.2f, 1.0f );
+	light.diffuse = Vec4F( 0.0f, 0.0f, 0.6f, 1.0f );
+	light.specular = Vec4F( 0.0f, 0.0f, 0.8f, 1.0f );
+	light.attenuation = Vec3F( 0.5f, 1.0f, 0.0f );
+	light.dist = 100.0f;
+	m_srvStreamLights->pushElement( light ); lightsCnt++;
 
 	// Add objects to the scene:
 	unsigned indexOffset = 0;
