@@ -155,12 +155,26 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
 	m_srvStreamLights->reset();
 
 	// Add a lone pointlight to the scene:
+	static float osc = 0.0f;
+	static bool up = true;
+	if( up==true ) {
+		osc += 0.01f;
+		if( osc>1.0f ) {
+			up = false;
+		}
+	} else {
+		osc -= 0.01f;
+		if( osc<0.0f ) {
+			up = true;
+		}
+	}
+
 	unsigned lightsCnt = 1;
 	LightPoint light;
-	light.pos = Vec3F( 0.0f, 5.0f, 0.0f );
-	light.ambient = Vec4F( 0.2f, 0.0f, 0.0f, 1.0f );
-	light.diffuse = Vec4F( 0.3f, 0.0f, 0.0f, 1.0f );
-	light.specular = Vec4F( 0.2f, 0.0f, 0.0f, 1.0f );
+	light.pos = Vec3F( -5.0f * cos(osc), 0.5f, 5.0f * -sin(osc) );
+	light.ambient = Vec4F( 0.2f, 0.2f, 0.2f, 1.0f );
+	light.diffuse = Vec4F( 0.0f, 0.6f, 0.0f, 1.0f );
+	light.specular = Vec4F( 0.0f, 0.8f, 0.0f, 1.0f );
 	light.attenuation = Vec3F( 0.5f, 1.0f, 0.0f );
 	light.dist = 100.0f;
 	m_srvStreamLights->pushElement( light );
@@ -198,10 +212,8 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
 	m_srvStreamLights->updateBufStream( d3d.device, d3d.devcon );
 
 	// Update per-frame CB:
-	Mat4F viewInv = p_view; 
-	viewInv.inverse();
-	Mat4F projInv = p_proj;
-	projInv.inverse();
+	Mat4F viewInv = p_view; viewInv.inverse();
+	Mat4F projInv = p_proj; projInv.inverse();
 
 	CbPerFrame cbPerFrame;
 	cbPerFrame.view = p_view;

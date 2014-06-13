@@ -22,15 +22,14 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
 	pNor = mul( o.world, float4( pNor, 0.0f ) ).xyz;
 	pNor = normalize( pNor );
 	float2 pTex = i.u * v2.tex + i.v * v3.tex + ( 1.0f - ( i.u + i.v ) ) * v1.tex;
-	
-	float3 toEye = pPos - pos;
+	float3 toEye = normalize( pos - pPos );
 
 	LightSurface pSurface = ConstructLightSurface( 
-		pPos,
-		pNor,
-		/*Ambient*/		float4( 1.0f, 1.0f, 1.0f, 1.0f ),
-		/*Diffuse*/		texAlbedo.SampleLevel( ssDefault, pTex, 0 ),
-		/*Specular*/	float4( 1.0f, 1.0f, 1.0f, 1.0f ) );
+	/*Position*/	pPos,
+	/*Normal*/		pNor,
+	/*Ambient*/		float4( 1.0f, 1.0f, 1.0f, 1.0f ),
+	/*Diffuse*/		texAlbedo.SampleLevel( ssDefault, pTex, 0 ),
+	/*Specular*/	float4( 1.0f, 1.0f, 1.0f, 1.0f ) );
 
 	float4 pAmbient = float4( 0.0f, 0.0f, 0.0f, 0.0f );
 	float4 pDiffuse = float4( 0.0f, 0.0f, 0.0f, 0.0f );
