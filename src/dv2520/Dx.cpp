@@ -15,7 +15,7 @@
 #include <ObjInstance.h>
 #include <Intersection.h>
 
-#include <RdrObj.h> // Remove us.
+#include <lbo.h>
 #include <Vertex.h> 
 
 Dx::Dx( Win& p_win ) {
@@ -303,10 +303,22 @@ double Dx::dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx ) {
 }
 
 bool Dx::initObjects( ID3D11Device* p_device ) {
-	bool sucess = true;
-	for( unsigned i = 0; i<1 && sucess==true; i++ ) {
-		RdrObj rdr( "../../../obj/dv2520/", "box2.obj" );
-		Obj* obj = rdr.read( sucess );
+	bool success = true;
+	for( unsigned i = 0; i<1 && success==true; i++ ) {
+		std::vector<float> vertices;
+		std::vector<unsigned> indices;
+		success = lbo::parse("../../../obj/dv2520/box2.obj", vertices, indices);
+		assert(success==true);
+
+		std::vector<Vertex> vertices_struct;
+		for(size_t i = 0; i<vertices.size(); i+=8) {
+			float* p = &vertices.at(i);
+			Vertex v(Vec3F(p[0], p[1], p[2]),
+					Vec3F(p[5], p[6], p[7]),	
+					Vec2F(p[3], p[4]));
+			vertices_struct.push_back(v);
+		}
+		Obj* obj = new Obj(vertices_struct.size(), indices.size(), &vertices_struct.at(0), &indices.at(0));
 
 		static float xoffset = 0.0f;
 		obj->getTranslation().translate( xoffset, 0.0f, 0.0f );
@@ -315,5 +327,5 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
 		m_objects.push_back( obj );
 	}
 	
-	return sucess;
+	return success;
 }

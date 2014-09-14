@@ -46,14 +46,8 @@
     <ClCompile Include="..\..\src\dv2520\Obj.cpp">
       <Filter>Dx\IO</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dv2520\RdrObj.cpp">
-      <Filter>Dx\IO</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dv2520\BufSrv.cpp">
       <Filter>Dx\Buf</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dv2520\ObjFace.cpp">
-      <Filter>Dx\IO</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dv2520\CogTex.cpp">
       <Filter>Dx</Filter>
@@ -63,6 +57,18 @@
     </ClCompile>
     <ClCompile Include="..\..\src\dv2520\CogSS.cpp">
       <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\lbo_util.cc">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\lbo_ObjParser.cc">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\lbo_File.cc">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\lbo.cc">
+      <Filter>Dx\IO\lbo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,14 +130,8 @@
     <ClInclude Include="..\..\src\dv2520\Obj.h">
       <Filter>Dx\IO</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\RdrObj.h">
-      <Filter>Dx\IO</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dv2520\BufSrv.h">
       <Filter>Dx\Buf</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\ObjFace.h">
-      <Filter>Dx\IO</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\CogTex.h">
       <Filter>Dx</Filter>
@@ -152,6 +152,21 @@
       <Filter>Dx</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\Light.h" />
+    <ClInclude Include="..\..\src\dv2520\lbo_vertex.h">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\lbo_util.h">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\lbo_ObjParser.h">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\lbo_File.h">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\lbo.h">
+      <Filter>Dx\IO\lbo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -171,6 +186,9 @@
     </Filter>
     <Filter Include="lib">
       <UniqueIdentifier>{6eef1891-0c44-4435-91e1-46ba31baf98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dx\IO\lbo">
+      <UniqueIdentifier>{8ef2d7c6-bff0-401e-8eaf-e082adac974b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
