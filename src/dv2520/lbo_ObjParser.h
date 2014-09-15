@@ -22,7 +22,7 @@ namespace lbo {
 
     class ObjParser {
     public:
-        ObjParser(std::queue<std::string>& p_tokens);
+        ObjParser(std::queue<std::string>& p_tokens, unsigned p_flags);
         ~ObjParser();
 
         void parse(std::vector<float>& io_vertices,
@@ -36,6 +36,7 @@ namespace lbo {
         int popInteger();
 
         std::queue<std::string>* m_tokens;
+        unsigned m_flags;
 
         std::vector<f3> m_poss;
         std::vector<f2> m_texs;

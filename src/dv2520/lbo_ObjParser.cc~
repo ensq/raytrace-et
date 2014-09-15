@@ -1,4 +1,5 @@
 #include <stdafx.h>
+#include <lbo_flags.h>
 #include <lbo_ObjParser.h>
 
 #include <tuple>
@@ -14,8 +15,9 @@ namespace lbo {
     static const std::string g_defMaterialUse = "usemtl";
     static const std::string g_defSmooth      = "s";
 
-    ObjParser::ObjParser(std::queue<std::string>& p_tokens) {
+    ObjParser::ObjParser(std::queue<std::string>& p_tokens, unsigned p_flags) {
         m_tokens = &p_tokens;
+        m_flags = p_flags;
     }
     ObjParser::~ObjParser() {
     }
@@ -48,8 +50,15 @@ namespace lbo {
                 break;
             case Symbol_FACE:
                 for(unsigned i = 0; i<3; i++) {
-                    for(unsigned j = 0; j<3; j++) {
-                        i3_.i[j] = popInteger() - 1;
+                    i3_.i[0] = i3_.i[1] = i3_.i[2] = -1;
+                    if(m_flags&Flags_FACE_POS) {
+                        i3_.i[0] = popInteger() - 1;
+                    }
+                    if(m_flags&Flags_FACE_TEX) {
+                        i3_.i[1] = popInteger() - 1;
+                    }
+                    if(m_flags&Flags_FACE_NOR) {
+                        i3_.i[2] = popInteger() - 1;
                     }
 
                     unsigned idx;
@@ -59,9 +68,19 @@ namespace lbo {
                     bool newVertex = it==m_facs.end();
                     if(newVertex==true) {
                         vertex v;
-                        memcpy(v.pos, m_poss[i3_.i[0]].f, sizeof(float) * 3);
-                        memcpy(v.tex, m_texs[i3_.i[1]].f, sizeof(float) * 2);
-                        memcpy(v.nor, m_nors[i3_.i[2]].f, sizeof(float) * 3);
+                        std::memset(&v, 0, sizeof(v));
+                        if(i3_.i[0]!=-1) {
+                            memcpy(v.pos, m_poss[i3_.i[0]].f, 
+                                   sizeof(float) * 3);
+                        }
+                        if(i3_.i[1]!=-1) {
+                            memcpy(v.tex, m_texs[i3_.i[1]].f,
+                                   sizeof(float) * 2);
+                        }
+                        if(i3_.i[2]!=-1) {
+                            memcpy(v.nor, m_nors[i3_.i[2]].f,
+                                   sizeof(float) * 3);
+                        }
                         m_vertices.push_back(v);
                         idx = m_vertices.size() - 1;
 
@@ -73,7 +92,7 @@ namespace lbo {
                     m_indices.push_back(idx);
                 }
                 break;
-            // Not yet implemented:
+            // Not yet implemented; ignore:
             case Symbol_GROUP:
                 popString(str);
                 break;
@@ -89,11 +108,37 @@ namespace lbo {
             }
         }
 
-        for(unsigned i = 0; i<m_vertices.size(); i++) {
-            io_vertices.insert(io_vertices.end(), 
-                               m_vertices[i].pos, m_vertices[i].pos + 8);
-        }
+        // Writeback parsed indices:
         io_indices.swap(m_indices);
+
+        // Writeback parsed vertices:
+        if(m_flags&Flags_POS
+           && m_flags&Flags_TEX
+           && m_flags&Flags_NOR) {
+            int test = sizeof(vertex);
+            io_vertices.insert(io_vertices.end(), 
+                               &m_vertices.front().pos, 
+                               &m_vertices.back().pos + sizeof(vertex));
+        } else {
+            for(size_t i = 0; i<m_vertices.size(); i++) {
+                vertex* v = &m_vertices.at(i);
+                if(m_flags&Flags_POS) {
+                    io_vertices.insert(io_vertices.end(),
+                                       v->pos,
+										v);
+                }
+                if(m_flags&Flags_TEX) {
+                    io_vertices.insert(io_vertices.end(),
+                                       sizeof(float) * 2,
+                                       v->tex);
+                }
+                if(m_flags&Flags_NOR) {
+                    io_vertices.insert(io_vertices.end(),
+                                       sizeof(float) * 3,
+                                       v->nor);
+                }
+            }
+        }
     }
 
     Symbol ObjParser::getSymbol(std::string& p_str) {
