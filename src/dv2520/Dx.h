@@ -25,46 +25,46 @@ class TimerD3d;
 #include <BufStreamSrv.h>
 
 namespace DxClearColor {
-	const FLOAT Black[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	const FLOAT White[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	
-	const FLOAT Red[ 4 ] = { 1.0f, 0.0f, 0.0f, 1.0f };
-	const FLOAT Green[ 4 ] = { 0.0f, 1.0f, 0.0f, 1.0f };
-	const FLOAT Blue[ 4 ] = { 0.0f, 0.0f, 1.0f, 1.0f };
+    const FLOAT Black[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    const FLOAT White[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    
+    const FLOAT Red[ 4 ] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    const FLOAT Green[ 4 ] = { 0.0f, 1.0f, 0.0f, 1.0f };
+    const FLOAT Blue[ 4 ] = { 0.0f, 0.0f, 1.0f, 1.0f };
 }
 
 class Dx {
 public:
-	Dx( Win& p_win );
-	~Dx();
+    Dx( Win& p_win );
+    ~Dx();
 
-	HRESULT init();
-	HRESULT render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj );
+    HRESULT init();
+    HRESULT render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj );
 protected:
 private:
-	double dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx );
-	bool initObjects( ID3D11Device* p_device );
+    double dispatch( ID3D11DeviceContext* p_devcon, Fxs p_fx );
+    bool initObjects( ID3D11Device* p_device );
 
-	ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of structure.
-	ID3D11RenderTargetView* m_rtvBackbuffer;
-	
-	BufStreamSrv< Vertex >* m_srvStreamVertices;
-	BufStreamSrv< unsigned >* m_srvStreamIndices;
-	BufStreamSrv< ObjInstance >* m_srvStreamInstances;
-	BufStreamSrv< LightPoint >* m_srvStreamLights;
-	BufUav* m_uavRays;
-	BufUav* m_uavIntersections;
+    ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of structure.
+    ID3D11RenderTargetView* m_rtvBackbuffer;
+    
+    BufStreamSrv< Vertex >* m_srvStreamVertices;
+    BufStreamSrv< unsigned >* m_srvStreamIndices;
+    BufStreamSrv< ObjInstance >* m_srvStreamInstances;
+    BufStreamSrv< LightPoint >* m_srvStreamLights;
+    BufUav* m_uavRays;
+    BufUav* m_uavIntersections;
 
-	CogD3d* m_cogD3d;
-	CogFx* m_cogFx;
-	CogCb* m_cogCb;
-	CogSS* m_cogSS;
-	CogTex* m_cogTex;
+    CogD3d* m_cogD3d;
+    CogFx* m_cogFx;
+    CogCb* m_cogCb;
+    CogSS* m_cogSS;
+    CogTex* m_cogTex;
 
-	std::vector< Obj* > m_objects;
+    std::vector< Obj* > m_objects;
 
-	TimerD3d* m_timer;
-	Win* m_win;
+    TimerD3d* m_timer;
+    Win* m_win;
 };
 
 #endif // DV2520_DX_H

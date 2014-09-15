@@ -18,25 +18,25 @@
 // Make this inaccessible.
 template< UINT TNameLength >
 inline void SetD3dObjectName( 
-	_In_ ID3D11DeviceChild* p_resource, 
-	_In_z_ const char ( &name )[ TNameLength ] ) {
-	p_resource->SetPrivateData( WKPDID_D3DDebugObjectName, TNameLength - 1, name );
+    _In_ ID3D11DeviceChild* p_resource, 
+    _In_z_ const char ( &name )[ TNameLength ] ) {
+    p_resource->SetPrivateData( WKPDID_D3DDebugObjectName, TNameLength - 1, name );
 }
 
 class Util {
 public:
-	static void crtMemLeakDetectionIfDebug();
+    static void crtMemLeakDetectionIfDebug();
 
-	static void errHr( HRESULT p_hr ); // Make this unaccessible.
+    static void errHr( HRESULT p_hr ); // Make this unaccessible.
 
-	static void msgBoxShowAndTerminateProcess( const char* p_what );
-	static void msgBoxShowAndTerminateProcess( std::string p_what );
-	//static void msgBoxShowAndTerminateProcess( LPCTSTR p_what ); // LPCTSTR defined as const char*
+    static void msgBoxShowAndTerminateProcess( const char* p_what );
+    static void msgBoxShowAndTerminateProcess( std::string p_what );
+    //static void msgBoxShowAndTerminateProcess( LPCTSTR p_what ); // LPCTSTR defined as const char*
 
-	static void getLastErrorAndTerminateProcess( LPTSTR p_function );
-	static void terminateProcess();
+    static void getLastErrorAndTerminateProcess( LPTSTR p_function );
+    static void terminateProcess();
 
-	static wchar_t* stringToWstr( std::string string );
+    static wchar_t* stringToWstr( std::string string );
 protected:
 private:
 };

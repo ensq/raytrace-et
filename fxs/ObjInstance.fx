@@ -2,13 +2,13 @@
 #define DV2520_OBJINSTANCE_FX
 
 struct ObjInstance {
-	row_major float4x4 world;
-	row_major float4x4 worldInv;
+    row_major float4x4 world;
+    row_major float4x4 worldInv;
 
-	uint indexStart;
-	uint indexCnt;
-	uint vertexCnt;
-	uint pad;
+    uint indexStart;
+    uint indexCnt;
+    uint vertexCnt;
+    uint pad;
 };
 
 #endif // DV2520_OBJINSTANCE_FX

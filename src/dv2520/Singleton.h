@@ -4,14 +4,14 @@
 template<class T>
 class Singleton {
 public:
-	static T& get() {
-		static T singleInstance;
-		return singleInstance;
-	}
+    static T& get() {
+        static T singleInstance;
+        return singleInstance;
+    }
 protected:
 private:
-	Singleton() {}
-	~Singleton() {}
+    Singleton() {}
+    ~Singleton() {}
 };
 
 #endif // DV2520_SINGLETON_H

@@ -2,15 +2,15 @@
 #define DV2520_INTERSECTION_H
 
 struct Intersection {
-	float u;
-	float v;
-	float t;
+    float u;
+    float v;
+    float t;
 
-	int primId;
-	unsigned primVertexOffset;
-	unsigned instanceIdx;
+    int primId;
+    unsigned primVertexOffset;
+    unsigned instanceIdx;
 
-	float dist;
+    float dist;
 };
 
 #endif // DV2520_INTERSECTION_H
