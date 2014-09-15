@@ -12,7 +12,8 @@ namespace lbo {
         UserFlags_FACE_TEX = 0x04, // Faces specify Texture Coordinate indices.
         UserFlags_TEX      = 0x08, // Want Texture Coordinates
                                    // returned in vertex-list.
-        UserFlags_NOR      = 0x10  // Want Normals returned in vertex-list.
+        UserFlags_NOR      = 0x10, // Want Normals returned in vertex-list.
+        UserFlags_GEN_IDX  = 0x20
     };
 
     void configure(unsigned p_flags);

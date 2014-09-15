@@ -16,7 +16,8 @@ namespace lbo {
         | Flags_FACE_TEX
         | Flags_POS // Always positive.
         | Flags_NOR
-        | Flags_TEX;
+        | Flags_TEX
+        | Flags_GEN_IDX;
 
     void configure(unsigned p_flags) {
         g_flags = 0;
@@ -34,6 +35,9 @@ namespace lbo {
         if(p_flags&UserFlags_TEX) {
             g_flags |= Flags_TEX;
         }
+        if(p_flags&UserFlags_GEN_IDX) {
+            g_flags |= Flags_GEN_IDX;
+        }
     }
 
     bool parse(char* p_filename,
@@ -50,7 +54,8 @@ namespace lbo {
         std::string str(f.getContents());
 
         // Trim contents of unecessary data:
-        lbo::trimComments(str);
+        // This function is ridiculously slow for larger files:
+        //lbo::trimComments(str);
 
         // Tokenize contents once:
         std::queue<std::string> tokens;

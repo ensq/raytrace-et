@@ -115,27 +115,26 @@ namespace lbo {
         if(m_flags&Flags_POS
            && m_flags&Flags_TEX
            && m_flags&Flags_NOR) {
-            int test = sizeof(vertex);
             io_vertices.insert(io_vertices.end(), 
-                               &m_vertices.front().pos, 
-                               &m_vertices.back().pos + sizeof(vertex));
+                               &m_vertices.front().pos[0], 
+                               &m_vertices.back().pos[0] + 8);
         } else {
             for(size_t i = 0; i<m_vertices.size(); i++) {
                 vertex* v = &m_vertices.at(i);
                 if(m_flags&Flags_POS) {
                     io_vertices.insert(io_vertices.end(),
-                                       v->pos,
-										v);
+                                       &v->pos[0],
+                                       &v->pos[0] + 3);
                 }
                 if(m_flags&Flags_TEX) {
                     io_vertices.insert(io_vertices.end(),
-                                       sizeof(float) * 2,
-                                       v->tex);
+                                       &v->tex[0],
+                                       &v->tex[0] + 2);
                 }
                 if(m_flags&Flags_NOR) {
                     io_vertices.insert(io_vertices.end(),
-                                       sizeof(float) * 3,
-                                       v->nor);
+                                       &v->nor[0],
+                                       &v->nor[0] + 3);
                 }
             }
         }

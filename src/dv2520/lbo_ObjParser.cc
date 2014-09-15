@@ -62,32 +62,44 @@ namespace lbo {
                     }
 
                     unsigned idx;
-                    std::map<std::tuple<int, int, int>, unsigned>::iterator it;
-                    it = m_facs.find(std::make_tuple(i3_.i[0], 
-                                                     i3_.i[1], i3_.i[2]));
-                    bool newVertex = it==m_facs.end();
-                    if(newVertex==true) {
-                        vertex v;
-                        std::memset(&v, 0, sizeof(v));
-                        if(i3_.i[0]!=-1) {
-                            memcpy(v.pos, m_poss[i3_.i[0]].f, 
-                                   sizeof(float) * 3);
-                        }
-                        if(i3_.i[1]!=-1) {
-                            memcpy(v.tex, m_texs[i3_.i[1]].f,
-                                   sizeof(float) * 2);
-                        }
-                        if(i3_.i[2]!=-1) {
-                            memcpy(v.nor, m_nors[i3_.i[2]].f,
-                                   sizeof(float) * 3);
-                        }
-                        m_vertices.push_back(v);
-                        idx = m_vertices.size() - 1;
+                    if(m_flags&Flags_GEN_IDX) {
+                        std::map<std::tuple<int, int, int>, 
+                                 unsigned>::iterator it;
+                        it = m_facs.find(std::make_tuple(i3_.i[0], 
+                                                         i3_.i[1], i3_.i[2]));
+                        bool newVertex = it==m_facs.end();
+                        if(newVertex==true) {
+                            vertex v;
+                            std::memset(&v, 0, sizeof(v));
+                            if(i3_.i[0]!=-1) {
+                                memcpy(v.pos, m_poss[i3_.i[0]].f, 
+                                       sizeof(float) * 3);
+                            }
+                            if(i3_.i[1]!=-1) {
+                                memcpy(v.tex, m_texs[i3_.i[1]].f,
+                                       sizeof(float) * 2);
+                            }
+                            if(i3_.i[2]!=-1) {
+                                memcpy(v.nor, m_nors[i3_.i[2]].f,
+                                       sizeof(float) * 3);
+                            }
+                            m_vertices.push_back(v);
+                            idx = m_vertices.size() - 1;
 
-                        m_facs[std::make_tuple(i3_.i[0], i3_.i[1], 
-                                               i3_.i[2])] = idx;
+                            m_facs[std::make_tuple(i3_.i[0], i3_.i[1], 
+                                                   i3_.i[2])] = idx;
+                        } else {
+                            idx = it->second;
+                        }
                     } else {
-                        idx = it->second;
+                        idx = i3_.i[0];
+
+                        // Hack:
+                        vertex v; std::memset(&v, 0, sizeof(v));
+                        v.pos[0] = m_poss.at(idx).f[0];
+                        v.pos[1] = m_poss.at(idx).f[1];
+                        v.pos[2] = m_poss.at(idx).f[2];
+                        m_vertices.push_back(v);
                     }
                     m_indices.push_back(idx);
                 }

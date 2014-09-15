@@ -307,7 +307,7 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
 	for( unsigned i = 0; i<1 && success==true; i++ ) {
 		std::vector<float> vertices;
 		std::vector<unsigned> indices;
-		success = lbo::parse("../../../obj/dv2520/box2.obj", vertices, indices);
+		success = lbo::parse("../../../obj/dv2520/bth.obj", vertices, indices);
 		assert(success==true);
 
 		std::vector<Vertex> vertices_struct;
@@ -327,5 +327,27 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
 		m_objects.push_back( obj );
 	}
 	
+//	std::vector<float> vertices;
+//	std::vector<unsigned> indices;
+//	lbo::configure(0);
+//	success = lbo::parse("../../../obj/dv2520/bunny.obj", vertices, indices);
+//	assert(success==true);
+//
+//	std::vector<Vertex> vertices_struct;
+//	for(size_t i = 0; i<vertices.size(); i+=8) {
+//		float* p = &vertices.at(i);
+//		Vertex v(Vec3F(p[0], p[1], p[2]),
+//			Vec3F(0,0,0),	
+//			Vec2F(0,0));
+//		vertices_struct.push_back(v);
+//	}
+//	Obj* obj = new Obj(vertices_struct.size(), indices.size(), &vertices_struct.at(0), &indices.at(0));
+//
+//	static float xoffset = 0.0f;
+//	obj->getTranslation().translate( xoffset, 0.0f, 0.0f );
+//	xoffset += 2.0f;
+//
+//	m_objects.push_back( obj );
+
 	return success;
 }

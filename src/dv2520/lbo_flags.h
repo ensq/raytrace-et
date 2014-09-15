@@ -9,7 +9,8 @@ namespace lbo {
         Flags_FACE_TEX = 0x04,
         Flags_POS      = 0x08,
         Flags_TEX      = 0x10,
-        Flags_NOR      = 0x20
+        Flags_NOR      = 0x20,
+        Flags_GEN_IDX  = 0x40
     };
 }
 

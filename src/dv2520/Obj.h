@@ -26,7 +26,6 @@ private:
 
 	Vertex* m_vertices;
 	unsigned* m_indices;
-
 	Mat4F m_translation;
 	Mat4F m_rotation;
 	Mat4F m_scaling;
