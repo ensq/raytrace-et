@@ -1,7 +1,7 @@
 #include <stdafx.h>
 
 #include <Obj.h>
-#include <Vertex.h>
+#include <geometry.h>
 
 Obj::Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertices, const unsigned* p_indices ) {
     m_verticesCnt = p_verticesCnt;

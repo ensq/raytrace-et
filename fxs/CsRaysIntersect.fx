@@ -6,7 +6,7 @@
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
     const uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
-    Ray    ray    = uavRays[ pixelIdx ];
+    Ray ray = uavRays[ pixelIdx ];
     
     Intersection curIntersection = ConstructIntersection();
     Intersection closestIntersection = ConstructIntersection();

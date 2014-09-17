@@ -7,7 +7,8 @@ struct Vertex;
 
 class Obj {
 public:
-    Obj( unsigned p_verticesCnt, unsigned p_indicesCnt, const Vertex* p_vertices, const unsigned* p_indices );
+    Obj( unsigned p_verticesCnt, unsigned p_indicesCnt,
+         const Vertex* p_vertices, const unsigned* p_indices );
     ~Obj();
 
     unsigned getVerticesCnt() const;

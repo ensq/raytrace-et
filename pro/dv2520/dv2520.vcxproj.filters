@@ -70,6 +70,12 @@
     <ClCompile Include="..\..\src\dv2520\lbo.cc">
       <Filter>Dx\IO\lbo</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Bvh.cc">
+      <Filter>Dx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\geometry.cc">
+      <Filter>Dx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -111,15 +117,6 @@
     <ClInclude Include="..\..\src\dv2520\Cb.h">
       <Filter>Dx</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\Intersection.h">
-      <Filter>Dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\Ray.h">
-      <Filter>Dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\Vertex.h">
-      <Filter>Dx</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dv2520\Input.h" />
     <ClInclude Include="..\..\src\dv2520\InputQueue.h" />
     <ClInclude Include="..\..\src\dv2520\Singleton.h" />
@@ -148,10 +145,6 @@
     <ClInclude Include="..\..\src\dv2520\BufStreamSrv.h">
       <Filter>Dx\Buf</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\ObjInstance.h">
-      <Filter>Dx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\Light.h" />
     <ClInclude Include="..\..\src\dv2520\lbo_vertex.h">
       <Filter>Dx\IO\lbo</Filter>
     </ClInclude>
@@ -166,6 +159,15 @@
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\lbo.h">
       <Filter>Dx\IO\lbo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Bvh.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\geometry.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\structs.h">
+      <Filter>Dx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +219,9 @@
       <Filter>Fxs</Filter>
     </FxCompile>
     <FxCompile Include="..\..\fxs\Light.fx">
+      <Filter>Fxs</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\fxs\ObjNode.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
   </ItemGroup>

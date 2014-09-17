@@ -1,6 +1,8 @@
 #ifndef DV2520_STDAFX_H
 #define DV2520_STDAFX_H
 
+#define NOMINMAX
+
 // Std:
 #include <map>
 #include <queue>

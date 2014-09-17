@@ -7,6 +7,7 @@
 #include <Ray.fx>
 #include <Light.fx>
 #include <Vertex.fx>
+#include <ObjNode.fx>
 #include <ObjInstance.fx>
 #include <Intersection.fx>
 
@@ -15,7 +16,8 @@ StructuredBuffer< Vertex > srvVertices : register( t0 );
 StructuredBuffer< uint > srvIndices : register( t1 );
 StructuredBuffer< ObjInstance > srvInstances : register( t2 );
 StructuredBuffer< LightPoint > srvLights : register( t3 );
-Texture2D texAlbedo : register( t4 ); // In the future, texture arrays may be added to support materials.
+StructuredBuffer< ObjNode > srvNodes : register( t4 );
+Texture2D texAlbedo : register( t5 ); // In the future, texture arrays may be added to support materials.
 
 // u
 RWStructuredBuffer< Ray > uavRays : register( u0 );

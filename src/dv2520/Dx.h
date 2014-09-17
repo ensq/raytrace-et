@@ -18,10 +18,9 @@ class CogTex;
 class BufUav;
 class TimerD3d;
 
-#include <Light.h>
-#include <Vertex.h>
-#include <MathSimple.h>
-#include <ObjInstance.h>
+#include <Bvh.h>
+#include <structs.h>
+#include <geometry.h>
 #include <BufStreamSrv.h>
 
 namespace DxClearColor {
@@ -52,6 +51,7 @@ private:
     BufStreamSrv< unsigned >* m_srvStreamIndices;
     BufStreamSrv< ObjInstance >* m_srvStreamInstances;
     BufStreamSrv< LightPoint >* m_srvStreamLights;
+    BufStreamSrv< Bvh_Node_Flat >* m_srvStreamNodes;
     BufUav* m_uavRays;
     BufUav* m_uavIntersections;
 
@@ -62,6 +62,10 @@ private:
     CogTex* m_cogTex;
 
     std::vector< Obj* > m_objects;
+
+    // temp:
+    Bvh_Node_Flat* m_nodes;
+    unsigned numNodes;
 
     TimerD3d* m_timer;
     Win* m_win;

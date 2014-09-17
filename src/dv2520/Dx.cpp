@@ -3,7 +3,6 @@
 #include <Dx.h>
 #include <Ant.h>
 #include <Win.h>
-#include <Ray.h>
 #include <Obj.h>
 #include <CogFx.h>
 #include <CogCb.h>
@@ -11,12 +10,12 @@
 #include <CogD3d.h>
 #include <CogTex.h>
 #include <BufUav.h>
+#include <structs.h>
 #include <TimerD3d.h>
-#include <ObjInstance.h>
-#include <Intersection.h>
 
 #include <lbo.h>
-#include <Vertex.h> 
+#include <Bvh.h>
+#include <geometry.h> 
 
 Dx::Dx( Win& p_win ) {
     m_win = &p_win;
@@ -27,6 +26,7 @@ Dx::Dx( Win& p_win ) {
     m_srvStreamIndices = nullptr;
     m_srvStreamInstances = nullptr;
     m_srvStreamLights = nullptr;
+    m_srvStreamNodes = nullptr;
     m_uavRays = nullptr;
     m_uavIntersections = nullptr;
     m_cogD3d = nullptr;
@@ -44,6 +44,7 @@ Dx::~Dx() {
     ASSERT_DELETE( m_srvStreamIndices );
     ASSERT_DELETE( m_srvStreamInstances );
     ASSERT_DELETE( m_srvStreamLights );
+    ASSERT_DELETE( m_srvStreamNodes );
     ASSERT_DELETE( m_uavRays );
     ASSERT_DELETE( m_uavIntersections );
     ASSERT_DELETE( m_cogD3d );
@@ -131,6 +132,7 @@ HRESULT Dx::init() {
         m_srvStreamIndices = new BufStreamSrv< unsigned >();
         m_srvStreamInstances = new BufStreamSrv< ObjInstance >();
         m_srvStreamLights = new BufStreamSrv< LightPoint >();
+        m_srvStreamNodes = new BufStreamSrv< Bvh_Node_Flat >();
     }
 
     // Initialize demo objects:
@@ -153,6 +155,7 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
     m_srvStreamIndices->reset();
     m_srvStreamInstances->reset();
     m_srvStreamLights->reset();
+    m_srvStreamNodes->reset();
 
     // Add a lone pointlight to the scene:
     static float osc = 0.0f;
@@ -217,6 +220,7 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
         m_srvStreamVertices->pushElements( obj->getVertices(), obj->getVerticesCnt() );
         m_srvStreamIndices->pushElements( obj->getIndices(), obj->getIndicesCnt() );
         m_srvStreamInstances->pushElement( instance );
+        m_srvStreamNodes->pushElements( m_nodes, numNodes );
 
         instancesCnt++;
     }
@@ -226,6 +230,7 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
     m_srvStreamIndices->updateBufStream( d3d.device, d3d.devcon );
     m_srvStreamInstances->updateBufStream( d3d.device, d3d.devcon );
     m_srvStreamLights->updateBufStream( d3d.device, d3d.devcon );
+    m_srvStreamNodes->updateBufStream( d3d.device, d3d.devcon );
 
     // Update per-frame CB:
     Mat4F viewInv = p_view; viewInv.inverse();
@@ -250,9 +255,10 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
         m_srvStreamIndices->getSrv(),
         m_srvStreamInstances->getSrv(),
         m_srvStreamLights->getSrv(),
+        m_srvStreamNodes->getSrv(),
         m_cogTex->getTex( d3d.device, Texs_default )->getSrv() // Make this more general.
     };
-    d3d.devcon->CSSetShaderResources( 0, 5, srvs );
+    d3d.devcon->CSSetShaderResources( 0, 6, srvs );
 
     // Set UAVs:
     ID3D11UnorderedAccessView* uavs[] = { 
@@ -271,8 +277,8 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
     Singleton< Ant >::get().setTimeLighting( dispatch( d3d.devcon, Fxs_CS_LIGHTING ) );
     
     // Unset SRVs:
-    ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL, NULL, NULL };
-    d3d.devcon->CSSetShaderResources( 0, 5, srvsUnset );
+    ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL, NULL, NULL, NULL };
+    d3d.devcon->CSSetShaderResources( 0, 6, srvsUnset );
 
     // Unset UAVs:
     ID3D11UnorderedAccessView* uavsUnset[] = { NULL, NULL, NULL };
@@ -319,6 +325,12 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
             vertices_struct.push_back(v);
         }
         Obj* obj = new Obj(vertices_struct.size(), indices.size(), &vertices_struct.at(0), &indices.at(0));
+
+        Bvh bvh(obj, 2);
+        bvh.init();
+        numNodes = bvh.getNodesCnt();
+        m_nodes = new Bvh_Node_Flat[numNodes];
+        memcpy(m_nodes, bvh.getNodes(), sizeof(Bvh_Node_Flat) * numNodes);
 
         static float xoffset = 0.0f;
         obj->getTranslation().translate( xoffset, 0.0f, 0.0f );
