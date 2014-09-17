@@ -17,10 +17,9 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
     for( uint instancesIdx = 0; instancesIdx<instancesCnt; instancesIdx++ ) {
         float3 p0, p1, p2;
         uint indicesCnt = srvInstances[ instancesIdx ].indexCnt;
+        float3 rayDir = mul( srvInstances[ instancesIdx ].worldInv, float4( ray.dir, 0.0f ) ).xyz;
+        float3 rayPos = mul( srvInstances[ instancesIdx ].worldInv, float4( ray.pos, 1.0f ) ).xyz;
         for( uint vertexIdx = 2; vertexIdx<indicesCnt; vertexIdx += 3 ) {
-            float3 rayDir = mul( srvInstances[ instancesIdx ].worldInv, float4( ray.dir, 0.0f ) ).xyz;
-            float3 rayPos = mul( srvInstances[ instancesIdx ].worldInv, float4( ray.pos, 1.0f ) ).xyz;
-
             uint indexId = indicesOffset + vertexIdx;
             p0 = srvVertices[ verticesOffset + srvIndices[ indexId - 2 ]    ].pos;
             p1 = srvVertices[ verticesOffset + srvIndices[ indexId - 1 ]    ].pos;
