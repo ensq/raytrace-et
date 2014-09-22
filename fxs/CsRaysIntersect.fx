@@ -31,29 +31,29 @@ Intersection intersectBvh(Ray p_ray) {
 
     int stack[35];
     int stackIdx = 0;
-    int iNodeNum = 0;
+    int nodeIdx = 0;
 
     Intersection iCur = ConstructIntersection();
     Intersection iClo = ConstructIntersection();
-    iClo.dist = iClo.t = p_ray.distMax;
-
+    iClo.dist = p_ray.distMax;
+    
     while(true) {
-        float2 T = intersectBvhBBox(p_ray.pos, rDirInv, iNodeNum);
-        if((T[0]>iClo.t) || (T[1]<0.0f)) { // No intersection of the node bbox.
+        float2 T = intersectBvhBBox(p_ray.pos, rDirInv, nodeIdx);
+        if(T[0]>iClo.dist || T[1]<0.0f) { // No intersection of the node bbox.
             if(stackIdx==0) { // Traversal ends if the stack is empty.
                 break;
             }
-            iNodeNum = stack[--stackIdx]; // Pop new node from the stack.
-        } else if(srvNodes[iNodeNum].primitivesCnt>0) { // A leaf node bbox is intersected.
-            for(int i = 0; i<srvNodes[iNodeNum].primitivesCnt; i++) {
-                int offset = (srvNodes[iNodeNum].primitivesIdx * 3) + (i * 3);
+            nodeIdx = stack[--stackIdx]; // Pop new node from the stack.
+        } else if(srvNodes[nodeIdx].primitivesCnt>0) { // A leaf node bbox is intersected.
+            for(int i = 0; i<srvNodes[nodeIdx].primitivesCnt; i++) {
+                int offset = (srvNodes[nodeIdx].primitivesIdx * 3) + (i * 3);
                 float3 A = srvVertices[srvIndices[offset+0]].pos;
                 float3 B = srvVertices[srvIndices[offset+1]].pos;
                 float3 C = srvVertices[srvIndices[offset+2]].pos;
                 iCur = intersectRayTriangleRealTimeRendering(p_ray.pos,
                                                              p_ray.dir, A, B, C,
                                                              offset + 2);
-                if(iCur.primId>=0
+                if(iCur.primId>0
                    && p_ray.primId!=iCur.primId
                    && iCur.dist<iClo.dist) {
                     iClo = iCur;
@@ -61,28 +61,27 @@ Intersection intersectBvh(Ray p_ray) {
                     iClo.instanceIdx = 0;
                 }
             }
-            
             if(stackIdx==0) {
                 break;
             }                                    
-            iNodeNum = stack[--stackIdx];
+            nodeIdx = stack[--stackIdx];
         } else { // A branch node bbox is intersected.
-            // Depending on the ray direction and the split-axis,
-            // the order of the children changes on the stack.
-            //int dirIsNeg[3] = { rDirInv < 0 };
-            // -g_sNodes[iNodeNum].nPrimitives is the split axis: 0-1-2 (x-y-z)
-            //const int aux = dirIsNeg[-srvNodes[iNodeNum].primitivesCnt];
-            // aux replaces an if/else statement which improves traversal a little bit
-            //stack[stackIdx++] = (iNodeNum+1)*aux + (1-aux)*srvNodes[iNodeNum].primitivesIdx;
-            //iNodeNum = srvNodes[iNodeNum].primitivesIdx*aux + (1-aux)*(iNodeNum+1);
-
-            stack[stackIdx++] = iNodeNum + 1; // First child.
-            stack[stackIdx++] = srvNodes[iNodeNum].primitivesIdx; // Second child.
-            iNodeNum = stack[--stackIdx];
+            stack[stackIdx++] = nodeIdx + 1; // Add first child to stack.
+            stack[stackIdx++] = srvNodes[nodeIdx].primitivesIdx; // ...and the secod child.
+            nodeIdx = stack[--stackIdx];
         }
     }
     return iClo;
 }
+
+// Depending on the ray direction and the split-axis,
+// the order of the children changes on the stack.
+//int dirIsNeg[3] = { rDirInv < 0 };
+// -g_sNodes[nodeIdx].nPrimitives is the split axis: 0-1-2 (x-y-z)
+//const int aux = dirIsNeg[-srvNodes[nodeIdx].primitivesCnt];
+// aux replaces an if/else statement which improves traversal a little bit
+//stack[stackIdx++] = (nodeIdx+1)*aux + (1-aux)*srvNodes[nodeIdx].primitivesIdx;
+//nodeIdx = srvNodes[nodeIdx].primitivesIdx*aux + (1-aux)*(nodeIdx+1);
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
@@ -109,8 +108,7 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
         curIntersection = intersectBvh(r);
         closestIntersection = curIntersection;
         ray.primId = closestIntersection.primId;
-        
-        
+                
         /* for( uint vertexIdx = 2; vertexIdx<indicesCnt; vertexIdx += 3 ) { */
         /*     uint indexId = indicesOffset + vertexIdx; */
         /*     p0 = srvVertices[ verticesOffset + srvIndices[ indexId - 2 ]    ].pos; */

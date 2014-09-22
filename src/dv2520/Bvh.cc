@@ -45,16 +45,16 @@ Bvh_Node_Flat::~Bvh_Node_Flat() {
 
 // Should take an inout argument for the hierarchy of primitives:
 Bvh::Bvh(Obj* p_obj, size_t p_nodeMaxPrimitives) : m_obj(p_obj) {
-    m_primitives = nullptr;
+    //    m_primitives = nullptr;
 
-    assert(p_nodeMaxPrimitives<256); // ?
+    //assert(p_nodeMaxPrimitives<256); // ?
     maxPrimsInNode = p_nodeMaxPrimitives; // Insert limit?
 
     totalNodes = 0;
 }
 Bvh::~Bvh() {
-    assert(m_primitives!=nullptr);
-    delete[] m_primitives;
+    //    assert(m_primitives!=nullptr);
+    // delete[] m_primitives;
 
     assert(m_nodes_flat!=nullptr);
     delete[] m_nodes_flat;
@@ -76,30 +76,17 @@ void Bvh::build(Vertex* p_vertices,
     // Split list of vertices into list of primitives:
     size_t numPrimitives = p_indicesCnt / 3;
     size_t j = 0;
-    m_primitives = new Bvh_Primitive[numPrimitives];
+    Bvh_Primitive* primitives = new Bvh_Primitive[numPrimitives];
     for(size_t i = 2; i<p_indicesCnt; i+=3) {
         Vec3F v1 = p_vertices[p_indices[i - 2]].pos;
         Vec3F v2 = p_vertices[p_indices[i - 1]].pos;
         Vec3F v3 = p_vertices[p_indices[i - 0]].pos;
-        m_primitives[j] = Bvh_Primitive(j, BBox(BBox(v1, v2), v3));
+        primitives[j] = Bvh_Primitive(j, BBox(BBox(v1, v2), v3));
         j++;
     }
-    Bvh_Primitive* primitives = new Bvh_Primitive[numPrimitives]; // This
-                                                                  // might
-                                                                  // possibly
-                                                                  // be
-                                                                  // replaced
-                                                                  // by
-                                                                  // simply
-                                                                  // using
-                                                                  // m_primitives.
-    memcpy(primitives, m_primitives,
-           sizeof(Bvh_Primitive) * numPrimitives);
     Bvh_Primitive* primitivesHierarchy = new Bvh_Primitive[numPrimitives];
     Bvh_Node* root = buildRecursive(primitives, 0, numPrimitives,
                                     &totalNodes, primitivesHierarchy);
-    memcpy(m_primitives, primitivesHierarchy,
-           sizeof(Bvh_Primitive) * numPrimitives);
     assert(primitives!=nullptr);
     delete[] primitives;
     assert(primitivesHierarchy!=nullptr);
@@ -132,7 +119,7 @@ Bvh_Node* Bvh::buildRecursive(Bvh_Primitive* p_primitives,
         size_t primitivesIdx = p_idxStart;
         for(size_t i = primitivesIdx; i<p_idxEnd; i++) {
             size_t primitiveIdx = p_primitives[i].id;
-            io_primitivesHierarchy[i] = m_primitives[primitiveIdx]; // obs: m_primitives
+            io_primitivesHierarchy[i] = p_primitives[primitiveIdx]; // obs: m_primitives
         }
         node->asLeaf(primitivesIdx, primitivesCnt, bbox);
     } else {
@@ -148,7 +135,7 @@ Bvh_Node* Bvh::buildRecursive(Bvh_Primitive* p_primitives,
             size_t primitivesIdx = p_idxStart;
             for(size_t i = primitivesIdx; i<p_idxEnd; i++) {
                 size_t primitiveIdx = p_primitives[i].id;
-                io_primitivesHierarchy[i] = m_primitives[primitiveIdx]; // obs: m_primitives
+                io_primitivesHierarchy[i] = p_primitives[primitiveIdx]; // obs: m_primitives
             }
             node->asLeaf(primitivesIdx, primitivesCnt, bbox);
             return node;

@@ -57,6 +57,9 @@ Dx::~Dx() {
     for( unsigned i = 0; i<m_objects.size(); i++ ) {
         ASSERT_DELETE( m_objects.at( i ) );
     }
+
+    assert(m_nodes!=nullptr);
+    delete[] m_nodes;
 }
 
 HRESULT Dx::init() {
@@ -331,10 +334,6 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
         numNodes = bvh.getNodesCnt();
         m_nodes = new Bvh_Node_Flat[numNodes];
         memcpy(m_nodes, bvh.getNodes(), sizeof(Bvh_Node_Flat) * numNodes);
-
-        static float xoffset = 0.0f;
-        obj->getTranslation().translate( xoffset, 0.0f, 0.0f );
-        xoffset += 2.0f;
 
         m_objects.push_back( obj );
     }
