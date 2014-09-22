@@ -45,17 +45,11 @@ Bvh_Node_Flat::~Bvh_Node_Flat() {
 
 // Should take an inout argument for the hierarchy of primitives:
 Bvh::Bvh(Obj* p_obj, size_t p_nodeMaxPrimitives) : m_obj(p_obj) {
-    //    m_primitives = nullptr;
-
-    //assert(p_nodeMaxPrimitives<256); // ?
-    maxPrimsInNode = p_nodeMaxPrimitives; // Insert limit?
+    maxPrimsInNode = p_nodeMaxPrimitives;
 
     totalNodes = 0;
 }
 Bvh::~Bvh() {
-    //    assert(m_primitives!=nullptr);
-    // delete[] m_primitives;
-
     assert(m_nodes_flat!=nullptr);
     delete[] m_nodes_flat;
 }
@@ -119,7 +113,7 @@ Bvh_Node* Bvh::buildRecursive(Bvh_Primitive* p_primitives,
         size_t primitivesIdx = p_idxStart;
         for(size_t i = primitivesIdx; i<p_idxEnd; i++) {
             size_t primitiveIdx = p_primitives[i].id;
-            io_primitivesHierarchy[i] = p_primitives[primitiveIdx]; // obs: m_primitives
+            io_primitivesHierarchy[i] = p_primitives[primitiveIdx];
         }
         node->asLeaf(primitivesIdx, primitivesCnt, bbox);
     } else {
@@ -135,7 +129,7 @@ Bvh_Node* Bvh::buildRecursive(Bvh_Primitive* p_primitives,
             size_t primitivesIdx = p_idxStart;
             for(size_t i = primitivesIdx; i<p_idxEnd; i++) {
                 size_t primitiveIdx = p_primitives[i].id;
-                io_primitivesHierarchy[i] = p_primitives[primitiveIdx]; // obs: m_primitives
+                io_primitivesHierarchy[i] = p_primitives[primitiveIdx];
             }
             node->asLeaf(primitivesIdx, primitivesCnt, bbox);
             return node;
@@ -163,7 +157,7 @@ size_t Bvh::flattenRecursive(Bvh_Node* p_node, size_t* p_nodeIdx) {
         node_flat->primitivesIdx = p_node->primitivesIdx;
         node_flat->primitivesCnt = p_node->primitivesCnt;
     } else { // Flat out branch node.
-        node_flat->primitivesCnt = (-1) * p_node->axisSplit; // Negative to indicate it's an axis.
+        node_flat->primitivesCnt = (-1) * p_node->axisSplit; // Negative to indicate branch node.
         flattenRecursive(p_node->children[0], p_nodeIdx);
         node_flat->secondChildOffset = flattenRecursive(p_node->children[1], p_nodeIdx);
     }

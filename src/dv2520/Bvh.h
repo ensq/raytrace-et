@@ -82,7 +82,6 @@ class Bvh {
     void freeRecursive(Bvh_Node* p_node);
     
     const Obj* m_obj;
-    //Bvh_Primitive* m_primitives;
     Bvh_Node_Flat* m_nodes_flat;
 
     // Different names please:
