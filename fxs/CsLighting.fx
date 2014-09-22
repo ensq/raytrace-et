@@ -48,20 +48,7 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
     pAmbient.xyz += pDiffuse.xyz + pSpecular.xyz;
 
     uavBackbuffer[ gThreadId.xy ] = float4( pAmbient.xyz, 1.0f );
+    uavBackbuffer[gThreadId.xy] = texAlbedo.SampleLevel(ssDefault, pTex, 0);
 }
 
 #endif // DV2520_CSLIGHTING_FX
-
-// Temp:
-//float test = intersection.primId / 36.0f;
-//if( test <= 1.0f ) {
-//    uavBackbuffer[ gThreadId.xy ] = float4( 1.0f, 0.0f, 0.0f, 1.0f );
-//} else if( test <= 2.0f ) {
-//    uavBackbuffer[ gThreadId.xy ] = float4( 0.0f, 1.0f, 0.0f, 1.0f );
-//} else if( test <= 3.0f ) {
-//    uavBackbuffer[ gThreadId.xy ] = float4( 0.0f, 0.0f, 1.0f, 1.0f );
-//} else if( test <= 4.0f ) {
-//    uavBackbuffer[ gThreadId.xy ] = float4( 1.0f, 0.0f, 0.0f, 1.0f );
-//} else if( test <= 5.0f ) {
-//    uavBackbuffer[ gThreadId.xy ] = float4( 0.0f, 1.0f, 0.0f, 1.0f );
-//}
