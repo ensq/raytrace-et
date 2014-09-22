@@ -107,44 +107,42 @@ Bvh_Node* Bvh::buildRecursive(Bvh_Primitive* p_primitives,
     for(size_t i = p_idxStart; i<p_idxEnd; i++) {
         bbox = BBox(bbox, p_primitives[i].bbox);
     }
-    
     size_t primitivesCnt = p_idxEnd - p_idxStart;
-    if(primitivesCnt==maxPrimsInNode) {
+    assert(primitivesCnt>0);
+
+    BBox bbox_center;
+    for(size_t i = p_idxStart; i<p_idxEnd; i++) {
+        bbox_center = BBox(bbox_center, p_primitives[i].center);
+    }
+    int idxMaxSpan = bbox_center.getAxisIdxMax(); // The axis to split.
+
+    assert(maxPrimsInNode>0);
+    if(primitivesCnt<=maxPrimsInNode) {
         size_t primitivesIdx = p_idxStart;
         for(size_t i = primitivesIdx; i<p_idxEnd; i++) {
             size_t primitiveIdx = p_primitives[i].id;
             io_primitivesHierarchy[i] = p_primitives[primitiveIdx];
         }
         node->asLeaf(primitivesIdx, primitivesCnt, bbox);
-    } else {
-        BBox bbox_center;
-        for(size_t i = p_idxStart; i<p_idxEnd; i++) {
-            bbox_center = BBox(bbox_center, p_primitives[i].center);
-        }
-        int idxMaxSpan = bbox_center.getAxisIdxMax(); // The axis to split.
-
-        // Not quite sure what this particular leaf node creation is for:
-        if(maxPrimsInNode>1
-           && bbox_center.max[idxMaxSpan]==bbox_center.min[idxMaxSpan]) {
-            size_t primitivesIdx = p_idxStart;
-            for(size_t i = primitivesIdx; i<p_idxEnd; i++) {
-                size_t primitiveIdx = p_primitives[i].id;
-                io_primitivesHierarchy[i] = p_primitives[primitiveIdx];
-            }
-            node->asLeaf(primitivesIdx, primitivesCnt, bbox);
-            return node;
-        }
-
-        size_t idxMid = (p_idxStart + p_idxEnd) / 2;
-        // Use split on equal counts (more methods here if you so desire):
-        std::nth_element(&p_primitives[p_idxStart], &p_primitives[idxMid],
-                         &p_primitives[p_idxEnd - 1] + 1, ComparePoints(idxMaxSpan));
-        Bvh_Node* node_left = buildRecursive(p_primitives, p_idxStart, idxMid,
-                                             io_totalNodes, io_primitivesHierarchy);
-        Bvh_Node* node_right = buildRecursive(p_primitives, idxMid, p_idxEnd,
-                                              io_totalNodes, io_primitivesHierarchy);
-        node->asBranch(idxMaxSpan, node_left, node_right);
+        return node;
     }
+
+    struct SortFun {
+        SortFun(int d) { dim = d; }
+        int dim;
+        bool operator()(Bvh_Primitive &a, Bvh_Primitive &b) const {
+            return a.center[dim] < b.center[dim];
+        }
+    };
+
+    size_t idxMid = (p_idxStart + p_idxEnd) / 2;
+    std::nth_element(&p_primitives[p_idxStart], &p_primitives[idxMid],
+                     &p_primitives[p_idxEnd - 1] + 1, SortFun(idxMaxSpan));
+    Bvh_Node* node_left = buildRecursive(p_primitives, p_idxStart, idxMid,
+                                         io_totalNodes, io_primitivesHierarchy);
+    Bvh_Node* node_right = buildRecursive(p_primitives, idxMid, p_idxEnd,
+                                          io_totalNodes, io_primitivesHierarchy);
+    node->asBranch(idxMaxSpan, node_left, node_right);
     return node;
 }
 

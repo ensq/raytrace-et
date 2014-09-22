@@ -316,7 +316,7 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
     for( unsigned i = 0; i<1 && success==true; i++ ) {
         std::vector<float> vertices;
         std::vector<unsigned> indices;
-        success = lbo::parse("../../../obj/dv2520/box2.obj", vertices, indices); // "../../../obj/dv2520/bth.obj"
+        success = lbo::parse("../../../obj/dv2520/bth.obj", vertices, indices); // "../../../obj/dv2520/bth.obj"
         assert(success==true);
 
         std::vector<Vertex> vertices_struct;
@@ -329,7 +329,7 @@ bool Dx::initObjects( ID3D11Device* p_device ) {
         }
         Obj* obj = new Obj(vertices_struct.size(), indices.size(), &vertices_struct.at(0), &indices.at(0));
 
-        Bvh bvh(obj, 1);
+        Bvh bvh(obj, 2);
         bvh.init();
         numNodes = bvh.getNodesCnt();
         m_nodes = new Bvh_Node_Flat[numNodes];

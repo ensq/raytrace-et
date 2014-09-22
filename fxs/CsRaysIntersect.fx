@@ -45,6 +45,10 @@ Intersection intersectBvh(Ray p_ray) {
             }
             nodeIdx = stack[--stackIdx]; // Pop new node from the stack.
         } else if(srvNodes[nodeIdx].primitivesCnt>0) { // A leaf node bbox is intersected.
+            // bbox test:
+            //iClo.primId = 3;
+            //break;
+
             for(int i = 0; i<srvNodes[nodeIdx].primitivesCnt; i++) {
                 int offset = (srvNodes[nodeIdx].primitivesIdx * 3) + (i * 3);
                 float3 A = srvVertices[srvIndices[offset+0]].pos;
@@ -63,7 +67,7 @@ Intersection intersectBvh(Ray p_ray) {
             }
             if(stackIdx==0) {
                 break;
-            }                                    
+            }
             nodeIdx = stack[--stackIdx];
         } else { // A branch node bbox is intersected.
             stack[stackIdx++] = nodeIdx + 1; // Add first child to stack.

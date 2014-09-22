@@ -48,7 +48,7 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
     pAmbient.xyz += pDiffuse.xyz + pSpecular.xyz;
 
     uavBackbuffer[ gThreadId.xy ] = float4( pAmbient.xyz, 1.0f );
-    uavBackbuffer[gThreadId.xy] = texAlbedo.SampleLevel(ssDefault, pTex, 0);
+    //uavBackbuffer[gThreadId.xy] = float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 #endif // DV2520_CSLIGHTING_FX

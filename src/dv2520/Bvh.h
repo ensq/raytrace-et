@@ -44,16 +44,6 @@ struct Bvh_Node_Flat {
     ~Bvh_Node_Flat();
 };
 
-struct ComparePoints // omg, refactor this
-{
-    ComparePoints(int d) { dim = d; }
-    int dim;
-    bool operator()(Bvh_Primitive &a, Bvh_Primitive &b) const 
-    {
-        return a.center[dim] < b.center[dim];
-    }
-};
-
 class Bvh {
  public:
     Bvh(Obj* p_obj, size_t p_nodeMaxPrimitives);
