@@ -2,6 +2,7 @@
 #define DV2520_CSRAYSINTERSECT_FX
 
 #include <Common.fx>
+#include <Intersection.fx>
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
@@ -27,7 +28,7 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
             p0 = srvVertices[ verticesOffset + srvIndices[ indexId - 2 ]    ].pos;
             p1 = srvVertices[ verticesOffset + srvIndices[ indexId - 1 ]    ].pos;
             p2 = srvVertices[ verticesOffset + srvIndices[ indexId ]        ].pos;
-            curIntersection = intersectRayTriangleRealTimeRendering( rayPos, rayDir, p0, p1, p2, indexId );
+            curIntersection = intersectRayTriangleRTR( rayPos, rayDir, p0, p1, p2, indexId );
             
             if( curIntersection.primId>=0 &&
                 ray.primId!=curIntersection.primId &&

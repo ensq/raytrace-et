@@ -4,12 +4,7 @@
 #pragma pack_matrix( row_major )
 #define BLOCK_SIZE 16
 
-#include <Ray.fx>
-#include <Light.fx>
-#include <Vertex.fx>
-#include <ObjNode.fx>
-#include <ObjInstance.fx>
-#include <Intersection.fx>
+#include <structs.fx>
 
 // t
 StructuredBuffer< Vertex > srvVertices : register( t0 );

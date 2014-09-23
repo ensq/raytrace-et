@@ -197,9 +197,6 @@
     <FxCompile Include="..\..\fxs\Common.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\fxs\Ray.fx">
-      <Filter>Fxs</Filter>
-    </FxCompile>
     <FxCompile Include="..\..\fxs\CsRaysIntersect.fx">
       <Filter>Fxs\Cs</Filter>
     </FxCompile>
@@ -212,16 +209,10 @@
     <FxCompile Include="..\..\fxs\Intersection.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\fxs\Vertex.fx">
+    <FxCompile Include="..\..\fxs\Lighting.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\fxs\ObjInstance.fx">
-      <Filter>Fxs</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\fxs\Light.fx">
-      <Filter>Fxs</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\fxs\ObjNode.fx">
+    <FxCompile Include="..\..\fxs\structs.fx">
       <Filter>Fxs</Filter>
     </FxCompile>
   </ItemGroup>

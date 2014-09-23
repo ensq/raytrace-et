@@ -1,35 +1,7 @@
 #ifndef DV2520_LIGHT_FX
 #define DV2520_LIGHT_FX
 
-struct LightPoint {
-    float3 pos;
-    float dist; // range
-    
-    float4 ambient;
-    float4 diffuse;
-    float4 specular;
-
-    float3 attenuation;
-    float pad;
-};
-
-struct LightSurface {
-    float4 ambient;
-    float4 diffuse;
-    float4 specular; // .w is treated as specular power.
-
-    float3 pos;
-    float3 nor;
-};
-LightSurface ConstructLightSurface( float3 p_pos, float3 p_nor, float4 p_ambient, float4 p_diffuse,  float4 p_specular ) {
-    LightSurface ls;
-    ls.pos = p_pos;
-    ls.nor = p_nor;
-    ls.ambient = p_ambient;
-    ls.diffuse = p_diffuse;
-    ls.specular = p_specular;
-    return ls;
-}
+#include <structs.fx>
 
 void LightingPoint( 
     LightPoint p_light,

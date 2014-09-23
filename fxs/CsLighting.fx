@@ -2,6 +2,7 @@
 #define DV2520_CSLIGHTING_FX
 
 #include <Common.fx>
+#include <Lighting.fx>
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
