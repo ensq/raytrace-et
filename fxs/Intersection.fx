@@ -2,6 +2,7 @@
 #define DV2520_INTERSECTION_FX
 
 #include <structs.fx>
+#include <Common.fx>
 
 #define REAL_TIME_RENDERING_EPSILON 0.00001f
 Intersection intersectRayTriangleRTR(float3 p_rOrigin,
@@ -9,7 +10,7 @@ Intersection intersectRayTriangleRTR(float3 p_rOrigin,
                                      float3 p_p0,
                                      float3 p_p1,
                                      float3 p_p2,
-                                     uint p_primId ) {
+                                     uint p_primId) {
     Intersection i = ConstructIntersection();
     
     float3 e1 = p_p1 - p_p0;
@@ -42,80 +43,115 @@ Intersection intersectRayTriangleRTR(float3 p_rOrigin,
 // Real-Time Rendering, which is in-and-of-it's-own derived from
 // Möller & Trumbore's algorithm.
 
-// float2 intersectBvhBBox(float3 p_rOrigin, float3 p_rDirInv, uint p_nodeIdx) {
-//     float2 T;
-// 
-//     float3 diffMin = srvNodes[p_nodeIdx].min - p_rOrigin;
-//     diffMin *= p_rDirInv;
-//     float3 diffMax = srvNodes[p_nodeIdx].max - p_rOrigin;
-//     diffMax *= p_rDirInv;
-// 
-//     T[0] = min(diffMin.x, diffMax.x);
-//     T[1] = max(diffMin.x, diffMax.x);
-//     
-//     T[0] = max(T[0], min(diffMin.y, diffMax.y));
-//     T[1] = min(T[1], max(diffMin.y, diffMax.y));
-// 
-//     T[0] = max(T[0], min(diffMin.z, diffMax.z));
-//     T[1] = min(T[1], max(diffMin.z, diffMax.z));
-// 
-//     if(T[0]>T[1]) {
-//         T[0] = T[1] = -1.0f;
-//     }
-//     return T;
-// }
-// 
-// Intersection intersectBvh(Ray p_ray) {
-//     float3 rDirInv = float3(1.0f / p_ray.dir);
-// 
-//     int stack[35];
-//     int stackIdx = 0;
-//     int nodeIdx = 0;
-// 
-//     Intersection iCur = ConstructIntersection();
-//     Intersection iClo = ConstructIntersection();
-//     iClo.dist = p_ray.distMax;
-//     
-//     while(true) {
-//         float2 T = intersectBvhBBox(p_ray.pos, rDirInv, nodeIdx);
-//         if(T[0]>iClo.dist || T[1]<0.0f) { // No intersection of the node bbox.
-//             if(stackIdx==0) { // Traversal ends if the stack is empty.
-//                 break;
-//             }
-//             nodeIdx = stack[--stackIdx]; // Pop new node from the stack.
-//         } else if(srvNodes[nodeIdx].primitivesCnt>0) { // A leaf node bbox is intersected.
-//             // bbox test:
-//             //iClo.primId = 3;
-//             //break;
-// 
-//             for(int i = 0; i<srvNodes[nodeIdx].primitivesCnt; i++) {
-//                 int offset = (srvNodes[nodeIdx].primitivesIdx * 3) + (i * 3);
-//                 float3 A = srvVertices[srvIndices[offset+0]].pos;
-//                 float3 B = srvVertices[srvIndices[offset+1]].pos;
-//                 float3 C = srvVertices[srvIndices[offset+2]].pos;
-//                 iCur = intersectRayTriangleRealTimeRendering(p_ray.pos,
-//                                                              p_ray.dir, A, B, C,
-//                                                              offset + 2);
-//                 if(iCur.primId>0
-//                    && p_ray.primId!=iCur.primId
-//                    && iCur.dist<iClo.dist) {
-//                     iClo = iCur;
-//                     iClo.primVertexOffset = 0; // Must be updated if more than 1 object.
-//                     iClo.instanceIdx = 0;
-//                 }
-//             }
-//             if(stackIdx==0) {
-//                 break;
-//             }
-//             nodeIdx = stack[--stackIdx];
-//         } else { // A branch node bbox is intersected.
-//             stack[stackIdx++] = nodeIdx + 1; // Add first child to stack.
-//             stack[stackIdx++] = srvNodes[nodeIdx].primitivesIdx; // ...and the secod child.
-//             nodeIdx = stack[--stackIdx];
-//         }
-//     }
-//     return iClo;
-// }
+Intersection intersectObjectInstances(Ray p_ray, out Ray io_ray) {
+    Intersection iCur = ConstructIntersection();
+    Intersection iClo = ConstructIntersection();
+    iClo.dist = p_ray.distMax;
+
+    uint indicesOfs = 0;
+    uint verticesOfs = 0;
+    for(uint instancesIdx = 0; instancesIdx<instancesCnt; instancesIdx++) {
+        uint indicesCnt = srvInstances[instancesIdx].indexCnt;
+        float3 rayDir = mul(srvInstances[instancesIdx].worldInv,
+                            float4(p_ray.dir, 0.0f)).xyz;
+        float3 rayPos = mul(srvInstances[instancesIdx].worldInv,
+                            float4(p_ray.pos, 1.0f)).xyz;
+        for(uint vertexIdx = 2; vertexIdx<indicesCnt; vertexIdx += 3) {
+            uint indexId = indicesOfs + vertexIdx;
+            float3 p0 = srvVertices[verticesOfs + srvIndices[indexId - 2]].pos;
+            float3 p1 = srvVertices[verticesOfs + srvIndices[indexId - 1]].pos;
+            float3 p2 = srvVertices[verticesOfs + srvIndices[indexId - 0]].pos;
+            iCur = intersectRayTriangleRTR(rayPos, rayDir, p0, p1, p2, indexId);
+            if(iCur.primId>=0
+               && p_ray.primId!=iCur.primId
+               && iCur.dist<iClo.dist) {
+                iClo = iCur;
+                iClo.primVertexOffset = verticesOfs;
+                iClo.instanceIdx = instancesIdx;
+                p_ray.primId = iClo.primId;
+            }
+        }
+        indicesOfs += srvInstances[instancesIdx].indexCnt;
+        verticesOfs += srvInstances[instancesIdx].vertexCnt;
+    }
+    io_ray = p_ray;
+    return iClo;
+}
+
+float2 intersectBvhBBox(float3 p_rOrigin, float3 p_rDirInv, uint p_nodeIdx) {
+    float2 T;
+
+    float3 diffMin = srvNodes[p_nodeIdx].min - p_rOrigin;
+    diffMin *= p_rDirInv;
+    float3 diffMax = srvNodes[p_nodeIdx].max - p_rOrigin;
+    diffMax *= p_rDirInv;
+
+    T[0] = min(diffMin.x, diffMax.x);
+    T[1] = max(diffMin.x, diffMax.x);
+    
+    T[0] = max(T[0], min(diffMin.y, diffMax.y));
+    T[1] = min(T[1], max(diffMin.y, diffMax.y));
+
+    T[0] = max(T[0], min(diffMin.z, diffMax.z));
+    T[1] = min(T[1], max(diffMin.z, diffMax.z));
+
+    if(T[0]>T[1]) {
+        T[0] = T[1] = -1.0f;
+    }
+    return T;
+}
+
+Intersection intersectBvh(Ray p_ray) {
+    float3 rDirInv = float3(1.0f / p_ray.dir);
+
+    int stack[35];
+    int stackIdx = 0;
+    int nodeIdx = 0;
+
+    Intersection iCur = ConstructIntersection();
+    Intersection iClo = ConstructIntersection();
+    iClo.dist = p_ray.distMax;
+    
+    while(true) {
+        float2 T = intersectBvhBBox(p_ray.pos, rDirInv, nodeIdx);
+        if(T[0]>iClo.dist || T[1]<0.0f) { // No intersection of the node bbox.
+            if(stackIdx==0) { // Traversal ends if the stack is empty.
+                break;
+            }
+            nodeIdx = stack[--stackIdx]; // Pop new node from the stack.
+        } else if(srvNodes[nodeIdx].primitivesCnt>0) { // A leaf node bbox is intersected.
+            // bbox test:
+            //iClo.primId = 3;
+            //break;
+
+            for(int i = 0; i<srvNodes[nodeIdx].primitivesCnt; i++) {
+                int offset = (srvNodes[nodeIdx].primitivesIdx * 3) + (i * 3);
+                float3 A = srvVertices[srvIndices[offset+0]].pos;
+                float3 B = srvVertices[srvIndices[offset+1]].pos;
+                float3 C = srvVertices[srvIndices[offset+2]].pos;
+                iCur = intersectRayTriangleRTR(p_ray.pos,
+                                               p_ray.dir, A, B, C,
+                                               offset + 2);
+                if(iCur.primId>0
+                   && p_ray.primId!=iCur.primId
+                   && iCur.dist<iClo.dist) {
+                    iClo = iCur;
+                    iClo.primVertexOffset = 0; // Must be updated if more than 1 object.
+                    iClo.instanceIdx = 0;
+                }
+            }
+            if(stackIdx==0) {
+                break;
+            }
+            nodeIdx = stack[--stackIdx];
+        } else { // A branch node bbox is intersected.
+            stack[stackIdx++] = nodeIdx + 1; // Add first child to stack.
+            stack[stackIdx++] = srvNodes[nodeIdx].primitivesIdx; // ...and the secod child.
+            nodeIdx = stack[--stackIdx];
+        }
+    }
+    return iClo;
+}
 
 // Depending on the ray direction and the split-axis,
 // the order of the children changes on the stack.
