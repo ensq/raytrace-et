@@ -43,6 +43,7 @@ Intersection intersectRayTriangleRTR(float3 p_rOrigin,
 // Real-Time Rendering, which is in-and-of-it's-own derived from
 // Möller & Trumbore's algorithm.
 
+// Consider returning lone primId number rather than entire Ray structure.
 Intersection intersectObjectInstances(Ray p_ray, out Ray io_ray) {
     Intersection iCur = ConstructIntersection();
     Intersection iClo = ConstructIntersection();

@@ -18,11 +18,11 @@ Intersection ConstructIntersection() {
     Intersection i;
     i.u = i.v = i.t = i.dist = -1;
     i.primId = -1;
-    i.primVertexOffset = 0;
-
+    i.primVertexOffset = i.instanceIdx = 0;
     return i;
 }
 
+// The ray struct will need a reflect factor variable.
 struct Ray {
     float3 pos; // Origin of ray.
     float distMin; // Minimum distance of ray.

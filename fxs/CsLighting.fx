@@ -3,6 +3,7 @@
 
 #include <Common.fx>
 #include <Lighting.fx>
+#include <Intersection.fx>
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
@@ -36,20 +37,27 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
     float4 pDiffuse = float4( 0.0f, 0.0f, 0.0f, 0.0f );
     float4 pSpecular = float4( 0.0f, 0.0f, 0.0f, 0.0f );
     for( uint lightIdx = 0; lightIdx<lightsCnt; lightIdx++ ) {
-        float4 ioAmbient, ioDiffuse, ioSpecular;
-        LightingPoint( 
-            srvLights[ lightIdx ],
-            pSurface, 
-            toEye,
-            ioAmbient, ioDiffuse, ioSpecular );
-        pAmbient += ioAmbient;
-        pDiffuse += ioDiffuse;
-        pSpecular += ioSpecular;
+        float3 lightPos = srvLights[lightIdx].pos;
+        
+        Ray rLight = ConstructRay(pPos, normalize(lightPos - pPos));
+        rLight.distMax = length(lightPos - rLight.pos);
+        rLight.primId = i.primId;
+        Intersection iSha = intersectObjectInstances(rLight, rLight);
+        if(iSha.primId>0) { // The point is in shadow.
+            pAmbient += srvLights[lightIdx].ambient;
+        } else { // Otherwise, apply point light.
+            float4 ioAmbient, ioDiffuse, ioSpecular;
+            LightingPoint(srvLights[ lightIdx ],
+                          pSurface, 
+                          toEye,
+                          ioAmbient, ioDiffuse, ioSpecular );
+            pAmbient += ioAmbient;
+            pDiffuse += ioDiffuse;
+            pSpecular += ioSpecular;
+        }
     }
     pAmbient.xyz += pDiffuse.xyz + pSpecular.xyz;
-
     uavBackbuffer[ gThreadId.xy ] = float4( pAmbient.xyz, 1.0f );
-    //uavBackbuffer[gThreadId.xy] = float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 #endif // DV2520_CSLIGHTING_FX
