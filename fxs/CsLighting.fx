@@ -5,18 +5,36 @@
 #include <Lighting.fx>
 #include <Intersection.fx>
 
+/* void reflectRay(uint index, float3 position, float3 normal, int triangleId )
+{
+	Ray ray					= rays[index];
+	ray.m_origin			= position;
+	ray.m_direction			= reflect(ray.m_direction, normal);
+	ray.m_direction			= normalize(ray.m_direction);
+	ray.m_triangleId		= triangleId;
+	ray.m_reflectiveFactor *= materials[triangles[triangleId].m_mtlIndex].m_specular;//0.3f;
+	rays[index]				= ray;
+}
+*/
+
+Ray rayReflect(Ray p_ray, LightSurface p_sur, int p_primId) {
+    Ray r = ConstructRay(p_sur.pos, normalize(reflect(p_ray.dir, p_sur.nor)));
+    r.primId = p_primId;
+    return r;
+}
+
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
-    const uint pixelIndex = gThreadId.y * screenWidth + gThreadId.x;
-    Intersection i = uavIntersections[ pixelIndex ];
+    const uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
+    Intersection i = uavIntersections[ pixelIdx ];
     if( i.primId<0 ) {
         return;
     }
     ObjInstance o = srvInstances[ i.instanceIdx ];
     
-    Vertex v1 = srvVertices[ i.primVertexOffset + srvIndices[ i.primId - 2 ] ];
-    Vertex v2 = srvVertices[ i.primVertexOffset + srvIndices[ i.primId - 1 ] ];
-    Vertex v3 = srvVertices[ i.primVertexOffset + srvIndices[ i.primId ] ];
+    Vertex v1 = srvVertices[ i.primVertexOffset + srvIndices[i.primId - 2]];
+    Vertex v2 = srvVertices[ i.primVertexOffset + srvIndices[i.primId - 1]];
+    Vertex v3 = srvVertices[ i.primVertexOffset + srvIndices[i.primId - 0]];
 
     float3 pPos = i.u * v2.pos + i.v * v3.pos + ( 1.0f - ( i.u + i.v ) ) * v1.pos;
     pPos = mul( o.world, float4( pPos, 1.0f ) ).xyz;
@@ -57,7 +75,11 @@ void main( uint3 gThreadId : SV_DispatchThreadID ) {
         }
     }
     pAmbient.xyz += pDiffuse.xyz + pSpecular.xyz;
-    uavBackbuffer[ gThreadId.xy ] = float4( pAmbient.xyz, 1.0f );
+    
+    uavColor[pixelIdx] += float4(pAmbient.xyz, 0.0f);
+    uavRays[pixelIdx] = rayReflect(uavRays[pixelIdx], pSurface, i.primId);
+    
+    uavBackbuffer[gThreadId.xy] = uavColor[pixelIdx];
 }
 
 #endif // DV2520_CSLIGHTING_FX

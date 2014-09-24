@@ -19,7 +19,8 @@ Texture2D texAlbedo : register( t5 ); // In the future, texture arrays
 // u
 RWStructuredBuffer< Ray > uavRays : register( u0 );
 RWStructuredBuffer< Intersection > uavIntersections : register( u1 );
-RWTexture2D< float4 > uavBackbuffer : register( u2 );
+RWStructuredBuffer< float4 > uavColor : register( u2 );
+RWTexture2D< float4 > uavBackbuffer : register( u3 );
 
 // s
 SamplerState ssDefault : register( s0 );

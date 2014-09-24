@@ -54,6 +54,7 @@ private:
     BufStreamSrv< Bvh_Node_Flat >* m_srvStreamNodes;
     BufUav* m_uavRays;
     BufUav* m_uavIntersections;
+    BufUav* m_uavColor;
 
     CogD3d* m_cogD3d;
     CogFx* m_cogFx;

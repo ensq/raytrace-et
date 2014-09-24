@@ -29,6 +29,7 @@ Dx::Dx( Win& p_win ) {
     m_srvStreamNodes = nullptr;
     m_uavRays = nullptr;
     m_uavIntersections = nullptr;
+    m_uavColor = nullptr;
     m_cogD3d = nullptr;
     m_cogFx = nullptr;
     m_cogCb = nullptr;
@@ -47,6 +48,7 @@ Dx::~Dx() {
     ASSERT_DELETE( m_srvStreamNodes );
     ASSERT_DELETE( m_uavRays );
     ASSERT_DELETE( m_uavIntersections );
+    ASSERT_DELETE( m_uavColor );
     ASSERT_DELETE( m_cogD3d );
     ASSERT_DELETE( m_cogFx );
     ASSERT_DELETE( m_cogCb );
@@ -127,6 +129,10 @@ HRESULT Dx::init() {
     if( SUCCEEDED( hr ) ) {
         m_uavIntersections = new BufUav( numPixels, sizeof( Intersection ), DXGI_FORMAT_UNKNOWN );
         hr = m_uavIntersections->init( d3d.device );
+    }
+    if( SUCCEEDED( hr ) ) {
+        m_uavColor = new BufUav( numPixels, sizeof( Vec4F ), DXGI_FORMAT_UNKNOWN );
+        hr = m_uavColor->init( d3d.device );
     }
 
     // Initialize SRVs:
@@ -252,25 +258,29 @@ HRESULT Dx::render( double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj )
     ID3D11UnorderedAccessView* uavs[] = { 
         m_uavRays->getUav(), 
         m_uavIntersections->getUav(),
+        m_uavColor->getUav(),
         m_uavBackbuffer
     };
-    d3d.devcon->CSSetUnorderedAccessViews( 0, 3, uavs, NULL );
+    d3d.devcon->CSSetUnorderedAccessViews( 0, 4, uavs, NULL );
 
     // Set Samplerstates:
     ID3D11SamplerState* sss[] = { m_cogSS->getSamplerState( SSs_default ) };
     d3d.devcon->CSSetSamplers( 0, 1, sss );
 
-    Singleton< Ant >::get().setTimeRaysGenerate( dispatch( d3d.devcon, Fxs_CS_RAYSGENERATE ) );
-    Singleton< Ant >::get().setTimeRaysInterect( dispatch( d3d.devcon, Fxs_CS_RAYSINTERSECT ) );
-    Singleton< Ant >::get().setTimeLighting( dispatch( d3d.devcon, Fxs_CS_LIGHTING ) );
+    Singleton<Ant>::get().setTimeRaysGenerate(dispatch(d3d.devcon, Fxs_CS_RAYSGENERATE));
+#define NUM_BOUNCES 2
+    for(unsigned i = 0; i<2; i++) {
+        Singleton<Ant>::get().setTimeRaysInterect(dispatch(d3d.devcon, Fxs_CS_RAYSINTERSECT));
+        Singleton<Ant>::get().setTimeLighting(dispatch(d3d.devcon, Fxs_CS_LIGHTING));
+    }
     
     // Unset SRVs:
     ID3D11ShaderResourceView* srvsUnset[] = { NULL, NULL, NULL, NULL, NULL, NULL };
     d3d.devcon->CSSetShaderResources( 0, 6, srvsUnset );
 
     // Unset UAVs:
-    ID3D11UnorderedAccessView* uavsUnset[] = { NULL, NULL, NULL };
-    d3d.devcon->CSSetUnorderedAccessViews( 0, 3, uavsUnset, NULL );
+    ID3D11UnorderedAccessView* uavsUnset[] = { NULL, NULL, NULL, NULL };
+    d3d.devcon->CSSetUnorderedAccessViews( 0, 4, uavsUnset, NULL );
 
     // Unset Samplerstates:
     ID3D11SamplerState* sssUnset[] = { NULL };
