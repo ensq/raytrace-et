@@ -5,15 +5,13 @@
 
 struct Ray {
     Vec3F pos;
-    float distMin;
+    float ref; // Reflective factor.
 
     Vec3F dir;
     float distMax;
 
     Vec3F light;
-    int primID; // a unique identifier to the corresponding index of a
-                // mesh in a buffer of meshes, not necessarily the
-                // index in-and-of-it's-own.
+    int primID;
 };
 
 struct Intersection {

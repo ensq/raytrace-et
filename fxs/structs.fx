@@ -25,7 +25,7 @@ Intersection ConstructIntersection() {
 // The ray struct will need a reflect factor variable.
 struct Ray {
     float3 pos; // Origin of ray.
-    float distMin; // Minimum distance of ray.
+    float ref; // Reflective factor.
 
     float3 dir; // Direction of ray.
     float distMax; // Maximum distance of ray.
@@ -38,8 +38,8 @@ Ray ConstructRay( float3 p_pos, float3 p_dir ) {
     r.pos = p_pos;
     r.dir = p_dir;
 
+    r.ref = 1.0f;
     r.light = float3( 0.0f, 0.0f, 0.0f ); // not yet used.
-    r.distMin = 0.0f; // not yet used.
     r.distMax = 9999999999.0f;
     r.primId = -1;
 
