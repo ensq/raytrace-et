@@ -41,7 +41,7 @@ struct Vec3F {
         float* p = &x;
         return *(p + i);
     };
-
+    
     float length() const;
     Vec3F cross(const Vec3F& p_r) const;
     Vec3F min(const Vec3F& p_r) const;
@@ -55,21 +55,21 @@ struct Vec3F {
 };
 inline Vec3F operator+(const Vec3F& p_l, const Vec3F& p_r) {
     return Vec3F(
-               p_l.x + p_r.x,
-               p_l.y + p_r.y,
-               p_l.z + p_r.z);
+        p_l.x + p_r.x,
+        p_l.y + p_r.y,
+        p_l.z + p_r.z);
 }
 inline Vec3F operator-(const Vec3F& p_l, const Vec3F& p_r) {
     return Vec3F(
-               p_l.x - p_r.x,
-               p_l.y - p_r.y,
-               p_l.z - p_r.z);
+        p_l.x - p_r.x,
+        p_l.y - p_r.y,
+        p_l.z - p_r.z);
 }
 inline Vec3F operator*(const Vec3F& p_l, float p_s) {
     return Vec3F(
-               p_l.x * p_s,
-               p_l.y * p_s,
-               p_l.z * p_s);
+        p_l.x * p_s,
+        p_l.y * p_s,
+        p_l.z * p_s );
 }
 
 struct Vec4F {
@@ -117,7 +117,7 @@ struct Quaternion {
     float y;
     float z;
     float w;
-
+    
     Quaternion();
     Quaternion(float p_x, float p_y, float p_z, float p_w);
     ~Quaternion();
