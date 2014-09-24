@@ -50,7 +50,7 @@ double TimerD3d::time(ID3D11DeviceContext* p_devcon) {
     double time = -1.0f;
     if(disjointData.Disjoint==FALSE) {
         UINT64 timeDelta = timeEnd - timeStart;
-        double frequency = static_cast< double >(disjointData.Frequency);
+        double frequency = static_cast<double>(disjointData.Frequency);
         time = (timeDelta / frequency) * 1000.0f;
     }
     return time;

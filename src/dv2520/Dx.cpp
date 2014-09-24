@@ -87,7 +87,7 @@ HRESULT Dx::init() {
 
     // Initialize AntTweakBar
     if(SUCCEEDED(hr)) {
-        Singleton< Ant >::get().init(d3d.device, m_win->getWidth(), m_win->getHeight());
+        Singleton<Ant>::get().init(d3d.device, m_win->getWidth(), m_win->getHeight());
     }
 
     // ...then continue initializing rest of the cogs:
@@ -137,11 +137,11 @@ HRESULT Dx::init() {
 
     // Initialize SRVs:
     if(SUCCEEDED(hr)) {
-        m_srvStreamVertices = new BufStreamSrv< Vertex >();
-        m_srvStreamIndices = new BufStreamSrv< unsigned >();
-        m_srvStreamInstances = new BufStreamSrv< ObjInstance >();
-        m_srvStreamLights = new BufStreamSrv< LightPoint >();
-        m_srvStreamNodes = new BufStreamSrv< Bvh_Node_Flat >();
+        m_srvStreamVertices = new BufStreamSrv<Vertex>();
+        m_srvStreamIndices = new BufStreamSrv<unsigned>();
+        m_srvStreamInstances = new BufStreamSrv<ObjInstance>();
+        m_srvStreamLights = new BufStreamSrv<LightPoint>();
+        m_srvStreamNodes = new BufStreamSrv<Bvh_Node_Flat>();
     }
 
     // Initialize demo objects:
@@ -293,7 +293,7 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj) {
 
     // Render GUI
     d3d.devcon->OMSetRenderTargets(1, &m_rtvBackbuffer, NULL);
-    Singleton< Ant >::get().render();
+    Singleton<Ant>::get().render();
     d3d.devcon->OMSetRenderTargets(0, NULL, NULL);
 
     return d3d.swapChain->Present(0, 0);

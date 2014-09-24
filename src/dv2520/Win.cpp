@@ -84,7 +84,7 @@ LRESULT CALLBACK Win::wWinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     HDC hdc;
     PAINTSTRUCT ps;
     LRESULT lResult = 0;
-    if(Singleton< Ant >::get().eventWin(hWnd, message, wParam, lParam)==false) {
+    if(Singleton<Ant>::get().eventWin(hWnd, message, wParam, lParam)==false) {
         // If message not handled by AntTweakBar
         switch(message) {
         case WM_PAINT:

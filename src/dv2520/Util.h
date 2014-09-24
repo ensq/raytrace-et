@@ -16,7 +16,7 @@
 #endif // DV2520_DEBUG
 
 // Make this inaccessible.
-template< UINT TNameLength >
+template<UINT TNameLength>
 inline void SetD3dObjectName(
     _In_ ID3D11DeviceChild* p_resource,
     _In_z_ const char(&name)[ TNameLength ]) {

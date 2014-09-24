@@ -15,7 +15,7 @@ class CogSS {
     ID3D11SamplerState* getSamplerState(SSs p_ss) const;
   protected:
   private:
-    std::map< SSs, ID3D11SamplerState* > m_sss;
+    std::map<SSs, ID3D11SamplerState*> m_sss;
 };
 
 #endif // DV2520_COGSS_H

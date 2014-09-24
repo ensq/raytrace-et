@@ -38,7 +38,7 @@ Tex* CogTex::getTex(ID3D11Device* p_device, Texs p_id) {
         tex = texIt->second;
     } else {
         HRESULT hr = createTexFromFile(p_device, p_id, &tex);
-        m_texs.insert(std::pair< Texs, Tex* >(p_id, tex));
+        m_texs.insert(std::pair<Texs, Tex*>(p_id, tex));
     }
     return tex;
 }

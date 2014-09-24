@@ -17,7 +17,7 @@ class InputQueue {
     void empty();
   protected:
   private:
-    std::queue< InputKey > m_keys;
+    std::queue<InputKey> m_keys;
     InputMouse m_mouseCur;
     InputMouse m_mousePrev;
 };

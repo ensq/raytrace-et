@@ -36,7 +36,7 @@ class CogTex {
     HRESULT createTexFromFile(ID3D11Device* p_device, Texs p_id, Tex** io_tex);
     HRESULT createSrvFromFile(ID3D11Device* p_device, std::string p_file, ID3D11ShaderResourceView** io_srv);
 
-    std::map< Texs, Tex* > m_texs;
+    std::map<Texs, Tex*> m_texs;
 };
 
 #endif // DV2520_COGTEX_H

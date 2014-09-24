@@ -29,8 +29,8 @@ void InputQueue::empty() {
 
 void InputQueue::mousePush(InputMouse p_mouse) {
 #define mousePixelToAngle 1.0f
-    float dx = (float)RADIAN(mousePixelToAngle * static_cast< float >(p_mouse.getDX() - m_mousePrev.getDX()));
-    float dy = (float)RADIAN(mousePixelToAngle * static_cast< float >(p_mouse.getDY() - m_mousePrev.getDY()));
+    float dx = (float)RADIAN(mousePixelToAngle * static_cast<float>(p_mouse.getDX() - m_mousePrev.getDX()));
+    float dy = (float)RADIAN(mousePixelToAngle * static_cast<float>(p_mouse.getDY() - m_mousePrev.getDY()));
     m_mouseCur = InputMouse(dx, dy);
     m_mousePrev = InputMouse(p_mouse.getDX(), p_mouse.getDY());
 }

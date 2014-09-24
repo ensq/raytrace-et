@@ -8,7 +8,7 @@ struct ID3D11Buffer;
 #include <Util.h>
 #include <d3d11.h> // eww.
 
-template< class T >
+template<class T>
 class BufStream {
   public:
     BufStream(D3D11_BIND_FLAG p_bindFlag, D3D11_RESOURCE_MISC_FLAG p_resourceMiscFlag) {
@@ -120,7 +120,7 @@ class BufStream {
 
     unsigned m_elementCntCur;
     unsigned m_elementCntMax;
-    std::vector< T > m_elements;
+    std::vector<T> m_elements;
     ID3D11Buffer* m_buffer;
 
     D3D11_BIND_FLAG m_bindFlag;

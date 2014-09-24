@@ -47,11 +47,11 @@ class Dx {
     ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of structure.
     ID3D11RenderTargetView* m_rtvBackbuffer;
 
-    BufStreamSrv< Vertex >* m_srvStreamVertices;
-    BufStreamSrv< unsigned >* m_srvStreamIndices;
-    BufStreamSrv< ObjInstance >* m_srvStreamInstances;
-    BufStreamSrv< LightPoint >* m_srvStreamLights;
-    BufStreamSrv< Bvh_Node_Flat >* m_srvStreamNodes;
+    BufStreamSrv<Vertex>* m_srvStreamVertices;
+    BufStreamSrv<unsigned>* m_srvStreamIndices;
+    BufStreamSrv<ObjInstance>* m_srvStreamInstances;
+    BufStreamSrv<LightPoint>* m_srvStreamLights;
+    BufStreamSrv<Bvh_Node_Flat>* m_srvStreamNodes;
     BufUav* m_uavRays;
     BufUav* m_uavIntersections;
     BufUav* m_uavColor;
@@ -62,7 +62,7 @@ class Dx {
     CogSS* m_cogSS;
     CogTex* m_cogTex;
 
-    std::vector< Obj* > m_objects;
+    std::vector<Obj*> m_objects;
 
     // temp:
     Bvh_Node_Flat* m_nodes;

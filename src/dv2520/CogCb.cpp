@@ -14,10 +14,10 @@ CogCb::~CogCb() {
 HRESULT CogCb::init(ID3D11Device* p_device) {
     HRESULT hr = S_OK;
 
-    m_cbPerInstance = new Cb< CbPerInstance >();
+    m_cbPerInstance = new Cb<CbPerInstance>();
     hr = m_cbPerInstance->init(p_device);
     if(SUCCEEDED(hr)) {
-        m_cbPerFrame = new Cb< CbPerFrame >();
+        m_cbPerFrame = new Cb<CbPerFrame>();
         hr = m_cbPerFrame->init(p_device);
     }
 

@@ -3,7 +3,7 @@
 
 // At the moment, we only use dynamic constant buffers.
 // Be sure to add support for constant ones as well.
-template < class T >
+template <class T>
 class Cb {
   public:
     Cb() {

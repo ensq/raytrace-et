@@ -3,8 +3,8 @@
 
 #include <BufStream.h>
 
-template< class T >
-class BufStreamSrv : public BufStream< T > {
+template<class T>
+class BufStreamSrv : public BufStream<T> {
   public:
     BufStreamSrv() : BufStream(D3D11_BIND_SHADER_RESOURCE, D3D11_RESOURCE_MISC_BUFFER_STRUCTURED) {
         m_srv = nullptr;
