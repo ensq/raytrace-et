@@ -13,9 +13,9 @@ Ant::~Ant() {
     TwTerminate();
 }
 
-void Ant::init( ID3D11Device* p_device, unsigned p_screenWidth, unsigned p_screenHeight ) {
-    TwInit( TW_DIRECT3D11, p_device );
-    TwWindowSize( p_screenWidth, p_screenHeight );
+void Ant::init(ID3D11Device* p_device, unsigned p_screenWidth, unsigned p_screenHeight) {
+    TwInit(TW_DIRECT3D11, p_device);
+    TwWindowSize(p_screenWidth, p_screenHeight);
 
     TwBar *bar = TwNewBar("AntTweakBar");
     TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar into a DirectX11 application.' ");
@@ -30,8 +30,8 @@ void Ant::init( ID3D11Device* p_device, unsigned p_screenWidth, unsigned p_scree
 void Ant::render() {
     TwDraw();
 }
-int Ant::eventWin( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
-    return TwEventWin( hWnd, message, wParam, lParam );
+int Ant::eventWin(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    return TwEventWin(hWnd, message, wParam, lParam);
 }
 
 double Ant::getTimeRaysGenerate() const {
@@ -44,12 +44,12 @@ double Ant::getTimeLighting() const {
     return m_timeLighting;
 }
 
-void Ant::setTimeRaysGenerate( double p_time ) {
+void Ant::setTimeRaysGenerate(double p_time) {
     m_timeRaysGenerate = p_time;
 }
-void Ant::setTimeRaysInterect( double p_time ) {
+void Ant::setTimeRaysInterect(double p_time) {
     m_timeRaysInterect = p_time;
 }
-void Ant::setTimeLighting( double p_time ) {
+void Ant::setTimeLighting(double p_time) {
     m_timeLighting = p_time;
 }

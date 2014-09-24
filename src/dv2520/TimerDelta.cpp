@@ -12,17 +12,17 @@ TimerDelta::TimerDelta() {
     m_timeCur = 0;
 }
 TimerDelta::~TimerDelta() {
-    ASSERT_DELETE( m_timer );
+    ASSERT_DELETE(m_timer);
 }
 
 double TimerDelta::tick() {
-    if( m_ticking==false ) {
+    if(m_ticking==false) {
         m_timeDelta = 0.0;
     } else {
         m_timer->stop();
 
         m_timeDelta = m_timer->getElapsedTimeSec();
-        if( m_timeDelta < 0.0 ) { // This may indeed happen
+        if(m_timeDelta < 0.0) {   // This may indeed happen
             m_timeDelta = 0.0;
         }
 
@@ -38,14 +38,14 @@ void TimerDelta::reset() {
     m_ticking = true;
 }
 void TimerDelta::start() {
-    if( m_ticking==false ) {
+    if(m_ticking==false) {
         m_timer->reset();
         m_timer->start();
         m_ticking = true;
     }
 }
 void TimerDelta::stop() {
-    if( m_ticking==true ) {
+    if(m_ticking==true) {
         m_ticking = false;
     }
 }

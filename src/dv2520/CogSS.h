@@ -6,15 +6,15 @@ enum SSs {
 };
 
 class CogSS {
-public:
+  public:
     CogSS();
     ~CogSS();
 
-    HRESULT init( ID3D11Device* p_device );
+    HRESULT init(ID3D11Device* p_device);
 
-    ID3D11SamplerState* getSamplerState( SSs p_ss ) const;
-protected:
-private:
+    ID3D11SamplerState* getSamplerState(SSs p_ss) const;
+  protected:
+  private:
     std::map< SSs, ID3D11SamplerState* > m_sss;
 };
 

@@ -8,11 +8,12 @@ static const LPCTSTR g_winClassName    = "dv2520Win";
 static const unsigned g_winWidth    = 800;
 static const unsigned g_winHeight    = 800;
 
-int WINAPI wWinMain( HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev, LPWSTR p_lpCmdLine, int p_nCmdShow ) {
+int WINAPI wWinMain(HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev, LPWSTR p_lpCmdLine, int p_nCmdShow) {
     Util::crtMemLeakDetectionIfDebug();
     HRESULT hr = S_FALSE;
 
-    WinDesc desc; ZERO_MEM( desc );
+    WinDesc desc;
+    ZERO_MEM(desc);
     desc.title            = g_winTitle;
     desc.className        = g_winClassName;
     desc.width            = g_winWidth;
@@ -21,15 +22,15 @@ int WINAPI wWinMain( HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev, LPWSTR p_
     desc.hInstancePrev    = p_hInstancePrev;
     desc.lpCmdLine        = p_lpCmdLine;
     desc.nCmdShow        = p_nCmdShow;
-    Win win( desc );
+    Win win(desc);
     hr = win.init();
 
-    Dv2520 dv2520( win );
-    if( SUCCEEDED( hr ) ) {
+    Dv2520 dv2520(win);
+    if(SUCCEEDED(hr)) {
         hr = dv2520.init();
     }
     int retVal = 1;
-    if( SUCCEEDED( hr ) ) {
+    if(SUCCEEDED(hr)) {
         retVal = dv2520.run();
     } else {
         retVal = hr;

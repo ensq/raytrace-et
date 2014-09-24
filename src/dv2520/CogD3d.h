@@ -13,15 +13,15 @@ struct D3d {
 };
 
 class CogD3d {
-public:
-    CogD3d( Win& p_win );
+  public:
+    CogD3d(Win& p_win);
     ~CogD3d();
 
     HRESULT init();
 
     D3d getD3d();
-protected:
-private:
+  protected:
+  private:
     HRESULT initD3d();
 
     D3d m_d3d;

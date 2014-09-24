@@ -28,7 +28,7 @@ BBox::BBox(const BBox& p_b, const Vec3F& p_v) {
     min = p_v.min(p_b.min);
     max = p_v.max(p_b.max);
 }
-BBox::BBox(const BBox& p_bl, const BBox& p_br) { 
+BBox::BBox(const BBox& p_bl, const BBox& p_br) {
     Vec3F br_min = p_br.min;
     Vec3F br_max = p_br.max;
 

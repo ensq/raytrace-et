@@ -9,7 +9,7 @@
 #endif // _WIN32
 
 class Timer {
-public:
+  public:
     Timer();
     virtual ~Timer();
 
@@ -21,15 +21,15 @@ public:
     double getElapsedTimeMilliSec();
     double getElapsedTimeSec();
 
-    double getStartTimeMicroSec() const; 
-    double getStartTimeMilliSec() const; 
-    double getStartTimeSec() const;  
+    double getStartTimeMicroSec() const;
+    double getStartTimeMilliSec() const;
+    double getStartTimeSec() const;
 
-    double getEndTimeMicroSec() const;  
+    double getEndTimeMicroSec() const;
     double getEndTimeMilliSec() const;
     double getEndTimeSec() const;
-protected:
-private:
+  protected:
+  private:
     bool m_ticking;
     double m_startTimeMicroSec;
     double m_endTimeMicroSec;

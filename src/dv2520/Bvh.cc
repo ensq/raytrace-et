@@ -62,7 +62,7 @@ void Bvh::init() {
 }
 
 void Bvh::build(Vertex* p_vertices,
-                size_t p_verticesCnt, 
+                size_t p_verticesCnt,
                 unsigned* p_indices,
                 size_t p_indicesCnt) {
     assert(p_indicesCnt % 3==0);
@@ -128,7 +128,9 @@ Bvh_Node* Bvh::buildRecursive(Bvh_Primitive* p_primitives,
     }
 
     struct SortFun {
-        SortFun(int d) { dim = d; }
+        SortFun(int d) {
+            dim = d;
+        }
         int dim;
         bool operator()(Bvh_Primitive &a, Bvh_Primitive &b) const {
             return a.center[dim] < b.center[dim];

@@ -11,30 +11,30 @@ enum Texs {
 static const char* TexFilenames[] = { "default.dds" };
 
 class Tex {
-public:
-    Tex( Texs p_id, ID3D11ShaderResourceView* p_srv );
+  public:
+    Tex(Texs p_id, ID3D11ShaderResourceView* p_srv);
     ~Tex();
 
     Texs getId() const;
     ID3D11ShaderResourceView* getSrv() const;
-protected:
-private:
+  protected:
+  private:
     Texs m_id;
     ID3D11ShaderResourceView* m_srv;
 };
 
 class CogTex {
-public:
+  public:
     CogTex();
     ~CogTex();
 
-    HRESULT init( ID3D11Device* p_device );
+    HRESULT init(ID3D11Device* p_device);
 
-    Tex* getTex( ID3D11Device* p_device, Texs p_id );
-protected:
-private:
-    HRESULT createTexFromFile( ID3D11Device* p_device, Texs p_id, Tex** io_tex );
-    HRESULT createSrvFromFile( ID3D11Device* p_device, std::string p_file, ID3D11ShaderResourceView** io_srv );
+    Tex* getTex(ID3D11Device* p_device, Texs p_id);
+  protected:
+  private:
+    HRESULT createTexFromFile(ID3D11Device* p_device, Texs p_id, Tex** io_tex);
+    HRESULT createSrvFromFile(ID3D11Device* p_device, std::string p_file, ID3D11ShaderResourceView** io_srv);
 
     std::map< Texs, Tex* > m_texs;
 };

@@ -21,8 +21,8 @@ struct WinDesc {
 };
 
 class Win {
-public:
-    Win( WinDesc p_desc );
+  public:
+    Win(WinDesc p_desc);
     ~Win();
 
     HRESULT init();
@@ -33,11 +33,11 @@ public:
     InputQueue& getInputQueue();
 
     // This method is totally off limits. Hands off.
-    static LRESULT CALLBACK wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-    static void wWinKeyProc( WPARAM wParam );
-    static void wWinMouseProc( WPARAM wParam, LPARAM lParam );
-protected:
-private:
+    static LRESULT CALLBACK wWinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    static void wWinKeyProc(WPARAM wParam);
+    static void wWinMouseProc(WPARAM wParam, LPARAM lParam);
+  protected:
+  private:
     HWND m_hWnd;
     WinDesc m_desc;
     static InputQueue m_inputQueue;

@@ -2,7 +2,7 @@
 
 #include <ExceptionDv2520.h>
 
-ExceptionDv2520::ExceptionDv2520( std::string p_func ) throw() {
+ExceptionDv2520::ExceptionDv2520(std::string p_func) throw() {
     m_func = p_func;
 }
 ExceptionDv2520::~ExceptionDv2520() throw() {

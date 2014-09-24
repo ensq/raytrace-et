@@ -14,16 +14,16 @@ static const LPCWSTR gFxCsoPathCsRaysIntersect = L"CsRaysIntersect.cso";
 static const LPCWSTR gFxCsoPathCsLighting = L"CsLighting.cso";
 
 class CogFx {
-public:
+  public:
     CogFx();
     ~CogFx();
 
-    HRESULT init( ID3D11Device* p_device );
+    HRESULT init(ID3D11Device* p_device);
 
-    void fxSet( ID3D11DeviceContext* p_devcon, Fxs p_fx );
-    void fxUnset( ID3D11DeviceContext* p_devcon, Fxs p_fx );
-protected:
-private:
+    void fxSet(ID3D11DeviceContext* p_devcon, Fxs p_fx);
+    void fxUnset(ID3D11DeviceContext* p_devcon, Fxs p_fx);
+  protected:
+  private:
     Fx* m_csRaysGenerate;
     Fx* m_csRaysIntersect;
     Fx* m_csLighting;

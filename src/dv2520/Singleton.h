@@ -3,13 +3,13 @@
 
 template<class T>
 class Singleton {
-public:
+  public:
     static T& get() {
         static T singleInstance;
         return singleInstance;
     }
-protected:
-private:
+  protected:
+  private:
     Singleton() {}
     ~Singleton() {}
 };

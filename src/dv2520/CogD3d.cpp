@@ -9,27 +9,27 @@ D3D_FEATURE_LEVEL g_dxFeatureLevels[] = {
     D3D_FEATURE_LEVEL_10_1,
     D3D_FEATURE_LEVEL_10_0
 };
-unsigned g_dxFeatureLevelsNum = sizeof( g_dxFeatureLevels ) / sizeof( D3D_FEATURE_LEVEL );
+unsigned g_dxFeatureLevelsNum = sizeof(g_dxFeatureLevels) / sizeof(D3D_FEATURE_LEVEL);
 D3D_DRIVER_TYPE g_dxDriverTypes[] = {
     D3D_DRIVER_TYPE_HARDWARE,
     D3D_DRIVER_TYPE_WARP,
     D3D_DRIVER_TYPE_REFERENCE
 };
-unsigned g_dxDriverTypesNum = sizeof( g_dxDriverTypes ) / sizeof( D3D_DRIVER_TYPE );
+unsigned g_dxDriverTypesNum = sizeof(g_dxDriverTypes) / sizeof(D3D_DRIVER_TYPE);
 
 D3d::D3d() {
-    ZERO_MEM( *(this) );
+    ZERO_MEM(*(this));
 }
 D3d::~D3d() {
 }
 
-CogD3d::CogD3d( Win& p_win ) {
+CogD3d::CogD3d(Win& p_win) {
     m_win = &p_win;
 }
 CogD3d::~CogD3d() {
-    ASSERT_RELEASE( m_d3d.device );
-    ASSERT_RELEASE( m_d3d.devcon );
-    ASSERT_RELEASE( m_d3d.swapChain );
+    ASSERT_RELEASE(m_d3d.device);
+    ASSERT_RELEASE(m_d3d.devcon);
+    ASSERT_RELEASE(m_d3d.swapChain);
 }
 
 HRESULT CogD3d::init() {
@@ -50,7 +50,8 @@ HRESULT CogD3d::initD3d() {
     deviceSwapChainFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif // DV2520_DEBUG
 
-    DXGI_SWAP_CHAIN_DESC scd; ZERO_MEM( scd );
+    DXGI_SWAP_CHAIN_DESC scd;
+    ZERO_MEM(scd);
     scd.BufferCount            = 1;
     scd.OutputWindow        = hWnd;
     scd.Windowed            = TRUE;
@@ -66,24 +67,24 @@ HRESULT CogD3d::initD3d() {
     HRESULT hr = S_FALSE;
     D3D_FEATURE_LEVEL featureLevel;
     D3D_DRIVER_TYPE driverType;
-    for( unsigned i = 0; i < g_dxDriverTypesNum && hr!=S_OK; i++ ) {
+    for(unsigned i = 0; i < g_dxDriverTypesNum && hr!=S_OK; i++) {
         driverType = g_dxDriverTypes[ i ];
         hr = D3D11CreateDeviceAndSwapChain(
-            NULL,
-            driverType,
-            NULL,
-            deviceSwapChainFlags,
-            g_dxFeatureLevels,
-            g_dxFeatureLevelsNum,
-            D3D11_SDK_VERSION,
-            &scd,
-            &( m_d3d.swapChain ),
-            &( m_d3d.device ),
-            &featureLevel,
-            &( m_d3d.devcon ) );
+                 NULL,
+                 driverType,
+                 NULL,
+                 deviceSwapChainFlags,
+                 g_dxFeatureLevels,
+                 g_dxFeatureLevelsNum,
+                 D3D11_SDK_VERSION,
+                 &scd,
+                 &(m_d3d.swapChain),
+                 &(m_d3d.device),
+                 &featureLevel,
+                 &(m_d3d.devcon));
     }
-    if( !SUCCEEDED( hr ) ) {
-        ERR_HR( hr );
+    if(!SUCCEEDED(hr)) {
+        ERR_HR(hr);
     } else {
         // Log instantiated device type and driver.
     }

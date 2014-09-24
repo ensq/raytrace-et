@@ -4,7 +4,7 @@
 class Timer;
 
 class TimerDelta {
-public:
+  public:
     TimerDelta();
     ~TimerDelta();
 
@@ -12,8 +12,8 @@ public:
     void reset();
     void start();
     void stop();
-protected:
-private:
+  protected:
+  private:
     bool m_ticking;
     Timer* m_timer;
 

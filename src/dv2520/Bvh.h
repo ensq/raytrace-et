@@ -21,7 +21,7 @@ struct Bvh_Node {
     size_t primitivesIdx; // firstPrimOffset;
     size_t primitivesCnt; // nPrimitives
     size_t axisSplit;
-    
+
     Bvh_Node();
     ~Bvh_Node();
     void asLeaf(size_t p_primitivesIdx,
@@ -45,7 +45,7 @@ struct Bvh_Node_Flat {
 };
 
 class Bvh {
- public:
+  public:
     Bvh(Obj* p_obj, size_t p_nodeMaxPrimitives);
     ~Bvh();
 
@@ -57,12 +57,12 @@ class Bvh {
     unsigned getNodesCnt() {
         return totalNodes;
     }
- protected:
- private:
-     void build(Vertex* p_vertices,
-         size_t p_verticesCnt, 
-         unsigned* p_indices,
-         size_t p_indicesCnt);
+  protected:
+  private:
+    void build(Vertex* p_vertices,
+               size_t p_verticesCnt,
+               unsigned* p_indices,
+               size_t p_indicesCnt);
     Bvh_Node* buildRecursive(Bvh_Primitive* p_primitives,
                              size_t p_idxStart,
                              size_t p_idxEnd,
@@ -70,7 +70,7 @@ class Bvh {
                              Bvh_Primitive* io_primitivesHierarchy);
     size_t flattenRecursive(Bvh_Node* p_node, size_t* p_nodeIdx);
     void freeRecursive(Bvh_Node* p_node);
-    
+
     const Obj* m_obj;
     Bvh_Node_Flat* m_nodes_flat;
 

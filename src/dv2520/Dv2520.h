@@ -11,15 +11,15 @@ class Win;
 class Cam;
 
 class Dv2520 {
-public:
-    Dv2520( Win& p_win );
+  public:
+    Dv2520(Win& p_win);
     ~Dv2520();
 
     HRESULT init();
     int run();
-    void gameloop( double p_delta );
-protected:
-private:
+    void gameloop(double p_delta);
+  protected:
+  private:
     Dx* m_dx;
     Cam* m_cam;
     TimerDelta m_timerDelta;

@@ -5,7 +5,7 @@
 
 InputQueue Win::m_inputQueue;
 
-Win::Win( WinDesc p_desc ) {
+Win::Win(WinDesc p_desc) {
     m_desc = p_desc;
 }
 Win::~Win() {
@@ -23,52 +23,54 @@ HRESULT Win::init() {
     int nCmdShow = m_desc.nCmdShow;
 
     WNDCLASSEX wcex;
-    ZERO_MEM( wcex ); // Use ZeroMemory to save some lines of code, and make up for it with a redundant comment.
-    wcex.cbSize            = sizeof( WNDCLASSEX ); 
+    ZERO_MEM(wcex);   // Use ZeroMemory to save some lines of code, and make up for it with a redundant comment.
+    wcex.cbSize            = sizeof(WNDCLASSEX);
     wcex.style          = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc    = Win::wWinProc;
     wcex.hInstance      = hInstance;
-    wcex.hCursor        = LoadCursor( NULL, IDC_ARROW );
-    wcex.hbrBackground  = (HBRUSH)( COLOR_WINDOW + 1 );
+    wcex.hCursor        = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW + 1);
     wcex.lpszMenuName   = NULL;
     wcex.lpszClassName  = className;
 
     LPTSTR lastMethod = "RegisterClassEx";
-    if( RegisterClassEx( &wcex )!=0 ) { // Registers a window class for subsequent use in calls to the CreateWindow or CreateWindowEx function.
+    if(RegisterClassEx(&wcex)!=0) {     // Registers a window class for subsequent use in calls to the CreateWindow or CreateWindowEx function.
         RECT rct = { 0, 0, width, height };
-        AdjustWindowRect( &rct, WS_OVERLAPPEDWINDOW, FALSE );
+        AdjustWindowRect(&rct, WS_OVERLAPPEDWINDOW, FALSE);
 
         lastMethod = "CreateWindow";
         m_hWnd = CreateWindow(
-            className,
-            title,
-            WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT,
-            CW_USEDEFAULT,
-            rct.right    - rct.left,
-            rct.bottom    - rct.top,
-            NULL,
-            NULL,
-            hInstance,
-            NULL);
-        if( m_hWnd!=NULL ) { // Return value of CreateWindow is NULL if failed.
-            ShowWindow( m_hWnd, nCmdShow );
+                     className,
+                     title,
+                     WS_OVERLAPPEDWINDOW,
+                     CW_USEDEFAULT,
+                     CW_USEDEFAULT,
+                     rct.right    - rct.left,
+                     rct.bottom    - rct.top,
+                     NULL,
+                     NULL,
+                     hInstance,
+                     NULL);
+        if(m_hWnd!=NULL) {   // Return value of CreateWindow is NULL if failed.
+            ShowWindow(m_hWnd, nCmdShow);
             //SetCapture( m_hWnd );
             hr = S_OK;
         }
     }
-    if( hr!=S_OK ) {
-        Util::getLastErrorAndTerminateProcess( lastMethod );
+    if(hr!=S_OK) {
+        Util::getLastErrorAndTerminateProcess(lastMethod);
     }
     return hr;
 }
 
 unsigned Win::getWidth() {
-    RECT rct; GetClientRect( m_hWnd, &rct );
+    RECT rct;
+    GetClientRect(m_hWnd, &rct);
     return rct.right - rct.left;
 }
 unsigned Win::getHeight() {
-    RECT rct; GetClientRect( m_hWnd, &rct );
+    RECT rct;
+    GetClientRect(m_hWnd, &rct);
     return rct.bottom - rct.top;
 }
 HWND Win::getHWnd() const {
@@ -78,25 +80,25 @@ InputQueue& Win::getInputQueue() {
     return m_inputQueue;
 }
 
-LRESULT CALLBACK Win::wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam ) {
+LRESULT CALLBACK Win::wWinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     HDC hdc;
     PAINTSTRUCT ps;
     LRESULT lResult = 0;
-    if( Singleton< Ant >::get().eventWin( hWnd, message, wParam, lParam )==false ) {
+    if(Singleton< Ant >::get().eventWin(hWnd, message, wParam, lParam)==false) {
         // If message not handled by AntTweakBar
-        switch ( message ) {
+        switch(message) {
         case WM_PAINT:
-            hdc = BeginPaint( hWnd, &ps );
-            EndPaint( hWnd, &ps );
+            hdc = BeginPaint(hWnd, &ps);
+            EndPaint(hWnd, &ps);
             break;
         case WM_DESTROY:
-            PostQuitMessage( 0 );
+            PostQuitMessage(0);
             break;
         case WM_KEYDOWN:
-            wWinKeyProc( wParam );
+            wWinKeyProc(wParam);
             break;
         case WM_MOUSEMOVE:
-            wWinMouseProc( wParam, lParam );
+            wWinMouseProc(wParam, lParam);
             break;
         case WM_SIZE: // Sent when user resizes windows. Be sure to implement support for this at some point.
         case WM_LBUTTONDOWN:
@@ -106,17 +108,17 @@ LRESULT CALLBACK Win::wWinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
         case WM_MBUTTONUP:
         case WM_RBUTTONUP:
         default:
-            lResult = DefWindowProc( hWnd, message, wParam, lParam );
+            lResult = DefWindowProc(hWnd, message, wParam, lParam);
             break;
         }
     }
     return lResult;
 }
-void Win::wWinKeyProc( WPARAM wParam ) {
+void Win::wWinKeyProc(WPARAM wParam) {
     InputKeyTypes keyType = InputKeyTypes_NA;
-    switch( wParam ) {
+    switch(wParam) {
     case VK_ESCAPE:
-        PostQuitMessage( 0 );
+        PostQuitMessage(0);
         break;
 
     case WinKeyW:
@@ -145,15 +147,15 @@ void Win::wWinKeyProc( WPARAM wParam ) {
         keyType = InputKeyTypes_RIGHT;
         break;
     }
-    if( keyType!=InputKeyTypes_NA ) {
-        m_inputQueue.keyPush( InputKey( keyType ) );
+    if(keyType!=InputKeyTypes_NA) {
+        m_inputQueue.keyPush(InputKey(keyType));
     }
 }
-void Win::wWinMouseProc( WPARAM wParam, LPARAM lParam ) {
-    float x = (float)GET_X_LPARAM( lParam );
-    float y = (float)GET_Y_LPARAM( lParam );
-    m_inputQueue.mousePush( InputMouse( x, y ) );
-    
+void Win::wWinMouseProc(WPARAM wParam, LPARAM lParam) {
+    float x = (float)GET_X_LPARAM(lParam);
+    float y = (float)GET_Y_LPARAM(lParam);
+    m_inputQueue.mousePush(InputMouse(x, y));
+
     //if( ( wParam & MK_LBUTTON )!=0 ) {
     //}
 }

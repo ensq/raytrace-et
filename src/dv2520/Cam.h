@@ -4,22 +4,22 @@
 #include <MathSimple.h>
 
 class Cam {
-public:
-    Cam( float p_fov, float p_aspect, float p_zNear, float p_zFar );
+  public:
+    Cam(float p_fov, float p_aspect, float p_zNear, float p_zFar);
     ~Cam();
 
-    void update( double p_delta );
+    void update(double p_delta);
 
-    void strafe( const float p_velocity );
-    void walk( const float p_velocity );
-    void pitch( const float p_angle );
-    void yaw( const float p_angle );
+    void strafe(const float p_velocity);
+    void walk(const float p_velocity);
+    void pitch(const float p_angle);
+    void yaw(const float p_angle);
 
     Vec3F getPos() const;
     Mat4F getView() const;
     Mat4F getProj() const;
-protected:
-private:
+  protected:
+  private:
     void updateView();
     void updateProj();
 

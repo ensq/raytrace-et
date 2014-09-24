@@ -6,9 +6,9 @@ struct Vertex;
 #include <MathSimple.h>
 
 class Obj {
-public:
-    Obj( unsigned p_verticesCnt, unsigned p_indicesCnt,
-         const Vertex* p_vertices, const unsigned* p_indices );
+  public:
+    Obj(unsigned p_verticesCnt, unsigned p_indicesCnt,
+        const Vertex* p_vertices, const unsigned* p_indices);
     ~Obj();
 
     unsigned getVerticesCnt() const;
@@ -20,8 +20,8 @@ public:
     Mat4F& getRotation();
     Mat4F& getScaling();
     Mat4F getWorldTransform() const;
-protected:
-private:
+  protected:
+  private:
     unsigned m_verticesCnt;
     unsigned m_indicesCnt;
 

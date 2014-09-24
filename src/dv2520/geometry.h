@@ -16,7 +16,7 @@ struct Vertex {
 struct BBox {
     Vec3F min;
     Vec3F max;
-    
+
     BBox();
     BBox(const Vec3F& p_vu);
     BBox(const Vec3F& p_vl, const Vec3F& p_vr);

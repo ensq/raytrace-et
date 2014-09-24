@@ -4,19 +4,19 @@
 #include <Input.h>
 
 class InputQueue {
-public:
+  public:
     InputQueue();
     ~InputQueue();
 
-    void keyPush( InputKey p_key );
-    bool keyPop( InputKey& io_key );
+    void keyPush(InputKey p_key);
+    bool keyPop(InputKey& io_key);
 
-    void mousePush( InputMouse p_mouse );
-    void mousePop( InputMouse& io_mouse );
+    void mousePush(InputMouse p_mouse);
+    void mousePop(InputMouse& io_mouse);
 
     void empty();
-protected:
-private:
+  protected:
+  private:
     std::queue< InputKey > m_keys;
     InputMouse m_mouseCur;
     InputMouse m_mousePrev;

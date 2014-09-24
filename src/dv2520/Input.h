@@ -8,7 +8,7 @@ enum InputKeyTypes {
     InputKeyTypes_A,
     InputKeyTypes_S,
     InputKeyTypes_D,
-    
+
     InputKeyTypes_UP,
     InputKeyTypes_LEFT,
     InputKeyTypes_DOWN,
@@ -16,29 +16,29 @@ enum InputKeyTypes {
 };
 
 class InputKey {
-public:
+  public:
     InputKey();
-    InputKey( InputKeyTypes p_type );
+    InputKey(InputKeyTypes p_type);
     ~InputKey();
 
     bool isValid() const;
 
     InputKeyTypes getType() const;
-protected:
-private:
+  protected:
+  private:
     InputKeyTypes m_type;
 };
 
 class InputMouse {
-public:
+  public:
     InputMouse();
-    InputMouse( float p_dX, float p_dY );
+    InputMouse(float p_dX, float p_dY);
     ~InputMouse();
-    
+
     float getDX() const;
     float getDY() const;
-protected:
-private:
+  protected:
+  private:
     float m_dX;
     float m_dY;
 };
