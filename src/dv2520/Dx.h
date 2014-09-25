@@ -1,27 +1,17 @@
 #ifndef DV2520_DX_H
 #define DV2520_DX_H
 
-#define BLOCK_SIZE 16
-
-enum Fxs;
-
 struct ID3D11RenderTargetView;
 struct ID3D11UnorderedAccessView;
 
 class Win;
-class Obj;
+class Fov;
 class CogFx;
 class CogCb;
 class CogSS;
 class CogD3d;
 class CogTex;
 class CogGeo;
-class BufUav;
-class TimerD3d;
-
-#include <Bvh.h>
-#include <structs.h>
-#include <geometry.h>
 
 namespace DxClearColor {    
     const FLOAT Red  [4] = {1.0f, 0.0f, 0.0f, 1.0f};
@@ -37,18 +27,12 @@ class Dx {
     ~Dx();
 
     HRESULT init();
-    HRESULT render(double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj);
+    HRESULT render(double p_delta, Vec3F& p_pos,
+                   Mat4F& p_view, Mat4F& p_proj);
   protected:
   private:
-    double dispatch(ID3D11DeviceContext* p_devcon, Fxs p_fx);
-    bool initObjects(ID3D11Device* p_device);
-
     ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of structure.
     ID3D11RenderTargetView* m_rtvBackbuffer;
-
-    BufUav* m_uavRays;
-    BufUav* m_uavIntersections;
-    BufUav* m_uavColor;
 
     CogD3d* m_cogD3d;
     CogFx* m_cogFx;
@@ -57,7 +41,8 @@ class Dx {
     CogTex* m_cogTex;
     CogGeo* m_cogGeo;
 
-    TimerD3d* m_timer;
+    Fov* m_fov;
+    
     Win* m_win;
 };
 
