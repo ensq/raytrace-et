@@ -100,6 +100,7 @@
     <ClCompile Include="..\..\src\dv2520\CogCb.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogD3d.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogFx.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogGeo.cc" />
     <ClCompile Include="..\..\src\dv2520\CogSS.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogTex.cpp" />
     <ClCompile Include="..\..\src\dv2520\Dx.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="..\..\src\dv2520\CogCb.h" />
     <ClInclude Include="..\..\src\dv2520\CogD3d.h" />
     <ClInclude Include="..\..\src\dv2520\CogFx.h" />
+    <ClInclude Include="..\..\src\dv2520\CogGeo.h" />
     <ClInclude Include="..\..\src\dv2520\CogSS.h" />
     <ClInclude Include="..\..\src\dv2520\CogTex.h" />
     <ClInclude Include="..\..\src\dv2520\Dx.h" />

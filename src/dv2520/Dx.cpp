@@ -9,24 +9,16 @@
 #include <CogSS.h>
 #include <CogD3d.h>
 #include <CogTex.h>
+#include <CogGeo.h>
 #include <BufUav.h>
 #include <structs.h>
 #include <TimerD3d.h>
-
-#include <lbo.h>
-#include <Bvh.h>
-#include <geometry.h>
 
 Dx::Dx(Win& p_win) {
     m_win = &p_win;
 
     m_uavBackbuffer = nullptr;
     m_rtvBackbuffer = nullptr;
-    m_srvStreamVertices = nullptr;
-    m_srvStreamIndices = nullptr;
-    m_srvStreamInstances = nullptr;
-    m_srvStreamLights = nullptr;
-    m_srvStreamNodes = nullptr;
     m_uavRays = nullptr;
     m_uavIntersections = nullptr;
     m_uavColor = nullptr;
@@ -35,17 +27,13 @@ Dx::Dx(Win& p_win) {
     m_cogCb = nullptr;
     m_cogSS = nullptr;
     m_cogTex = nullptr;
+    m_cogGeo = nullptr;
     m_timer = nullptr;
 }
 Dx::~Dx() {
     ASSERT_RELEASE(m_uavBackbuffer);
     ASSERT_RELEASE(m_rtvBackbuffer);
 
-    ASSERT_DELETE(m_srvStreamVertices);
-    ASSERT_DELETE(m_srvStreamIndices);
-    ASSERT_DELETE(m_srvStreamInstances);
-    ASSERT_DELETE(m_srvStreamLights);
-    ASSERT_DELETE(m_srvStreamNodes);
     ASSERT_DELETE(m_uavRays);
     ASSERT_DELETE(m_uavIntersections);
     ASSERT_DELETE(m_uavColor);
@@ -54,14 +42,8 @@ Dx::~Dx() {
     ASSERT_DELETE(m_cogCb);
     ASSERT_DELETE(m_cogSS);
     ASSERT_DELETE(m_cogTex);
+    ASSERT_DELETE(m_cogGeo);
     ASSERT_DELETE(m_timer);
-
-    for(unsigned i = 0; i<m_objects.size(); i++) {
-        ASSERT_DELETE(m_objects.at(i));
-    }
-
-    assert(m_nodes!=nullptr);
-    delete[] m_nodes;
 }
 
 HRESULT Dx::init() {
@@ -119,6 +101,10 @@ HRESULT Dx::init() {
         m_cogTex = new CogTex();
         hr = m_cogTex->init(d3d.device);
     }
+    if(SUCCEEDED(hr)) {
+        m_cogGeo = new CogGeo();
+        hr = m_cogGeo->init();
+    }
 
     // Initialize UAVs:
     unsigned numPixels = m_win->getWidth() * m_win->getHeight();
@@ -135,18 +121,6 @@ HRESULT Dx::init() {
         hr = m_uavColor->init(d3d.device);
     }
 
-    // Initialize SRVs:
-    if(SUCCEEDED(hr)) {
-        m_srvStreamVertices = new BufStreamSrv<Vertex>();
-        m_srvStreamIndices = new BufStreamSrv<unsigned>();
-        m_srvStreamInstances = new BufStreamSrv<ObjInstance>();
-        m_srvStreamLights = new BufStreamSrv<LightPoint>();
-        m_srvStreamNodes = new BufStreamSrv<Bvh_Node_Flat>();
-    }
-
-    // Initialize demo objects:
-    initObjects(d3d.device);
-
     // Initialize timer
     if(SUCCEEDED(hr)) {
         m_timer = new TimerD3d();
@@ -157,77 +131,10 @@ HRESULT Dx::init() {
 }
 HRESULT Dx::render(double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj) {
     D3d d3d = m_cogD3d->getD3d();
-    d3d.devcon->ClearRenderTargetView(m_rtvBackbuffer, DxClearColor::Black);
+    d3d.devcon->ClearRenderTargetView(m_rtvBackbuffer,
+                                      DxClearColor::Black);
 
-    // Prepare render by clearing streams and updating them with new data:
-    m_srvStreamVertices->reset();
-    m_srvStreamIndices->reset();
-    m_srvStreamInstances->reset();
-    m_srvStreamLights->reset();
-    m_srvStreamNodes->reset();
-
-    unsigned lightsCnt = 0;
-    LightPoint light;
-    light.pos = Vec3F(0.0f, 5.0f, 0.0f);
-    light.ambient = Vec4F(0.2f, 0.2f, 0.2f, 1.0f);
-    light.diffuse = Vec4F(0.0f, 0.6f, 0.0f, 1.0f);
-    light.specular = Vec4F(0.0f, 0.8f, 0.0f, 1.0f);
-    light.attenuation = Vec3F(0.5f, 1.0f, 0.0f);
-    light.dist = 100.0f;
-    m_srvStreamLights->pushElement(light);
-    lightsCnt++;
-
-    light.pos = Vec3F(-2.0, 3.0f, -2.0f);
-    light.ambient = Vec4F(0.2f, 0.2f, 0.2f, 1.0f);
-    light.diffuse = Vec4F(0.6f, 0.0f, 0.0f, 1.0f);
-    light.specular = Vec4F(0.8f, 0.0f, 0.0f, 1.0f);
-    light.attenuation = Vec3F(0.5f, 1.0f, 0.0f);
-    light.dist = 100.0f;
-    m_srvStreamLights->pushElement(light);
-    lightsCnt++;
-
-    light.pos = Vec3F(2.0f, 3.0f, 2.0f);
-    light.ambient = Vec4F(0.2f, 0.2f, 0.2f, 1.0f);
-    light.diffuse = Vec4F(0.0f, 0.0f, 0.6f, 1.0f);
-    light.specular = Vec4F(0.0f, 0.0f, 0.8f, 1.0f);
-    light.attenuation = Vec3F(0.5f, 1.0f, 0.0f);
-    light.dist = 100.0f;
-    m_srvStreamLights->pushElement(light);
-    lightsCnt++;
-
-    // Add objects to the scene:
-    unsigned indexOffset = 0;
-    unsigned instancesCnt = 0;
-    for(unsigned i = 0; i<m_objects.size(); i++) {
-        Obj* obj = m_objects.at(i);
-
-        static float rotate = 0.0f;
-        obj->getRotation().rotate(0.0f, rotate, 0.0f);
-        rotate += 1.0f;
-
-        ObjInstance instance;
-        instance.indexStart = indexOffset;
-        instance.indexCnt = obj->getIndicesCnt();
-        instance.vertexCnt = obj->getVerticesCnt();
-        instance.world = obj->getWorldTransform();
-        instance.worldInv = obj->getWorldTransform();
-        instance.worldInv.inverse();
-        indexOffset += instance.indexCnt;
-
-        m_srvStreamVertices->pushElements(obj->getVertices(), obj->getVerticesCnt());
-        m_srvStreamIndices->pushElements(obj->getIndices(), obj->getIndicesCnt());
-        m_srvStreamInstances->pushElement(instance);
-        m_srvStreamNodes->pushElements(m_nodes, numNodes);
-
-        instancesCnt++;
-    }
-
-    // Update streams:
-    m_srvStreamVertices->updateBufStream(d3d.device, d3d.devcon);
-    m_srvStreamIndices->updateBufStream(d3d.device, d3d.devcon);
-    m_srvStreamInstances->updateBufStream(d3d.device, d3d.devcon);
-    m_srvStreamLights->updateBufStream(d3d.device, d3d.devcon);
-    m_srvStreamNodes->updateBufStream(d3d.device, d3d.devcon);
+    m_cogGeo->update(d3d.device, d3d.devcon); // Update scene geometry.
 
     // Update per-frame CB:
     Mat4F viewInv = p_view;
@@ -241,8 +148,8 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj) {
     cbPerFrame.proj = p_proj;
     cbPerFrame.projInv = projInv;
     cbPerFrame.pos = p_pos;
-    cbPerFrame.instancesCnt = instancesCnt;
-    cbPerFrame.lightsCnt = lightsCnt;
+    cbPerFrame.instancesCnt = m_cogGeo->getInstancesCnt();
+    cbPerFrame.lightsCnt = m_cogGeo->getLightsCnt();
     m_cogCb->mapCbPerFrame(d3d.devcon, cbPerFrame);
 
     // Set CBs:
@@ -250,12 +157,12 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos, Mat4F& p_view, Mat4F& p_proj) {
 
     // Set SRVs:
     ID3D11ShaderResourceView* srvs[] = {
-        m_srvStreamVertices->getSrv(),
-        m_srvStreamIndices->getSrv(),
-        m_srvStreamInstances->getSrv(),
-        m_srvStreamLights->getSrv(),
-        m_srvStreamNodes->getSrv(),
-        m_cogTex->getTex(d3d.device, Texs_default)->getSrv()   // Make this more general.
+        m_cogGeo->getSrvVertices(),
+        m_cogGeo->getSrvIndices(),
+        m_cogGeo->getSrvInstances(),
+        m_cogGeo->getSrvLights(),
+        m_cogGeo->getSrvNodes(),
+        m_cogTex->getTex(d3d.device, Texs_default)->getSrv() // Make this more general.
     };
     d3d.devcon->CSSetShaderResources(0, 6, srvs);
 
@@ -309,34 +216,4 @@ double Dx::dispatch(ID3D11DeviceContext* p_devcon, Fxs p_fx) {
     m_cogFx->fxUnset(p_devcon, p_fx);
 
     return m_timer->time(p_devcon);
-}
-
-bool Dx::initObjects(ID3D11Device* p_device) {
-    bool success = true;
-    for(unsigned i = 0; i<1 && success==true; i++) {
-        std::vector<float> vertices;
-        std::vector<unsigned> indices;
-        success = lbo::parse("../../../obj/dv2520/box2.obj", vertices, indices); // "../../../obj/dv2520/bth.obj"
-        assert(success==true);
-
-        std::vector<Vertex> vertices_struct;
-        for(size_t i = 0; i<vertices.size(); i+=8) {
-            float* p = &vertices.at(i);
-            Vertex v(Vec3F(p[0], p[1], p[2]),
-                     Vec3F(p[5], p[6], p[7]),
-                     Vec2F(p[3], p[4]));
-            vertices_struct.push_back(v);
-        }
-        Obj* obj = new Obj(vertices_struct.size(), indices.size(), &vertices_struct.at(0), &indices.at(0));
-
-        Bvh bvh(obj, 2);
-        bvh.init();
-        numNodes = bvh.getNodesCnt();
-        m_nodes = new Bvh_Node_Flat[numNodes];
-        memcpy(m_nodes, bvh.getNodes(), sizeof(Bvh_Node_Flat) * numNodes);
-
-        m_objects.push_back(obj);
-    }
-
-    return success;
 }

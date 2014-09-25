@@ -5,7 +5,8 @@
 BufSrv::BufSrv(unsigned p_tNum, unsigned p_tSize) : Buf(p_tNum, p_tSize) {
     m_data = nullptr;
 }
-BufSrv::BufSrv(unsigned p_tNum, unsigned p_tSize, void* p_data) : Buf(p_tNum, p_tSize) {
+BufSrv::BufSrv(unsigned p_tNum, unsigned p_tSize,
+               void* p_data) : Buf(p_tNum, p_tSize) {
     m_data = p_data;
 }
 BufSrv::~BufSrv() {

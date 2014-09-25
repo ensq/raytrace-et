@@ -9,7 +9,8 @@ class Buf {
     virtual HRESULT init(ID3D11Device* p_device) = 0;
   protected:
     HRESULT initBuf(ID3D11Device* p_device, D3D11_BUFFER_DESC& p_desc);
-    HRESULT initBuf(ID3D11Device* p_device, D3D11_BUFFER_DESC& p_desc, D3D11_SUBRESOURCE_DATA& p_initialData);
+    HRESULT initBuf(ID3D11Device* p_device, D3D11_BUFFER_DESC& p_desc,
+                    D3D11_SUBRESOURCE_DATA& p_initialData);
 
     unsigned getTNum() const;
     unsigned getTSize() const;

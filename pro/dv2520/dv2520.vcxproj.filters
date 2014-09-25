@@ -76,6 +76,9 @@
     <ClCompile Include="..\..\src\dv2520\geometry.cc">
       <Filter>Dx</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\CogGeo.cc">
+      <Filter>Dx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -167,6 +170,9 @@
       <Filter>Dx</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\structs.h">
+      <Filter>Dx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogGeo.h">
       <Filter>Dx</Filter>
     </ClInclude>
   </ItemGroup>
