@@ -26,8 +26,8 @@ struct CbPerFrame {
 struct CbPerFov {
     unsigned fovWidth;
     unsigned fovHeight;
-    unsigned pad0;
-    unsigned pad1;
+    unsigned fovOfsX;
+    unsigned fovOfsY;
 };
 
 #endif // DV2520_CBS_H

@@ -38,6 +38,7 @@ Dx::~Dx() {
     ASSERT_DELETE(m_cogGeo);
 
     ASSERT_DELETE(m_fov);
+    ASSERT_DELETE(m_fov2);
 }
 
 HRESULT Dx::init() {
@@ -109,8 +110,13 @@ HRESULT Dx::init() {
         unsigned w, h;
         w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
         h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        m_fov = new Fov(w, h, d3d.device, d3d.devcon);
+        m_fov = new Fov(w, h, 0, 0, d3d.device, d3d.devcon);
         hr = m_fov->init();
+
+        w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
+        h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
+        m_fov2 = new Fov(w, h, 300, 300, d3d.device, d3d.devcon);
+        hr = m_fov2->init();
     }
 
     return hr;
@@ -156,12 +162,21 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos,
     d3d.devcon->CSSetSamplers(0, 1, sss);
 
     m_fov->render(m_cogFx, m_cogCb);
-
+    m_fov2->render(m_cogFx, m_cogCb);
+    
     // Unset SRVs:
     memset(srvs, NULL, sizeof(ID3D11ShaderResourceView*) * NUM_SRVS);
     d3d.devcon->CSSetShaderResources(0, NUM_SRVS, srvs);
 
     // TEST
+     CbPerFov cbPerFov;
+    cbPerFov.fovWidth = m_win->getWidth();
+    cbPerFov.fovHeight = m_win->getHeight();
+    cbPerFov.fovOfsX = 0;
+    cbPerFov.fovOfsY = 0;
+    m_cogCb->mapCbPerFov(d3d.devcon, cbPerFov);
+    m_cogCb->setCbs(d3d.devcon);
+
     ID3D11ShaderResourceView* srvsext[] = {NULL, NULL, NULL, NULL, NULL, NULL, m_fov->getFovTarget()->getSrv()};
     ID3D11UnorderedAccessView* uavs[] = {NULL, NULL, NULL, NULL, m_uavBackbuffer};
     d3d.devcon->CSSetShaderResources(0, 7, srvsext);
@@ -176,6 +191,29 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos,
     d3d.devcon->CSSetShaderResources(0, 7, srvsext);
     d3d.devcon->CSSetUnorderedAccessViews(0, 5, uavs, NULL);    
     // TEST
+
+    // TEST2
+    cbPerFov.fovWidth = 200;
+    cbPerFov.fovHeight = 200;
+    cbPerFov.fovOfsX = 300;
+    cbPerFov.fovOfsY = 300;
+    m_cogCb->mapCbPerFov(d3d.devcon, cbPerFov);
+    m_cogCb->setCbs(d3d.devcon);
+
+    srvsext[6] = m_fov2->getFovTarget()->getSrv();
+    d3d.devcon->CSSetShaderResources(0, 7, srvsext);
+    uavs[4] = m_uavBackbuffer;
+    d3d.devcon->CSSetUnorderedAccessViews(0, 5, uavs, NULL);
+    dX = (unsigned)ceil((float)200  / (float)BLOCK_SIZE);
+    dY = (unsigned)ceil((float)200 / (float)BLOCK_SIZE);
+    m_cogFx->dispatch(d3d.devcon, Fxs_CS_COMBINE,
+                      dX, dY);
+    
+    srvsext[6] = NULL;
+    uavs[4] = NULL;
+    d3d.devcon->CSSetShaderResources(0, 7, srvsext);
+    d3d.devcon->CSSetUnorderedAccessViews(0, 5, uavs, NULL);    
+    // TEST2
 
     // Unset Samplerstates:
     ID3D11SamplerState* sssUnset[] = { NULL };

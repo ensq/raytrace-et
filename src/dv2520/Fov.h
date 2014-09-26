@@ -16,8 +16,8 @@ class CogCb;
 class Fov {
  public:
     Fov(unsigned p_width, unsigned p_height,
-        ID3D11Device* p_device,
-        ID3D11DeviceContext* p_devcon);
+        unsigned p_ofsX, unsigned p_ofsY,
+        ID3D11Device* p_device, ID3D11DeviceContext* p_devcon);
     ~Fov();
 
     HRESULT init();
@@ -30,6 +30,8 @@ FovTarget* getFovTarget() {return m_target;};
  private:
     unsigned m_width;
     unsigned m_height;
+    unsigned m_ofsX;
+    unsigned m_ofsY;
     ID3D11Device* m_device;
     ID3D11DeviceContext* m_devcon;
     

@@ -8,11 +8,13 @@
 #include <structs.h>
 #include <FovTarget.h>
 
-Fov::Fov(unsigned p_width, unsigned p_height, ID3D11Device* p_device,
-         ID3D11DeviceContext* p_devcon) : m_device(p_device),
-                                          m_devcon(p_devcon) {
+Fov::Fov(unsigned p_width, unsigned p_height, unsigned p_ofsX, unsigned p_ofsY,
+         ID3D11Device* p_device, ID3D11DeviceContext* p_devcon)
+    : m_device(p_device), m_devcon(p_devcon) {
     m_width = p_width;
     m_height = p_height;
+    m_ofsX = p_ofsX;
+    m_ofsY = p_ofsY;
 
     m_uavRays = nullptr;
     m_uavIntersections = nullptr;
@@ -64,6 +66,8 @@ void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb) {
     CbPerFov cbPerFov;
     cbPerFov.fovWidth = m_width;
     cbPerFov.fovHeight = m_height;
+    cbPerFov.fovOfsX = m_ofsX;
+    cbPerFov.fovOfsY = m_ofsY;
     p_cogCb->mapCbPerFov(m_devcon, cbPerFov);
     p_cogCb->setCbs(m_devcon);
 

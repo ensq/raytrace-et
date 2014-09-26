@@ -47,8 +47,8 @@ cbuffer CbPerFrame : register( b1 ) {
 cbuffer CbPerFov : register( b2 ) {
     uint fovWidth;
     uint fovHeight;
-    float pad0;
-    float pad1;
+    uint fovOfsX;
+    uint fovOfsY;
 };
 
 #endif // DV2520_COMMON_FX

@@ -42,6 +42,7 @@ class Dx {
     CogGeo* m_cogGeo;
 
     Fov* m_fov;
+    Fov* m_fov2;
     
     Win* m_win;
 };
