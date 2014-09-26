@@ -23,4 +23,11 @@ struct CbPerFrame {
     Vec3F pad;
 };
 
+struct CbPerFov {
+    unsigned fovWidth;
+    unsigned fovHeight;
+    unsigned pad0;
+    unsigned pad1;
+};
+
 #endif // DV2520_CBS_H

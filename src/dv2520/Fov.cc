@@ -3,6 +3,7 @@
 #include <Ant.h>
 #include <Fov.h>
 #include <CogFx.h>
+#include <CogCb.h>
 #include <BufUav.h>
 #include <structs.h>
 #include <FovTarget.h>
@@ -56,16 +57,23 @@ HRESULT Fov::init() {
     return hr;
 }
 
-void Fov::render(CogFx* p_cogFx) {
+void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb) {
     const FLOAT TempBlack[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     m_devcon->ClearRenderTargetView(m_target->getRtv(), TempBlack);
 
-#define NUM_UAVS 4
+    CbPerFov cbPerFov;
+    cbPerFov.fovWidth = m_width;
+    cbPerFov.fovHeight = m_height;
+    p_cogCb->mapCbPerFov(m_devcon, cbPerFov);
+    p_cogCb->setCbs(m_devcon);
+
+#define NUM_UAVS 5
     ID3D11UnorderedAccessView* uavs[] = {
         m_uavRays->getUav(),
         m_uavIntersections->getUav(),
         m_uavColor->getUav(),
-        m_target->getUav()
+        m_target->getUav(),
+        NULL
     };
     m_devcon->CSSetUnorderedAccessViews(0, NUM_UAVS, uavs, NULL);
 

@@ -6,7 +6,10 @@
 
 [ numthreads( BLOCK_SIZE, BLOCK_SIZE, 1 ) ]
 void main( uint3 gThreadId : SV_DispatchThreadID ) {
-    const uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
+    if(gThreadId.x>=fovWidth || gThreadId.y>=fovHeight) {
+        return;
+    }
+    const uint pixelIdx = gThreadId.y * fovWidth + gThreadId.x;
 
     Ray ray = uavRays[ pixelIdx ];
     uavIntersections[ pixelIdx ] = intersectObjectInstances(ray, ray);

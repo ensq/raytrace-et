@@ -6,8 +6,8 @@
 float3 getNormalizedScreenCoordinates(uint3 screenPos) {
     float x = screenPos.x;
     float y = screenPos.y;
-    float halfWidth = screenWidth / 2.0f;
-    float halfHeight = screenHeight / 2.0f;
+    float halfWidth = fovWidth / 2.0f; // screenWidth
+    float halfHeight = fovHeight / 2.0f; // screenHeight
 
     float dx = tan(fov * 0.5f) * (x / halfWidth - 1.0f) / aspect;
     float dy = tan(fov * 0.5f) * (1.0f - y / halfHeight);
@@ -18,7 +18,10 @@ float3 getNormalizedScreenCoordinates(uint3 screenPos) {
 
 [numthreads(BLOCK_SIZE, BLOCK_SIZE, 1)]
 void main(uint3 gThreadId : SV_DispatchThreadID) {
-    const uint pixelIdx = gThreadId.y * screenWidth + gThreadId.x;
+    if(gThreadId.x>=fovWidth || gThreadId.y>=fovHeight) {
+        return;
+    }
+    const uint pixelIdx = gThreadId.y * fovWidth + gThreadId.x;
     
     float3 pixelPos = getNormalizedScreenCoordinates(gThreadId);
     pixelPos = mul(float4(pixelPos, 1.0f), viewInv).xyz;

@@ -44,5 +44,11 @@ cbuffer CbPerFrame : register( b1 ) {
     uint lightsCnt;
     float3 pad;
 };
+cbuffer CbPerFov : register( b2 ) {
+    uint fovWidth;
+    uint fovHeight;
+    float pad0;
+    float pad1;
+};
 
 #endif // DV2520_COMMON_FX

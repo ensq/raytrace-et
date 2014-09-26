@@ -10,6 +10,7 @@ class TimerD3d;
 class FovTarget;
 
 class CogFx;
+class CogCb;
 
 // Foveated View
 class Fov {
@@ -21,7 +22,7 @@ class Fov {
 
     HRESULT init();
 
-    void render(CogFx* p_cogFx);
+    void render(CogFx* p_cogFx, CogCb* p_cogCb);
 
 // temp:
 FovTarget* getFovTarget() {return m_target;};

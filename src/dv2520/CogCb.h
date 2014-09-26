@@ -13,14 +13,19 @@ class CogCb {
 
     void setCbs(ID3D11DeviceContext* p_devcon);
 
-    HRESULT mapCbPerInstance(ID3D11DeviceContext* p_devcon, CbPerInstance& p_new);
-    HRESULT mapCbPerFrame(ID3D11DeviceContext* p_devcon, CbPerFrame& p_new);
-
+    HRESULT mapCbPerInstance(ID3D11DeviceContext* p_devcon,
+                             CbPerInstance& p_new);
+    HRESULT mapCbPerFrame(ID3D11DeviceContext* p_devcon,
+                          CbPerFrame& p_new);
+    HRESULT mapCbPerFov(ID3D11DeviceContext* p_devcon,
+                        CbPerFov& p_new);
+    
     template <class T>
     HRESULT mapCb(ID3D11DeviceContext* p_devcon, Cb<T>* p_cb, T* p_new) {
         ID3D11Buffer* cb = p_cb->getBuf();
         D3D11_MAPPED_SUBRESOURCE mapSubRsrc;
-        HRESULT hr = p_devcon->Map(cb, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapSubRsrc);
+        HRESULT hr = p_devcon->Map(cb, 0, D3D11_MAP_WRITE_DISCARD,
+                                   0, &mapSubRsrc);
         if(SUCCEEDED(hr)) {
             T* old = (T*)mapSubRsrc.pData;
             memcpy(old, p_new, sizeof(T));
@@ -34,6 +39,7 @@ class CogCb {
   private:
     Cb<CbPerInstance>* m_cbPerInstance;
     Cb<CbPerFrame>* m_cbPerFrame;
+    Cb<CbPerFov>* m_cbPerFov;
 };
 
 #endif // DV2520_COGCB_H

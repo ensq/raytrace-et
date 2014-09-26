@@ -106,8 +106,10 @@ HRESULT Dx::init() {
     }
 
     if(SUCCEEDED(hr)) {
-        m_fov = new Fov(m_win->getWidth(), m_win->getHeight(),
-                        d3d.device, d3d.devcon);
+        unsigned w, h;
+        w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
+        h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
+        m_fov = new Fov(w, h, d3d.device, d3d.devcon);
         hr = m_fov->init();
     }
 
@@ -153,23 +155,21 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos,
     ID3D11SamplerState* sss[] = {m_cogSS->getSamplerState(SSs_default)};
     d3d.devcon->CSSetSamplers(0, 1, sss);
 
-    m_fov->render(m_cogFx);
+    m_fov->render(m_cogFx, m_cogCb);
 
     // Unset SRVs:
     memset(srvs, NULL, sizeof(ID3D11ShaderResourceView*) * NUM_SRVS);
     d3d.devcon->CSSetShaderResources(0, NUM_SRVS, srvs);
-
-    // Unset Samplerstates:
-    ID3D11SamplerState* sssUnset[] = { NULL };
-    d3d.devcon->CSSetSamplers(0, 1, sssUnset);
 
     // TEST
     ID3D11ShaderResourceView* srvsext[] = {NULL, NULL, NULL, NULL, NULL, NULL, m_fov->getFovTarget()->getSrv()};
     ID3D11UnorderedAccessView* uavs[] = {NULL, NULL, NULL, NULL, m_uavBackbuffer};
     d3d.devcon->CSSetShaderResources(0, 7, srvsext);
     d3d.devcon->CSSetUnorderedAccessViews(0, 5, uavs, NULL);
+    unsigned dX = (unsigned)ceil((float)m_win->getWidth()  / (float)BLOCK_SIZE);
+    unsigned dY = (unsigned)ceil((float)m_win->getHeight() / (float)BLOCK_SIZE);
     m_cogFx->dispatch(d3d.devcon, Fxs_CS_COMBINE,
-                      m_win->getWidth(), m_win->getHeight());
+                      dX, dY);
     
     srvsext[6] = NULL;
     uavs[4] = NULL;
@@ -177,6 +177,9 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos,
     d3d.devcon->CSSetUnorderedAccessViews(0, 5, uavs, NULL);    
     // TEST
 
+    // Unset Samplerstates:
+    ID3D11SamplerState* sssUnset[] = { NULL };
+    d3d.devcon->CSSetSamplers(0, 1, sssUnset);
 
     // Render GUI
     d3d.devcon->OMSetRenderTargets(1, &m_rtvBackbuffer, NULL);
