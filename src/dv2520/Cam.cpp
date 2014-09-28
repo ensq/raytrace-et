@@ -2,11 +2,12 @@
 
 #include <Cam.h>
 
-Cam::Cam(float p_fov, float p_aspect, float p_zNear, float p_zFar) {
-    m_fov = p_fov;
-    m_aspect = p_aspect;
+Cam::Cam(float p_zNear, float p_zFar) {
     m_zNear = p_zNear;
     m_zFar = p_zFar;
+
+    m_fov = -1.0f;
+    m_aspect = -1.0f;
 
     m_pos = Vec3F(0.0f, 0.0f, -45.0f);
     m_right = Vec3F(1.0f, 0.0f, 0.0f);
@@ -16,9 +17,17 @@ Cam::Cam(float p_fov, float p_aspect, float p_zNear, float p_zFar) {
 Cam::~Cam() {
 }
 
-void Cam::update(double p_delta) {
+void Cam::getView(Mat4F& io_view) {
     updateView();
+    io_view = m_view;
+}
+void Cam::getProj(float p_fov, float p_aspect,
+             Mat4F& io_proj) {
+    m_fov = p_fov;
+    m_aspect = p_aspect;
+    
     updateProj();
+    io_proj = m_proj;
 }
 
 void Cam::strafe(const float p_velocity) {
@@ -40,12 +49,6 @@ void Cam::yaw(const float p_angle) {
 
 Vec3F Cam::getPos() const {
     return m_pos;
-}
-Mat4F Cam::getView() const {
-    return m_view;
-}
-Mat4F Cam::getProj() const {
-    return m_proj;
 }
 
 void Cam::updateView() {

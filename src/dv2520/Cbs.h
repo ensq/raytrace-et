@@ -6,15 +6,12 @@
 struct CbPerInstance {
     unsigned screenWidth;
     unsigned screenHeight;
-    float aspect;
-    float fov;
+    Vec2F pad;
 };
 
 struct CbPerFrame {
     Mat4F view;
     Mat4F viewInv;
-    Mat4F proj;
-    Mat4F projInv;
 
     Vec3F pos;
     unsigned instancesCnt;
@@ -24,10 +21,17 @@ struct CbPerFrame {
 };
 
 struct CbPerFov {
+    Mat4F proj;
+    Mat4F projInv;
+    
     unsigned fovWidth;
     unsigned fovHeight;
     unsigned fovOfsX;
     unsigned fovOfsY;
+
+    float fov;
+    float aspect;
+    Vec2F pad;
 };
 
 #endif // DV2520_CBS_H

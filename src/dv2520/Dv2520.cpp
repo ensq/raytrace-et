@@ -8,11 +8,9 @@
 Dv2520::Dv2520(Win& p_win) {
     m_win = &p_win;
 
-    float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
-    float fov = (float)RADIAN(45.0f);
     float zFar = 1000;
     float zNear = 1;
-    m_cam = new Cam(fov, aspect, zNear, zFar);
+    m_cam = new Cam(zNear, zFar);
 
     m_dx = nullptr;
 }
@@ -92,9 +90,7 @@ void Dv2520::gameloop(double p_delta) {
     // Clear input:
     inputQueue.empty(); // Remember to clear the input.
 
-    m_cam->update(p_delta);
-
-    HRESULT hr = m_dx->render(p_delta, m_cam->getPos(), m_cam->getView(), m_cam->getProj());
+    HRESULT hr = m_dx->render(p_delta, m_cam);
     if(FAILED(hr)) {
         ERR_HR(hr);
     }

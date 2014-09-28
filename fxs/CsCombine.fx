@@ -14,10 +14,17 @@ SamplerState ssDefault : register(s0);
 
 // b
 cbuffer CbPerFov : register( b2 ) {
+    row_major float4x4 proj;
+    row_major float4x4 projInv;
+    
     uint fovWidth;
     uint fovHeight;
     uint fovOfsX;
     uint fovOfsY;
+
+    float fov;
+    float aspect;
+    float2 pad2;
 };
 
 [numthreads(BLOCK_SIZE, BLOCK_SIZE, 1)]

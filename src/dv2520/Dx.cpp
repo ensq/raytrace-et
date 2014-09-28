@@ -4,6 +4,7 @@
 #include <Ant.h>
 #include <Win.h>
 #include <Fov.h>
+#include <Cam.h>
 #include <CogFx.h>
 #include <CogCb.h>
 #include <CogSS.h>
@@ -81,16 +82,16 @@ HRESULT Dx::init() {
         hr = m_cogCb->init(d3d.device);
 
         // Rubbish, get rid of this:
-        float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
-        float fov = (float)PI/4;
+        //float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
+        //float fov = (float)PI/4;
         float zFar = 1000;
         float zNear = 1;
         // Per instance CB only needs to be updated once:
         CbPerInstance cbPerInstance;
         cbPerInstance.screenWidth = m_win->getWidth();
         cbPerInstance.screenHeight = m_win->getHeight();
-        cbPerInstance.aspect = aspect;
-        cbPerInstance.fov = fov;
+        //cbPerInstance.aspect = aspect;
+        //cbPerInstance.fov = fov;
         m_cogCb->mapCbPerInstance(d3d.devcon, cbPerInstance);
     }
     if(SUCCEEDED(hr)) {
@@ -107,22 +108,25 @@ HRESULT Dx::init() {
     }
 
     if(SUCCEEDED(hr)) {
+        float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
+        float fov = (float)RADIAN(45.0f);
+        float fov2 = (float)RADIAN(11.25f);
+
         unsigned w, h;
         w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
         h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        m_fov = new Fov(w, h, 0, 0, d3d.device, d3d.devcon);
+        m_fov = new Fov(w, h, 0, 0, fov, aspect, d3d.device, d3d.devcon);
         hr = m_fov->init();
 
         w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
         h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        m_fov2 = new Fov(w, h, 300, 300, d3d.device, d3d.devcon);
+        m_fov2 = new Fov(w, h, 300, 300, fov2, aspect, d3d.device, d3d.devcon);
         hr = m_fov2->init();
     }
 
     return hr;
 }
-HRESULT Dx::render(double p_delta, Vec3F& p_pos,
-                   Mat4F& p_view, Mat4F& p_proj) {
+HRESULT Dx::render(double p_delta, Cam* p_cam) {
     D3d d3d = m_cogD3d->getD3d();
     d3d.devcon->ClearRenderTargetView(m_rtvBackbuffer,
                                       DxClearColor::Black);
@@ -131,16 +135,14 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos,
     m_cogGeo->update(d3d.device, d3d.devcon);
 
     // Update per-frame constant buffer:
-    Mat4F viewInv = p_view;
+    Mat4F view, viewInv;
+    p_cam->getView(view);
+    viewInv = view;
     viewInv.inverse();
-    Mat4F projInv = p_proj;
-    projInv.inverse();
     CbPerFrame cbPerFrame;
-    cbPerFrame.view = p_view;
+    cbPerFrame.view = view;
     cbPerFrame.viewInv = viewInv;
-    cbPerFrame.proj = p_proj;
-    cbPerFrame.projInv = projInv;
-    cbPerFrame.pos = p_pos;
+    cbPerFrame.pos = p_cam->getPos();
     cbPerFrame.instancesCnt = m_cogGeo->getInstancesCnt();
     cbPerFrame.lightsCnt = m_cogGeo->getLightsCnt();
     m_cogCb->mapCbPerFrame(d3d.devcon, cbPerFrame);
@@ -161,15 +163,15 @@ HRESULT Dx::render(double p_delta, Vec3F& p_pos,
     ID3D11SamplerState* sss[] = {m_cogSS->getSamplerState(SSs_default)};
     d3d.devcon->CSSetSamplers(0, 1, sss);
 
-    m_fov->render(m_cogFx, m_cogCb);
-    m_fov2->render(m_cogFx, m_cogCb);
+    m_fov->render(m_cogFx, m_cogCb, p_cam);
+    m_fov2->render(m_cogFx, m_cogCb, p_cam);
     
     // Unset SRVs:
     memset(srvs, NULL, sizeof(ID3D11ShaderResourceView*) * NUM_SRVS);
     d3d.devcon->CSSetShaderResources(0, NUM_SRVS, srvs);
 
     // TEST
-     CbPerFov cbPerFov;
+    CbPerFov cbPerFov;
     cbPerFov.fovWidth = m_win->getWidth();
     cbPerFov.fovHeight = m_win->getHeight();
     cbPerFov.fovOfsX = 0;

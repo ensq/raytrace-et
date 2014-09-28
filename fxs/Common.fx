@@ -29,26 +29,30 @@ SamplerState ssDefault : register( s0 );
 cbuffer CbPerInstance : register( b0 ) {
     uint screenWidth;
     uint screenHeight;
-    float aspect;
-    float fov;
+    float2 pad0;
 };
 cbuffer CbPerFrame : register( b1 ) {
     row_major float4x4 view;
     row_major float4x4 viewInv;
-    row_major float4x4 proj;
-    row_major float4x4 projInv;
 
     float3 pos;
     uint instancesCnt;
 
     uint lightsCnt;
-    float3 pad;
+    float3 pad1;
 };
 cbuffer CbPerFov : register( b2 ) {
+    row_major float4x4 proj;
+    row_major float4x4 projInv;
+    
     uint fovWidth;
     uint fovHeight;
     uint fovOfsX;
     uint fovOfsY;
+
+    float fov;
+    float aspect;
+    float2 pad2;
 };
 
 #endif // DV2520_COMMON_FX

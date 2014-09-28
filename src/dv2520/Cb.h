@@ -21,10 +21,10 @@ class Cb {
 
         D3D11_BUFFER_DESC desc;
         ZERO_MEM(desc);
-        desc.BindFlags        = D3D11_BIND_CONSTANT_BUFFER;
-        desc.ByteWidth        = cbSize;
-        desc.CPUAccessFlags    = D3D11_CPU_ACCESS_WRITE;
-        desc.Usage            = D3D11_USAGE_DYNAMIC;
+        desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        desc.ByteWidth = cbSize;
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        desc.Usage = D3D11_USAGE_DYNAMIC;
         return p_device->CreateBuffer(&desc, NULL, &m_buf);
     }
 

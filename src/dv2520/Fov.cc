@@ -2,6 +2,7 @@
 
 #include <Ant.h>
 #include <Fov.h>
+#include <Cam.h>
 #include <CogFx.h>
 #include <CogCb.h>
 #include <BufUav.h>
@@ -9,12 +10,15 @@
 #include <FovTarget.h>
 
 Fov::Fov(unsigned p_width, unsigned p_height, unsigned p_ofsX, unsigned p_ofsY,
-         ID3D11Device* p_device, ID3D11DeviceContext* p_devcon)
+         float p_fov, float p_aspect, ID3D11Device* p_device,
+         ID3D11DeviceContext* p_devcon)
     : m_device(p_device), m_devcon(p_devcon) {
     m_width = p_width;
     m_height = p_height;
     m_ofsX = p_ofsX;
     m_ofsY = p_ofsY;
+    m_fov = p_fov;
+    m_aspect = p_aspect;
 
     m_uavRays = nullptr;
     m_uavIntersections = nullptr;
@@ -59,15 +63,23 @@ HRESULT Fov::init() {
     return hr;
 }
 
-void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb) {
+void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
     const FLOAT TempBlack[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     m_devcon->ClearRenderTargetView(m_target->getRtv(), TempBlack);
 
+    Mat4F proj, projInv;
+    p_cam->getProj(m_fov, m_aspect, proj);
+    projInv = proj;
+    projInv.inverse();
     CbPerFov cbPerFov;
+    cbPerFov.proj = proj;
+    cbPerFov.projInv = projInv;
     cbPerFov.fovWidth = m_width;
     cbPerFov.fovHeight = m_height;
     cbPerFov.fovOfsX = m_ofsX;
     cbPerFov.fovOfsY = m_ofsY;
+    cbPerFov.fov = m_fov;
+    cbPerFov.aspect = m_aspect;
     p_cogCb->mapCbPerFov(m_devcon, cbPerFov);
     p_cogCb->setCbs(m_devcon);
 

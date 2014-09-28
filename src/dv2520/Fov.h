@@ -5,6 +5,7 @@
 
 typedef long HRESULT;
 
+class Cam;
 class BufUav;
 class TimerD3d;
 class FovTarget;
@@ -17,12 +18,13 @@ class Fov {
  public:
     Fov(unsigned p_width, unsigned p_height,
         unsigned p_ofsX, unsigned p_ofsY,
+        float p_fov, float p_aspect,
         ID3D11Device* p_device, ID3D11DeviceContext* p_devcon);
     ~Fov();
 
     HRESULT init();
 
-    void render(CogFx* p_cogFx, CogCb* p_cogCb);
+    void render(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam);
 
 // temp:
 FovTarget* getFovTarget() {return m_target;};
@@ -32,6 +34,8 @@ FovTarget* getFovTarget() {return m_target;};
     unsigned m_height;
     unsigned m_ofsX;
     unsigned m_ofsY;
+    float m_fov;
+    float m_aspect;
     ID3D11Device* m_device;
     ID3D11DeviceContext* m_devcon;
     

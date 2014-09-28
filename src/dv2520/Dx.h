@@ -6,6 +6,7 @@ struct ID3D11UnorderedAccessView;
 
 class Win;
 class Fov;
+class Cam;
 class CogFx;
 class CogCb;
 class CogSS;
@@ -27,8 +28,7 @@ class Dx {
     ~Dx();
 
     HRESULT init();
-    HRESULT render(double p_delta, Vec3F& p_pos,
-                   Mat4F& p_view, Mat4F& p_proj);
+    HRESULT render(double p_delta, Cam* p_cam);
   protected:
   private:
     ID3D11UnorderedAccessView* m_uavBackbuffer; // These ought to be put into some sort of structure.
