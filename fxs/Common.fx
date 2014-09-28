@@ -7,31 +7,33 @@
 #include <structs.fx>
 
 // t
-StructuredBuffer< Vertex > srvVertices : register( t0 );
-StructuredBuffer< uint > srvIndices : register( t1 );
-StructuredBuffer< ObjInstance > srvInstances : register( t2 );
-StructuredBuffer< LightPoint > srvLights : register( t3 );
-StructuredBuffer< ObjNode > srvNodes : register( t4 );
+StructuredBuffer<Vertex> srvVertices : register(t0);
+StructuredBuffer<uint> srvIndices : register(t1);
+StructuredBuffer<ObjInstance> srvInstances : register(t2);
+StructuredBuffer<LightPoint> srvLights : register(t3);
+StructuredBuffer<ObjNode> srvNodes : register(t4);
 Texture2D texAlbedo : register( t5 ); // In the future, texture arrays
                                       // may be added to support
-                                      // materials.
+                                      // materials
+Texture2D old : register(t6);
 
 // u
-RWStructuredBuffer< Ray > uavRays : register( u0 );
-RWStructuredBuffer< Intersection > uavIntersections : register( u1 );
-RWStructuredBuffer< float4 > uavColor : register( u2 );
-RWTexture2D< float4 > uavBackbuffer : register( u3 );
+RWStructuredBuffer<Ray> uavRays : register(u0);
+RWStructuredBuffer<Intersection> uavIntersections : register(u1);
+RWStructuredBuffer<float4> uavColor : register(u2);
+RWTexture2D<float4> uavBackbuffer : register(u3);
+RWTexture2D<float4> com : register(u4);
 
 // s
-SamplerState ssDefault : register( s0 );
+SamplerState ssDefault : register(s0);
 
 // b
-cbuffer CbPerInstance : register( b0 ) {
+cbuffer CbPerInstance : register(b0) {
     uint screenWidth;
     uint screenHeight;
     float2 pad0;
 };
-cbuffer CbPerFrame : register( b1 ) {
+cbuffer CbPerFrame : register(b1) {
     row_major float4x4 view;
     row_major float4x4 viewInv;
 
@@ -41,7 +43,7 @@ cbuffer CbPerFrame : register( b1 ) {
     uint lightsCnt;
     float3 pad1;
 };
-cbuffer CbPerFov : register( b2 ) {
+cbuffer CbPerFov : register(b2) {
     row_major float4x4 proj;
     row_major float4x4 projInv;
     
