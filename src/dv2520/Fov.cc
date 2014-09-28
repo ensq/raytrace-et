@@ -9,12 +9,16 @@
 #include <structs.h>
 #include <FovTarget.h>
 
-Fov::Fov(unsigned p_width, unsigned p_height, unsigned p_ofsX, unsigned p_ofsY,
+Fov::Fov(unsigned p_width, unsigned p_height, unsigned p_widthUpscale,
+         unsigned p_heightUpscale, unsigned p_ofsX, unsigned p_ofsY,
          float p_fov, float p_aspect, ID3D11Device* p_device,
          ID3D11DeviceContext* p_devcon)
     : m_device(p_device), m_devcon(p_devcon) {
     m_width = p_width;
     m_height = p_height;
+    m_widthUpscale = p_widthUpscale;
+    m_heightUpscale = p_heightUpscale;
+
     m_ofsX = p_ofsX;
     m_ofsY = p_ofsY;
     m_fov = p_fov;
@@ -63,7 +67,7 @@ HRESULT Fov::init() {
     return hr;
 }
 
-void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
+void Fov::renderToFov(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
     m_devcon->ClearRenderTargetView(m_target->getRtv(), DxClearColor::Black);
 
     Mat4F proj, projInv;
@@ -105,6 +109,35 @@ void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
     Singleton<Ant>::get().setTimeRaysGenerate(dtRays);
     Singleton<Ant>::get().setTimeRaysInterect(dtIntersect);
     Singleton<Ant>::get().setTimeLighting(dtLightning);
+
+    memset(uavs, 0, sizeof(ID3D11UnorderedAccessView*) * NUM_UAVS);
+    m_devcon->CSSetUnorderedAccessViews(0, NUM_UAVS, uavs, NULL);
+}
+void Fov::renderToBackbuffer(CogFx* p_cogFx, CogCb* p_cogCb,
+                             ID3D11UnorderedAccessView* p_uavBackbuffer) {
+    CbPerFov cbPerFov;
+    cbPerFov.fovWidth = m_widthUpscale;
+    cbPerFov.fovHeight = m_heightUpscale;
+    cbPerFov.fovOfsX = m_ofsX;
+    cbPerFov.fovOfsY = m_ofsY;
+    p_cogCb->mapCbPerFov(m_devcon, cbPerFov);
+    p_cogCb->setCbs(m_devcon);
+
+#define NUM_SRVS 7
+#define NUM_UAVS 5
+    ID3D11ShaderResourceView* srvs[] = {NULL, NULL, NULL, NULL, NULL, NULL,
+                                        m_target->getSrv()};
+    ID3D11UnorderedAccessView* uavs[] = {NULL, NULL, NULL, NULL,
+                                         p_uavBackbuffer};
+    m_devcon->CSSetShaderResources(0, NUM_SRVS, srvs);
+    m_devcon->CSSetUnorderedAccessViews(0, NUM_UAVS, uavs, NULL);
+
+    unsigned dX = (unsigned)ceil((float)m_widthUpscale  / (float)BLOCK_SIZE);
+    unsigned dY = (unsigned)ceil((float)m_heightUpscale / (float)BLOCK_SIZE);
+    p_cogFx->dispatch(m_devcon, Fxs_CS_COMBINE, dX, dY);
+
+    memset(srvs, 0, sizeof(ID3D11ShaderResourceView*) * NUM_SRVS);
+    m_devcon->CSSetShaderResources(0, NUM_SRVS, srvs);
 
     memset(uavs, 0, sizeof(ID3D11UnorderedAccessView*) * NUM_UAVS);
     m_devcon->CSSetUnorderedAccessViews(0, NUM_UAVS, uavs, NULL);

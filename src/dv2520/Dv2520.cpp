@@ -8,9 +8,9 @@
 Dv2520::Dv2520(Win& p_win) {
     m_win = &p_win;
 
-    float zFar = 1000;
-    float zNear = 1;
-    m_cam = new Cam(zNear, zFar);
+#define Z_NEAR 1
+#define Z_FAR 1000
+    m_cam = new Cam(Z_NEAR, Z_FAR);
 
     m_dx = nullptr;
 }

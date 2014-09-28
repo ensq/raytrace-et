@@ -13,14 +13,14 @@ StructuredBuffer<ObjInstance> srvInstances : register(t2);
 StructuredBuffer<LightPoint> srvLights : register(t3);
 StructuredBuffer<ObjNode> srvNodes : register(t4);
 Texture2D texAlbedo : register( t5 ); // Make into texture array.
-Texture2D old : register(t6);
+Texture2D src : register(t6);
 
 // u
 RWStructuredBuffer<Ray> uavRays : register(u0);
 RWStructuredBuffer<Intersection> uavIntersections : register(u1);
 RWStructuredBuffer<float4> uavColor : register(u2);
 RWTexture2D<float4> uavBackbuffer : register(u3);
-RWTexture2D<float4> com : register(u4);
+RWTexture2D<float4> dest : register(u4);
 
 // s
 SamplerState ssDefault : register(s0);
