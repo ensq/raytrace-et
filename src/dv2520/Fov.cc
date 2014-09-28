@@ -64,8 +64,7 @@ HRESULT Fov::init() {
 }
 
 void Fov::render(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
-    const FLOAT TempBlack[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-    m_devcon->ClearRenderTargetView(m_target->getRtv(), TempBlack);
+    m_devcon->ClearRenderTargetView(m_target->getRtv(), DxClearColor::Black);
 
     Mat4F proj, projInv;
     p_cam->getProj(m_fov, m_aspect, proj);

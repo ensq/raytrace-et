@@ -12,9 +12,7 @@ StructuredBuffer<uint> srvIndices : register(t1);
 StructuredBuffer<ObjInstance> srvInstances : register(t2);
 StructuredBuffer<LightPoint> srvLights : register(t3);
 StructuredBuffer<ObjNode> srvNodes : register(t4);
-Texture2D texAlbedo : register( t5 ); // In the future, texture arrays
-                                      // may be added to support
-                                      // materials
+Texture2D texAlbedo : register( t5 ); // Make into texture array.
 Texture2D old : register(t6);
 
 // u
