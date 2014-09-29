@@ -15,9 +15,6 @@ class Et {
  protected:
  private:
     const TX_STRING m_interactorId;
-    
-    TX_CONTEXTHANDLE m_context;
-    TX_HANDLE m_interactorSnapshot;
 };
 
 #endif // DV2520_ET_H
