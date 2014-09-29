@@ -6,7 +6,8 @@
 template<class T>
 class BufStreamSrv : public BufStream<T> {
   public:
-    BufStreamSrv() : BufStream(D3D11_BIND_SHADER_RESOURCE, D3D11_RESOURCE_MISC_BUFFER_STRUCTURED) {
+    BufStreamSrv() : BufStream(D3D11_BIND_SHADER_RESOURCE,
+                               D3D11_RESOURCE_MISC_BUFFER_STRUCTURED) {
         m_srv = nullptr;
     }
     ~BufStreamSrv() {
@@ -37,9 +38,10 @@ class BufStreamSrv : public BufStream<T> {
         descSrv.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
         descSrv.BufferEx.FirstElement = 0;
         descSrv.Format = DXGI_FORMAT_UNKNOWN;
-        descSrv.BufferEx.NumElements = descBuf.ByteWidth / descBuf.StructureByteStride;
-
-        HRESULT hr = p_device->CreateShaderResourceView(m_buffer, &descSrv, &m_srv);
+        UINT numElements = descBuf.ByteWidth / descBuf.StructureByteStride;
+        descSrv.BufferEx.NumElements = numElements;
+        HRESULT hr = p_device->CreateShaderResourceView(m_buffer,
+                                                        &descSrv, &m_srv);
         if(FAILED(hr)) {
             ERR_HR(hr);
         }

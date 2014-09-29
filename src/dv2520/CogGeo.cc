@@ -7,6 +7,8 @@
 #include <geometry.h>
 #include <BufStreamSrv.h>
 
+#include <Timer.h> // temp
+
 CogGeo::CogGeo() {
     m_srvStreamVertices = nullptr;
     m_srvStreamIndices = nullptr;
@@ -40,7 +42,7 @@ CogGeo::~CogGeo() {
     delete[] m_nodes;
 }
 
-HRESULT CogGeo::init() {
+HRESULT CogGeo::init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
     m_srvStreamVertices = new BufStreamSrv<Vertex>();
     m_srvStreamIndices = new BufStreamSrv<unsigned>();
     m_srvStreamInstances = new BufStreamSrv<ObjInstance>();
@@ -51,7 +53,7 @@ HRESULT CogGeo::init() {
     for(unsigned i = 0; i<1 && success==true; i++) {
         std::vector<float> vertices;
         std::vector<unsigned> indices;
-        success = lbo::parse("../../../obj/dv2520/box2.obj", vertices, indices); // "../../../obj/dv2520/bth.obj"
+        success = lbo::parse("../../../obj/dv2520/box2.obj", vertices, indices);
         assert(success==true);
 
         std::vector<Vertex> vertices_struct;
@@ -74,16 +76,25 @@ HRESULT CogGeo::init() {
         m_objects.push_back(obj);
     }
 
+    for(unsigned i = 0; i<m_objects.size(); i++) {
+        Obj* obj = m_objects.at(i);
+        m_srvStreamVertices->pushElements(obj->getVertices(),
+                                          obj->getVerticesCnt());
+        m_srvStreamIndices->pushElements(obj->getIndices(),
+                                         obj->getIndicesCnt());
+        m_srvStreamNodes->pushElements(m_nodes, numNodes);
+    }
+    m_srvStreamVertices->updateBufStream(p_device, p_devcon);
+    m_srvStreamIndices->updateBufStream(p_device, p_devcon);
+    m_srvStreamInstances->updateBufStream(p_device, p_devcon);
+    m_srvStreamNodes->updateBufStream(p_device, p_devcon);
+
     return success==true ? S_OK : S_FALSE;
 }
 
 void CogGeo::update(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
-    // Prepare render by clearing streams and updating them with new data:
-    m_srvStreamVertices->reset();
-    m_srvStreamIndices->reset();
     m_srvStreamInstances->reset();
     m_srvStreamLights->reset();
-    m_srvStreamNodes->reset();
 
     m_lightsCnt = 0;
     LightPoint light;
@@ -114,7 +125,6 @@ void CogGeo::update(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
     m_srvStreamLights->pushElement(light);
     m_lightsCnt++;
 
-    // Add objects to the scene:
     unsigned indexOffset = 0;
     m_instancesCnt = 0;
     for(unsigned i = 0; i<m_objects.size(); i++) {
@@ -133,20 +143,11 @@ void CogGeo::update(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
         instance.worldInv.inverse();
         indexOffset += instance.indexCnt;
 
-        m_srvStreamVertices->pushElements(obj->getVertices(), obj->getVerticesCnt());
-        m_srvStreamIndices->pushElements(obj->getIndices(), obj->getIndicesCnt());
         m_srvStreamInstances->pushElement(instance);
-        m_srvStreamNodes->pushElements(m_nodes, numNodes);
-
         m_instancesCnt++;
     }
-
-    // Update streams:
-    m_srvStreamVertices->updateBufStream(p_device, p_devcon);
-    m_srvStreamIndices->updateBufStream(p_device, p_devcon);
     m_srvStreamInstances->updateBufStream(p_device, p_devcon);
     m_srvStreamLights->updateBufStream(p_device, p_devcon);
-    m_srvStreamNodes->updateBufStream(p_device, p_devcon);
 }
 
 

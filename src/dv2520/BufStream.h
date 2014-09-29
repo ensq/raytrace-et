@@ -11,7 +11,8 @@ struct ID3D11Buffer;
 template<class T>
 class BufStream {
   public:
-    BufStream(D3D11_BIND_FLAG p_bindFlag, D3D11_RESOURCE_MISC_FLAG p_resourceMiscFlag) {
+    BufStream(D3D11_BIND_FLAG p_bindFlag,
+              D3D11_RESOURCE_MISC_FLAG p_resourceMiscFlag) {
         m_bindFlag = p_bindFlag;
         m_resourceMiscFlag = p_resourceMiscFlag;
 
@@ -22,7 +23,8 @@ class BufStream {
         m_buffer = nullptr;
     }
     virtual ~BufStream() {
-        SAFE_RELEASE(m_buffer);   // Buffer is not necessarily initialized when de-allocated.
+        // Buffer is not necessarily initialized when de-allocated:
+        SAFE_RELEASE(m_buffer);
     }
 
     void reset() {
@@ -30,7 +32,8 @@ class BufStream {
     }
     void pushElements(T* p_elements, unsigned p_elementsCnt) {
         m_elements.reserve(m_elements.size() + p_elementsCnt);
-        m_elements.insert(m_elements.begin() + m_elementCntCur, p_elements, p_elements + p_elementsCnt);
+        m_elements.insert(m_elements.begin() + m_elementCntCur,
+                          p_elements, p_elements + p_elementsCnt);
         m_elementCntCur += p_elementsCnt;
     }
     void pushElement(T p_element) {
@@ -42,7 +45,8 @@ class BufStream {
         m_elementCntCur++;
     }
 
-    HRESULT updateBufStream(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
+    HRESULT updateBufStream(ID3D11Device* p_device,
+                            ID3D11DeviceContext* p_devcon) {
         HRESULT hr = S_OK;
         if(m_elementCntCur>0) {
             hr = streamToBuffer(p_device, p_devcon);
@@ -63,7 +67,8 @@ class BufStream {
         return m_buffer;
     }
   protected:
-    unsigned getNewElementCntMax(unsigned p_maxCur, unsigned p_maxTarget) const {
+    unsigned getNewElementCntMax(unsigned p_maxCur,
+                                 unsigned p_maxTarget) const {
         unsigned maxNew = (p_maxCur>0) ? p_maxCur : 1;
         while(maxNew<p_maxTarget) {
             maxNew *= 2;
@@ -71,7 +76,8 @@ class BufStream {
         return maxNew;
     }
 
-    HRESULT streamToBuffer(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
+    HRESULT streamToBuffer(ID3D11Device* p_device,
+                           ID3D11DeviceContext* p_devcon) {
         HRESULT hr = S_OK;
         if(m_elementCntCur>m_elementCntMax) {
             hr = increaseStreamCapacity(p_device);
@@ -87,9 +93,11 @@ class BufStream {
     }
     HRESULT mapToBuffer(ID3D11DeviceContext* p_devcon) {
         D3D11_MAPPED_SUBRESOURCE map;
-        HRESULT hr = p_devcon->Map(m_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &map);
+        HRESULT hr = p_devcon->Map(m_buffer, 0, D3D11_MAP_WRITE_DISCARD,
+                                   0, &map);
         if(SUCCEEDED(hr)) {
-            memcpy(map.pData, &m_elements[ 0 ], m_elementCntCur * sizeof(T));
+            memcpy(map.pData, &m_elements[0],
+                   m_elementCntCur * sizeof(T));
             p_devcon->Unmap(m_buffer, 0);
         } else {
             ERR_HR(hr);

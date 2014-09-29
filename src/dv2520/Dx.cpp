@@ -97,7 +97,7 @@ HRESULT Dx::init() {
     }
     if(SUCCEEDED(hr)) {
         m_cogGeo = new CogGeo();
-        hr = m_cogGeo->init();
+        hr = m_cogGeo->init(d3d.device, d3d.devcon);
     }
 
     // Initialize the low fidelity fov:

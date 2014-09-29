@@ -15,7 +15,7 @@ class CogGeo {
     CogGeo();
     ~CogGeo();
     
-    HRESULT init();
+    HRESULT init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon);
     void update(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon);
 
     size_t getLightsCnt() const;
