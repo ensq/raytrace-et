@@ -127,7 +127,18 @@ HRESULT Dx::init() {
 
     return hr;
 }
-HRESULT Dx::render(double p_delta, Cam* p_cam) {
+HRESULT Dx::render(double p_delta, Cam* p_cam,
+                   double p_eyePosX, double p_eyePosY) {
+    int pixelX = (unsigned)p_eyePosX - 100;
+    int pixelY = (unsigned)p_eyePosY - 100;
+
+    unsigned maxX = 800 - 200;
+    unsigned maxY = 800 - 200;
+
+    pixelX = clip<int>(pixelX, 0, maxX);
+    pixelY = clip<int>(pixelY, 0, maxY);
+    m_hi->setOfs(pixelX, pixelY);
+
     D3d d3d = m_cogD3d->getD3d();
     d3d.devcon->ClearRenderTargetView(m_rtvBackbuffer,
                                       DxClearColor::Black);

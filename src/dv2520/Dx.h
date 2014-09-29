@@ -20,7 +20,8 @@ class Dx {
      ~Dx();
 
      HRESULT init();
-     HRESULT render(double p_delta, Cam* p_cam);
+     HRESULT render(double p_delta, Cam* p_cam,
+                    double p_eyePosX, double p_eyePosY);
    protected:
    private:
      ID3D11UnorderedAccessView* m_uavBackbuffer;

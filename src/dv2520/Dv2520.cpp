@@ -110,7 +110,7 @@ double lX, lY;
 m_win->getLocalPos(etState.x, etState.y, lX, lY);
 Singleton<Ant>::get().setEyeFixation(lX, lY);
     
-    HRESULT hr = m_dx->render(p_delta, m_cam);
+HRESULT hr = m_dx->render(p_delta, m_cam, lX, lY);
     if(FAILED(hr)) {
         ERR_HR(hr);
     }

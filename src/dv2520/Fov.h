@@ -27,6 +27,11 @@ class Fov {
     void renderToFov(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam);
     void renderToBackbuffer(CogFx* p_cogFx, CogCb* p_cogCb,
                             ID3D11UnorderedAccessView* p_uavBackbuffer);
+
+    void setOfs(unsigned p_x, unsigned p_y) {
+        m_ofsX = p_x;
+        m_ofsY = p_y;
+    }
  protected:
  private:
     unsigned m_width;
