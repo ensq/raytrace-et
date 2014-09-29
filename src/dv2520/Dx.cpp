@@ -12,8 +12,6 @@
 #include <CogTex.h>
 #include <CogGeo.h>
 
-#include <FovTarget.h> // TEMP
-
 Dx::Dx(Win& p_win) {
     m_win = &p_win;
 
