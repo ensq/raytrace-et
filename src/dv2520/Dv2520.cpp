@@ -4,8 +4,9 @@
 #include <Et.h>
 #include <Win.h>
 #include <Cam.h>
-#include <Dv2520.h>
+#include <Ant.h>
 #include <Timer.h>
+#include <Dv2520.h>
 
 Dv2520::Dv2520(Win& p_win) {
     m_win = &p_win;
@@ -103,9 +104,7 @@ void Dv2520::gameloop(double p_delta) {
     inputQueue.empty(); // Remember to clear the input.
 
     EtState etState = m_et->getState();
-    char str[256];
-    sprintf_s(str, sizeof(str), "[%.1f, %.1f]\n", etState.x, etState.y);
-    OutputDebugString(str);
+    Singleton<Ant>::get().setEyeFixation(etState.x, etState.y);
     
     HRESULT hr = m_dx->render(p_delta, m_cam);
     if(FAILED(hr)) {
