@@ -91,7 +91,7 @@ void Dv2520::gameloop(double p_delta) {
     // Clear input:
     inputQueue.empty(); // Remember to clear the input.
 
-    TIMER_PRINT_ELAPSED(HRESULT hr = m_dx->render(p_delta, m_cam), "Render");
+    HRESULT hr = m_dx->render(p_delta, m_cam);
     if(FAILED(hr)) {
         ERR_HR(hr);
     }

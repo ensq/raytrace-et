@@ -7,8 +7,6 @@
 #include <geometry.h>
 #include <BufStreamSrv.h>
 
-#include <Timer.h> // temp
-
 CogGeo::CogGeo() {
     m_srvStreamVertices = nullptr;
     m_srvStreamIndices = nullptr;
