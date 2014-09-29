@@ -5,7 +5,7 @@ class ExceptionDv2520 : public std::exception {
   public:
     ExceptionDv2520(std::string p_func) throw();
     virtual ~ExceptionDv2520() throw();
-
+    
     virtual const char* what() const throw();
   protected:
   private:

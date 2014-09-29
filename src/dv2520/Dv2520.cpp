@@ -102,6 +102,11 @@ void Dv2520::gameloop(double p_delta) {
     // Clear input:
     inputQueue.empty(); // Remember to clear the input.
 
+    EtState etState = m_et->getState();
+    char str[256];
+    sprintf_s(str, sizeof(str), "[%.1f, %.1f]\n", etState.x, etState.y);
+    OutputDebugString(str);
+    
     HRESULT hr = m_dx->render(p_delta, m_cam);
     if(FAILED(hr)) {
         ERR_HR(hr);

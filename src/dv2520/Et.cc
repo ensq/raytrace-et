@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <Et.h>
+#include <windows.h>
 
 static void onStateReceived(TX_HANDLE p_stateBag);
 static void onFixationEvent(TX_HANDLE p_fixationDataBehavior);
@@ -21,12 +22,18 @@ static TX_HANDLE g_interactorSnapshot;
 static TX_TICKET g_presenceStateChangedTicket;
 static TX_TICKET g_connectionStateChangedTicket;
 
+static EtState g_state;
+
+HANDLE g_semaphore;
+
 Et::Et() : m_interactorId("dv2520") {
     g_context = TX_EMPTY_HANDLE;
     g_interactorSnapshot = TX_EMPTY_HANDLE;
 
     g_presenceStateChangedTicket = TX_INVALID_TICKET;
     g_connectionStateChangedTicket = TX_INVALID_TICKET;
+
+    g_semaphore = nullptr;
 }
 Et::~Et() {
     txDisableConnection(g_context);
@@ -36,6 +43,29 @@ Et::~Et() {
     txShutdownContext(g_context, TX_CLEANUPTIMEOUT_DEFAULT, TX_FALSE);
     txReleaseObject(&g_interactorSnapshot);
     txReleaseContext(&g_context);
+
+    assert(g_semaphore!=nullptr);
+    CloseHandle(g_semaphore);
+}
+
+EtState Et::getState() {
+EtState state;
+BOOL wait = TRUE;
+DWORD waitResult;
+while(wait==TRUE) {
+waitResult = WaitForSingleObject(g_semaphore, 0L);
+switch(waitResult) {
+ case WAIT_OBJECT_0: // thread was let through semaphore gate
+state = g_state;
+wait = FALSE;
+assert(ReleaseSemaphore(g_semaphore, 1, NULL));
+break;
+ case WAIT_TIMEOUT:
+throw ExceptionDv2520("Semaphore timed out!\n");
+break;
+}
+}
+return state;
 }
 
 bool Et::init() {
@@ -81,6 +111,11 @@ bool Et::init() {
     }
     if(isInitialized!=TX_RESULT_OK) {
         throw ExceptionDv2520("Failed to initialize EyeX context. Aborting.\n");
+    } else {
+#define CNT_START 1
+#define CNT_MAX 1
+        g_semaphore = CreateSemaphore(NULL, CNT_START, CNT_MAX, NULL);
+        assert(g_semaphore!=nullptr);
     }
 
     return isInitialized==TX_RESULT_OK ? true : false;
@@ -193,13 +228,31 @@ void onFixationEvent(TX_HANDLE p_fixationDataBehavior) {
             eventDesc = "Begin";
             break;
         }
-        char str[256];
-        sprintf_s(str, sizeof(str), "%.0f ms: [%.1f, %.1f] (Fixation %s)\n",
-                  eventParams.Timestamp, eventParams.X, eventParams.Y,
-                  eventDesc);
-        OutputDebugString(str);
+        // char str[256];
+        // sprintf_s(str, sizeof(str), "%.0f ms: [%.1f, %.1f] (Fixation %s)\n",
+        //           eventParams.Timestamp, eventParams.X, eventParams.Y,
+        //           eventDesc);
+        // OutputDebugString(str);
+
+        BOOL wait = TRUE;
+        DWORD waitResult;
+        while(wait==TRUE) {
+            waitResult = WaitForSingleObject(g_semaphore, 0L);
+            switch(waitResult) {
+            case WAIT_OBJECT_0: // thread was let through semaphore gate
+                g_state.x = eventParams.X;
+                g_state.y = eventParams.Y;
+                wait = FALSE;
+                assert(ReleaseSemaphore(g_semaphore, 1, NULL));
+                break;
+            case WAIT_TIMEOUT:
+                throw ExceptionDv2520("Semaphore timed out!\n");
+                break;
+            }
+        }
     } else {
-        throw ExceptionDv2520("Failed to interpret fixation event. Aborting...\n");
+        throw ExceptionDv2520("Failed to interpret fixation event."
+                              " Aborting...\n");
     }
 }
 

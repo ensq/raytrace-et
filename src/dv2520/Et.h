@@ -6,11 +6,18 @@
 
 #pragma comment (lib, "Tobii.EyeX.Client.lib")
 
+struct EtState {
+    double x;
+    double y;
+};
+
 class Et {
  public:
     Et();
     ~Et();
 
+    EtState getState();
+    
     bool init();
  protected:
  private:
