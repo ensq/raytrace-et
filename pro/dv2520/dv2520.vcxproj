@@ -64,6 +64,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DXGI.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(SolutionDir)..\lib\$(ProjectName)\AntTweakBar\lib\AntTweakBar.dll" "$(SolutionDir)..\bin\$(ProjectName)\$(Configuration)\AntTweakBar.dll"</Command>

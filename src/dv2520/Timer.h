@@ -1,13 +1,39 @@
 #ifndef DV2520_TIMER_H
 #define DV2520_TIMER_H
 
+#include <stdio.h>
+
 // High precision time measurements are system specific:
+#define TIMER timer ## __FILE__ ## __LINE__
 #ifdef _WIN32
 #include <windows.h>
+#define TIMER_PRINT_ELAPSED(expr, string)                               \
+    Timer TIMER;                                                        \
+    TIMER ## .start();                                                  \
+    expr;                                                               \
+    TIMER ## .stop();                                                   \
+    char str ## __FILE__ ## __LINE__ ## [256];                          \
+    sprintf_s(str ## __FILE__ ## __LINE__ ,                             \
+              256,                                                      \
+              "%s: %f ms\n",                                            \
+              string,                                                   \
+              TIMER ## .getElapsedTimeMilliSec());                      \
+    OutputDebugString(str ## __FILE__ ## __LINE__);   
 #else
 #include <sys/time.h>
+#define TIMER_PRINT_ELAPSED(expr, string)                               \
+    Timer TIMER;                                                        \
+    TIMER ## .start();                                                  \
+    expr;                                                               \
+    TIMER ## .stop();                                                   \
+    printf("%s: %f ms\n",                                               \
+           string,                                                      \
+               TIMER ## .getElapsedTimeMilliSec());                     
 #endif // _WIN32
 
+
+
+    
 class Timer {
   public:
     Timer();

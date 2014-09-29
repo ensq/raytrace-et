@@ -4,6 +4,7 @@
 #include <Win.h>
 #include <Cam.h>
 #include <Dv2520.h>
+#include <Timer.h>
 
 Dv2520::Dv2520(Win& p_win) {
     m_win = &p_win;
@@ -90,7 +91,7 @@ void Dv2520::gameloop(double p_delta) {
     // Clear input:
     inputQueue.empty(); // Remember to clear the input.
 
-    HRESULT hr = m_dx->render(p_delta, m_cam);
+    TIMER_PRINT_ELAPSED(HRESULT hr = m_dx->render(p_delta, m_cam), "Frame");
     if(FAILED(hr)) {
         ERR_HR(hr);
     }
