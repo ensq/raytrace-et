@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include <Dx.h>
+#include <Et.h>
 #include <Win.h>
 #include <Cam.h>
 #include <Dv2520.h>
@@ -14,17 +15,27 @@ Dv2520::Dv2520(Win& p_win) {
     m_cam = new Cam(Z_NEAR, Z_FAR);
 
     m_dx = nullptr;
+    m_et = nullptr;
 }
 Dv2520::~Dv2520() {
     ASSERT_DELETE(m_dx);
+    ASSERT_DELETE(m_et);
     ASSERT_DELETE(m_cam);
 }
 
 HRESULT Dv2520::init() {
     HRESULT hr = S_FALSE;
 
-    m_dx = new Dx(*m_win);
-    hr = m_dx->init();
+    // Initialize EyeX first, as it is probably more prone to failure
+    // than the graphics context:
+    m_et = new Et();
+    bool success = m_et->init();
+    hr = success==true ? S_OK : S_FALSE;
+
+    if(SUCCEEDED(hr)) {
+        m_dx = new Dx(*m_win);
+        hr = m_dx->init();
+    }
 
     return hr;
 }

@@ -85,6 +85,9 @@
     <ClCompile Include="..\..\src\dv2520\FovTarget.cc">
       <Filter>Dx</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Et.cc">
+      <Filter>Et</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -187,6 +190,9 @@
     <ClInclude Include="..\..\src\dv2520\FovTarget.h">
       <Filter>Dx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Et.h">
+      <Filter>Et</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">
@@ -209,6 +215,9 @@
     </Filter>
     <Filter Include="Dx\IO\lbo">
       <UniqueIdentifier>{8ef2d7c6-bff0-401e-8eaf-e082adac974b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Et">
+      <UniqueIdentifier>{ad914f6e-6dbf-41fc-9c4c-31beeb5e1324}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

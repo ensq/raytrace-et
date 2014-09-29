@@ -7,6 +7,7 @@
 #include <TimerDelta.h>
 
 class Dx;
+class Et;
 class Win;
 class Cam;
 
@@ -20,6 +21,7 @@ class Dv2520 {
     void gameloop(double p_delta);
   protected:
   private:
+    Et* m_et;
     Dx* m_dx;
     Cam* m_cam;
     TimerDelta m_timerDelta;
