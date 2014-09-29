@@ -2,6 +2,7 @@
 
 #include <Win.h>
 #include <Ant.h>
+#include <MathSimple.h>
 
 InputQueue Win::m_inputQueue;
 
@@ -23,7 +24,8 @@ HRESULT Win::init() {
     int nCmdShow = m_desc.nCmdShow;
 
     WNDCLASSEX wcex;
-    ZERO_MEM(wcex);   // Use ZeroMemory to save some lines of code, and make up for it with a redundant comment.
+    ZERO_MEM(wcex);   // Use ZeroMemory to save some lines of code,
+                      // and make up for it with a redundant comment.
     wcex.cbSize            = sizeof(WNDCLASSEX);
     wcex.style          = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc    = Win::wWinProc;
@@ -34,7 +36,10 @@ HRESULT Win::init() {
     wcex.lpszClassName  = className;
 
     LPTSTR lastMethod = "RegisterClassEx";
-    if(RegisterClassEx(&wcex)!=0) {     // Registers a window class for subsequent use in calls to the CreateWindow or CreateWindowEx function.
+    if(RegisterClassEx(&wcex)!=0) {     // Registers a window class
+                                        // for subsequent use in calls
+                                        // to the CreateWindow or
+                                        // CreateWindowEx function.
         RECT rct = { 0, 0, width, height };
         AdjustWindowRect(&rct, WS_OVERLAPPEDWINDOW, FALSE);
 
@@ -80,7 +85,8 @@ InputQueue& Win::getInputQueue() {
     return m_inputQueue;
 }
 
-LRESULT CALLBACK Win::wWinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK Win::wWinProc(HWND hWnd, UINT message,
+                               WPARAM wParam, LPARAM lParam) {
     HDC hdc;
     PAINTSTRUCT ps;
     LRESULT lResult = 0;
@@ -100,7 +106,8 @@ LRESULT CALLBACK Win::wWinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         case WM_MOUSEMOVE:
             wWinMouseProc(wParam, lParam);
             break;
-        case WM_SIZE: // Sent when user resizes windows. Be sure to implement support for this at some point.
+        case WM_SIZE: // Sent when user resizes windows. Be sure to
+                      // implement support for this at some point.
         case WM_LBUTTONDOWN:
         case WM_MBUTTONDOWN:
         case WM_RBUTTONDOWN:
@@ -155,7 +162,18 @@ void Win::wWinMouseProc(WPARAM wParam, LPARAM lParam) {
     float x = (float)GET_X_LPARAM(lParam);
     float y = (float)GET_Y_LPARAM(lParam);
     m_inputQueue.mousePush(InputMouse(x, y));
+}
 
-    //if( ( wParam & MK_LBUTTON )!=0 ) {
-    //}
+void Win::getLocalPos(double p_globalX, double p_globalY,
+                      double& io_localX, double& io_localY) {
+    RECT r;
+    BOOL success = GetWindowRect(m_hWnd, &r);
+    if(success==TRUE) {
+        io_localX = clip<double>(p_globalX - r.left, 0, m_desc.width);
+        io_localY = clip<double>(p_globalY - r.top, 0, m_desc.height);
+        
+    } else {
+        throw ExceptionDv2520("Failed to retrieve the window rect. "
+                              "Aborting...\n");
+    }
 }

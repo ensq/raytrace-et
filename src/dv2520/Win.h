@@ -31,9 +31,12 @@ class Win {
     unsigned getHeight();
     HWND getHWnd() const;
     InputQueue& getInputQueue();
+    void getLocalPos(double p_globalX, double p_globalY,
+                     double& io_localX, double& io_localY);
 
     // This method is totally off limits. Hands off.
-    static LRESULT CALLBACK wWinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK wWinProc(HWND hWnd, UINT message,
+                                     WPARAM wParam, LPARAM lParam);
     static void wWinKeyProc(WPARAM wParam);
     static void wWinMouseProc(WPARAM wParam, LPARAM lParam);
   protected:

@@ -105,6 +105,10 @@ void Dv2520::gameloop(double p_delta) {
 
     EtState etState = m_et->getState();
     Singleton<Ant>::get().setEyeFixation(etState.x, etState.y);
+
+double lX, lY;
+m_win->getLocalPos(etState.x, etState.y, lX, lY);
+Singleton<Ant>::get().setEyeFixation(lX, lY);
     
     HRESULT hr = m_dx->render(p_delta, m_cam);
     if(FAILED(hr)) {

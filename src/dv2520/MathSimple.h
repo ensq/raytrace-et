@@ -15,6 +15,11 @@ increasing the size of the object.
 #define INFI_FLOAT std::numeric_limits<float>::infinity()
 #define INFI_DOUBL std::numeric_limits<double>::infinity()
 
+template <typename T>
+T clip(const T& n, const T& min, const T& max) {
+    return std::max(min, std::min(n, max));
+}
+
 struct Vec2F {
     float x;
     float y;

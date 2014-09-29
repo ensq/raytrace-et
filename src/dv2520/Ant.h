@@ -1,14 +1,16 @@
 #ifndef DV2520_ANT_H
 #define DV2520_ANT_H
 
-#include <Singleton.h> // Included for simplicity when initializing Ant as a singleton.
+#include <Singleton.h> // Included for simplicity when initializing
+                       // Ant as a singleton.
 
 class Ant {
   public:
     Ant();
     ~Ant();
 
-    void init(ID3D11Device* p_device, unsigned p_screenWidth, unsigned p_screenHeight);
+    void init(ID3D11Device* p_device, unsigned p_screenWidth,
+              unsigned p_screenHeight);
     void render();
     int eventWin(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
