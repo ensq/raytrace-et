@@ -4,10 +4,14 @@
 #include <Common.fx>
 
 float3 getNormalizedScreenCoordinates(uint3 screenPos) {
-    float x = screenPos.x;
-    float y = screenPos.y;
-    float halfWidth = fovWidth / 2.0f; // screenWidth
-    float halfHeight = fovHeight / 2.0f; // screenHeight
+    float x = screenPos.x + fovOfsX;
+    float y = screenPos.y + fovOfsY;
+    float halfWidth = fovWidth / 2.0f;
+    float halfHeight = fovHeight / 2.0f;
+    if(fovOfsX>0) {
+        halfWidth = 800.0f / 2.0f;
+        halfHeight = 800.0f / 2.0f;
+    }
 
     float dx = tan(fov * 0.5f) * (x / halfWidth - 1.0f) / aspect;
     float dy = tan(fov * 0.5f) * (1.0f - y / halfHeight);
@@ -23,7 +27,8 @@ void main(uint3 gThreadId : SV_DispatchThreadID) {
     }
     const uint pixelIdx = gThreadId.y * fovWidth + gThreadId.x;
     
-    float3 pixelPos = getNormalizedScreenCoordinates(float3(gThreadId.x, gThreadId.y, 0.0f));
+    float3 pixelPos = getNormalizedScreenCoordinates(float3(gThreadId.x,
+                                                            gThreadId.y, 0.0f));
     pixelPos = mul(float4(pixelPos, 1.0f), viewInv).xyz;
     float4 aux = mul(float4(0.0f, 0.0f, 0.0f, 1.0f), viewInv);
 

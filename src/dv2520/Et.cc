@@ -7,11 +7,11 @@ static void onStateReceived(TX_HANDLE p_stateBag);
 static void onFixationEvent(TX_HANDLE p_fixationDataBehavior);
 
 static void TX_CALLCONVENTION cbOnEngineConnectionStateChanged(
-                               TX_CONNECTIONSTATE p_connectionState,
-                               TX_USERPARAM p_userParam);
+                                                               TX_CONNECTIONSTATE p_connectionState,
+                                                               TX_USERPARAM p_userParam);
 static void TX_CALLCONVENTION cbOnPresenceStateChanged(
-                               TX_CONSTHANDLE p_asyncData,
-                               TX_USERPARAM p_userParam);
+                                                       TX_CONSTHANDLE p_asyncData,
+                                                       TX_USERPARAM p_userParam);
 static void TX_CALLCONVENTION cbOnEvent(TX_CONSTHANDLE p_asyncData,
                                         TX_USERPARAM p_userParam);
 static void TX_CALLCONVENTION cbOnSnapshotCommitted(TX_CONSTHANDLE p_asyncData,
@@ -49,29 +49,28 @@ Et::~Et() {
 }
 
 EtState Et::getState() {
-EtState state;
-BOOL wait = TRUE;
-DWORD waitResult;
-while(wait==TRUE) {
-waitResult = WaitForSingleObject(g_semaphore, 0L);
-switch(waitResult) {
- case WAIT_OBJECT_0: // thread was let through semaphore gate
-state = g_state;
-wait = FALSE;
-assert(ReleaseSemaphore(g_semaphore, 1, NULL));
-break;
- case WAIT_TIMEOUT:
-throw ExceptionDv2520("Semaphore timed out!\n");
-break;
-}
-}
-return state;
+    EtState state;
+    BOOL wait = TRUE;
+    DWORD waitResult;
+    while(wait==TRUE) {
+        waitResult = WaitForSingleObject(g_semaphore, 0L);
+        switch(waitResult) {
+        case WAIT_OBJECT_0: // thread was let through semaphore gate
+            state = g_state;
+            wait = FALSE;
+            assert(ReleaseSemaphore(g_semaphore, 1, NULL));
+            break;
+        case WAIT_TIMEOUT:
+            break;
+        }
+    }
+    return state;
 }
 
 bool Et::init() {
     TX_RESULT isInitialized = txInitializeEyeX(
-                               TX_EYEXCOMPONENTOVERRIDEFLAG_NONE,
-                               NULL, NULL, NULL, NULL);
+                                               TX_EYEXCOMPONENTOVERRIDEFLAG_NONE,
+                                               NULL, NULL, NULL, NULL);
     if(isInitialized==TX_RESULT_OK) {
         isInitialized = txCreateContext(&g_context, TX_FALSE);
     }
@@ -81,8 +80,8 @@ bool Et::init() {
             TX_FIXATIONDATAMODE_SLOW
         };
         bool success = txCreateGlobalInteractorSnapshot(
-                        g_context, m_interactorId,
-                        &g_interactorSnapshot, &interactor)==TX_RESULT_OK;
+                                                        g_context, m_interactorId,
+                                                        &g_interactorSnapshot, &interactor)==TX_RESULT_OK;
         success &= txCreateFixationDataBehavior(interactor,
                                                 &params)==TX_RESULT_OK;
 
@@ -91,14 +90,14 @@ bool Et::init() {
     }
     if(isInitialized==TX_RESULT_OK) {
         isInitialized = txRegisterConnectionStateChangedHandler(
-                         g_context, &g_connectionStateChangedTicket,
-                         cbOnEngineConnectionStateChanged, NULL);
+                                                                g_context, &g_connectionStateChangedTicket,
+                                                                cbOnEngineConnectionStateChanged, NULL);
     }
     if(isInitialized==TX_RESULT_OK) {
         isInitialized = txRegisterStateChangedHandler(
-                         g_context, &g_presenceStateChangedTicket,
-                         TX_STATEPATH_USERPRESENCE, cbOnPresenceStateChanged,
-                         NULL);
+                                                      g_context, &g_presenceStateChangedTicket,
+                                                      TX_STATEPATH_USERPRESENCE, cbOnPresenceStateChanged,
+                                                      NULL);
     }
     TX_TICKET eventHandlerTicket = TX_INVALID_TICKET;
     if(isInitialized==TX_RESULT_OK) {
@@ -160,7 +159,7 @@ void onStateReceived(TX_HANDLE p_stateBag) {
               " %5.0f x %5.0f pixels.\n", screenDim.Width, screenDim.Height);
     OutputDebugString(str),
 
-    txReleaseObject(&p_stateBag);
+        txReleaseObject(&p_stateBag);
 }
 
 void TX_CALLCONVENTION cbOnSnapshotCommitted(TX_CONSTHANDLE p_asyncData,
@@ -171,8 +170,8 @@ void TX_CALLCONVENTION cbOnSnapshotCommitted(TX_CONSTHANDLE p_asyncData,
 }
 
 void TX_CALLCONVENTION cbOnEngineConnectionStateChanged(
-                        TX_CONNECTIONSTATE p_connectionState,
-                        TX_USERPARAM p_userParam) {
+                                                        TX_CONNECTIONSTATE p_connectionState,
+                                                        TX_USERPARAM p_userParam) {
     if(p_connectionState==TX_CONNECTIONSTATE_CONNECTED) {
         TX_RESULT success = txCommitSnapshotAsync(g_interactorSnapshot,
                                                   cbOnSnapshotCommitted, NULL);

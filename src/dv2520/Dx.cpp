@@ -115,7 +115,7 @@ HRESULT Dx::init() {
     // Initialize the high fidelity fov:
     if(SUCCEEDED(hr)) {
         float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
-        float fov = (float)RADIAN(11.25f);
+        float fov = (float)RADIAN(45.0f);
 
         unsigned w, h;
         w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
