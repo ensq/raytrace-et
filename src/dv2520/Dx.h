@@ -13,6 +13,7 @@ class CogSS;
 class CogD3d;
 class CogTex;
 class CogGeo;
+class CogFov;
 
 class Dx {
   public:
@@ -33,9 +34,7 @@ class Dx {
      CogSS* m_cogSS;
      CogTex* m_cogTex;
      CogGeo* m_cogGeo;
-
-     Fov* m_lo;
-     Fov* m_hi;
+     CogFov* m_cogFov;
 
      Win* m_win;
  };

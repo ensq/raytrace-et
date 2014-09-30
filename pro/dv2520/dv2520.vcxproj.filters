@@ -88,6 +88,9 @@
     <ClCompile Include="..\..\src\dv2520\Et.cc">
       <Filter>Et</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\CogFov.cc">
+      <Filter>Dx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -192,6 +195,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\Et.h">
       <Filter>Et</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\CogFov.h">
+      <Filter>Dx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

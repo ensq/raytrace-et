@@ -11,6 +11,7 @@
 #include <CogD3d.h>
 #include <CogTex.h>
 #include <CogGeo.h>
+#include <CogFov.h>
 
 Dx::Dx(Win& p_win) {
     m_win = &p_win;
@@ -24,9 +25,7 @@ Dx::Dx(Win& p_win) {
     m_cogSS = nullptr;
     m_cogTex = nullptr;
     m_cogGeo = nullptr;
-
-    m_lo = nullptr;
-    m_hi = nullptr;
+    m_cogFov = nullptr;
 }
 Dx::~Dx() {
     ASSERT_RELEASE(m_uavBackbuffer);
@@ -38,20 +37,15 @@ Dx::~Dx() {
     ASSERT_DELETE(m_cogSS);
     ASSERT_DELETE(m_cogTex);
     ASSERT_DELETE(m_cogGeo);
-
-    ASSERT_DELETE(m_hi);
-    ASSERT_DELETE(m_lo);
+    ASSERT_DELETE(m_cogFov);
 }
 
 HRESULT Dx::init() {
     HRESULT hr = S_FALSE;
 
-    // Initialize D3D first-of-all:
     m_cogD3d = new CogD3d(*m_win);
     hr = m_cogD3d->init();
     D3d d3d = m_cogD3d->getD3d();
-
-    // Initialize backbuffer
     if(SUCCEEDED(hr)) {
         ID3D11Texture2D* backbufferTex;
         HRESULT hr = d3d.swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), 
@@ -66,14 +60,11 @@ HRESULT Dx::init() {
         }
         ASSERT_RELEASE(backbufferTex);
     }
-
-    // Initialize AntTweakBar
     if(SUCCEEDED(hr)) {
         Singleton<Ant>::get().init(d3d.device, m_win->getWidth(),
                                    m_win->getHeight());
     }
 
-    // ...then continue initializing rest of the cogs:
     if(SUCCEEDED(hr)) {
         m_cogFx = new CogFx();
         hr = m_cogFx->init(d3d.device);
@@ -82,7 +73,6 @@ HRESULT Dx::init() {
         m_cogCb = new CogCb();
         hr = m_cogCb->init(d3d.device);
 
-        // Per instance CB only needs to be updated once:
         CbPerInstance cbPerInstance;
         cbPerInstance.screenWidth = m_win->getWidth();
         cbPerInstance.screenHeight = m_win->getHeight();
@@ -100,49 +90,16 @@ HRESULT Dx::init() {
         m_cogGeo = new CogGeo();
         hr = m_cogGeo->init(d3d.device, d3d.devcon);
     }
-
-    // Initialize the low fidelity fov
-    DescFov descFov;
-    descFov.aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
-    descFov.fov = (float)RADIAN(45.0f);
     if(SUCCEEDED(hr)) {
-        descFov.width = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
-        descFov.height = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        descFov.widthUpscale = m_win->getWidth();
-        descFov.heightUpscale = m_win->getHeight();
-        descFov.ofsX = 0;
-        descFov.ofsY = 0;
-        m_lo = new Fov(descFov, d3d.device, d3d.devcon);
-        hr = m_lo->init();
-    }
-    // Initialize the high fidelity fov:
-    if(SUCCEEDED(hr)) {
-        unsigned w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
-        unsigned h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        descFov.width = w;
-        descFov.height = h;
-        descFov.widthUpscale = w;
-        descFov.heightUpscale = h;
-        descFov.ofsX = 300;
-        descFov.ofsY = 300;
-        m_hi = new Fov(descFov, d3d.device, d3d.devcon);
-        hr = m_hi->init();
+        m_cogFov = new CogFov(m_win->getWidth(), m_win->getHeight(),
+                              (float)RADIAN(45.0f));
+        hr = m_cogFov->init(d3d.device, d3d.devcon);
     }
 
     return hr;
 }
 HRESULT Dx::render(double p_delta, Cam* p_cam,
                    double p_eyePosX, double p_eyePosY) {
-    int pixelX = (unsigned)p_eyePosX - 100;
-    int pixelY = (unsigned)p_eyePosY - 100;
-
-    unsigned maxX = 800 - 200;
-    unsigned maxY = 800 - 200;
-
-    pixelX = clip<int>(pixelX, 0, maxX);
-    pixelY = clip<int>(pixelY, 0, maxY);
-    m_hi->setOfs(pixelX, pixelY);
-
     D3d d3d = m_cogD3d->getD3d();
     d3d.devcon->ClearRenderTargetView(m_rtvBackbuffer,
                                       DxClearColor::Black);
@@ -178,15 +135,14 @@ HRESULT Dx::render(double p_delta, Cam* p_cam,
     ID3D11SamplerState* sss[] = {m_cogSS->getSamplerState(SSs_default)};
     d3d.devcon->CSSetSamplers(0, 1, sss);
 
-    m_lo->renderToFov(m_cogFx, m_cogCb, p_cam, false);
-    m_hi->renderToFov(m_cogFx, m_cogCb, p_cam, true);
+    m_cogFov->render(m_cogFx, m_cogCb, p_cam, p_eyePosX, p_eyePosY,
+                     d3d.device, d3d.devcon);
     
     // Unset SRVs:
     memset(srvs, NULL, sizeof(ID3D11ShaderResourceView*) * NUM_SRVS);
     d3d.devcon->CSSetShaderResources(0, NUM_SRVS, srvs);
 
-    m_lo->renderToBackbuffer(m_cogFx, m_cogCb, m_uavBackbuffer);
-    m_hi->renderToBackbuffer(m_cogFx, m_cogCb, m_uavBackbuffer);
+    m_cogFov->combine(m_cogFx, m_cogCb, m_uavBackbuffer);
 
     // Unset Samplerstates:
     ID3D11SamplerState* sssUnset[] = { NULL };

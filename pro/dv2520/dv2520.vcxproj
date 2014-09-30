@@ -102,6 +102,7 @@ copy /b /y $(SolutionDir)..\lib\$(ProjectName)\TobiiEyeXSdk-Cpp\lib\x86\*.dll $(
     <ClCompile Include="..\..\src\dv2520\Cb.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogCb.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogD3d.cpp" />
+    <ClCompile Include="..\..\src\dv2520\CogFov.cc" />
     <ClCompile Include="..\..\src\dv2520\CogFx.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogGeo.cc" />
     <ClCompile Include="..\..\src\dv2520\CogSS.cpp" />
@@ -144,6 +145,7 @@ copy /b /y $(SolutionDir)..\lib\$(ProjectName)\TobiiEyeXSdk-Cpp\lib\x86\*.dll $(
     <ClInclude Include="..\..\src\dv2520\Cbs.h" />
     <ClInclude Include="..\..\src\dv2520\CogCb.h" />
     <ClInclude Include="..\..\src\dv2520\CogD3d.h" />
+    <ClInclude Include="..\..\src\dv2520\CogFov.h" />
     <ClInclude Include="..\..\src\dv2520\CogFx.h" />
     <ClInclude Include="..\..\src\dv2520\CogGeo.h" />
     <ClInclude Include="..\..\src\dv2520\CogSS.h" />
