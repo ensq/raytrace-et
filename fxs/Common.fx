@@ -55,4 +55,22 @@ cbuffer CbPerFov : register(b2) {
     float2 pad2;
 };
 
+float3 getNormalizedScreenCoordinates(uint2 p_screenCor,
+                                      const uint p_width, const uint p_height) {
+    const float x = p_screenCor.x + fovOfsX;
+    const float y = p_screenCor.y + fovOfsY;
+    const float halfWidth = p_width / 2.0f;
+    const float halfHeight = p_height / 2.0f;
+
+    float dx = tan(fov * 0.5f) * (x / halfWidth - 1.0f) / aspect;
+    float dy = tan(fov * 0.5f) * (1.0f - y / halfHeight);
+    float dz = 1.0f;
+    return float3(dx, dy, dz);
+}
+
+#define RETURN_BOUNDS(x, y, bx, by)                             \
+    if(x>=bx || y>=by) {                                        \
+        return;                                                 \
+    }                                                           \
+
 #endif // DV2520_COMMON_FX

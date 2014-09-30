@@ -245,5 +245,8 @@
     <FxCompile Include="..\..\fxs\CsCombine.fx">
       <Filter>Fxs\Cs</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\fxs\CsRaysGenerateOffset.fx">
+      <Filter>Fxs\Cs</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

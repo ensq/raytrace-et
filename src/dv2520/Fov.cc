@@ -9,20 +9,18 @@
 #include <structs.h>
 #include <FovTarget.h>
 
-Fov::Fov(unsigned p_width, unsigned p_height, unsigned p_widthUpscale,
-         unsigned p_heightUpscale, unsigned p_ofsX, unsigned p_ofsY,
-         float p_fov, float p_aspect, ID3D11Device* p_device,
+Fov::Fov(DescFov p_desc, ID3D11Device* p_device,
          ID3D11DeviceContext* p_devcon)
     : m_device(p_device), m_devcon(p_devcon) {
-    m_width = p_width;
-    m_height = p_height;
-    m_widthUpscale = p_widthUpscale;
-    m_heightUpscale = p_heightUpscale;
+    m_width = p_desc.width;
+    m_height = p_desc.height;
+    m_widthUpscale = p_desc.widthUpscale;
+    m_heightUpscale = p_desc.heightUpscale;
 
-    m_ofsX = p_ofsX;
-    m_ofsY = p_ofsY;
-    m_fov = p_fov;
-    m_aspect = p_aspect;
+    m_ofsX = p_desc.ofsX;
+    m_ofsY = p_desc.ofsY;
+    m_fov = p_desc.fov;
+    m_aspect = p_desc.aspect;
 
     m_uavRays = nullptr;
     m_uavIntersections = nullptr;
@@ -67,7 +65,8 @@ HRESULT Fov::init() {
     return hr;
 }
 
-void Fov::renderToFov(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
+void Fov::renderToFov(CogFx* p_cogFx, CogCb* p_cogCb,
+                      Cam* p_cam, bool p_isOffset) {
     m_devcon->ClearRenderTargetView(m_target->getRtv(), DxClearColor::Black);
 
     Mat4F proj, projInv;
@@ -100,10 +99,15 @@ void Fov::renderToFov(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam) {
     unsigned dY = (unsigned)ceil((float)m_height / (float)BLOCK_SIZE);
     double dtRays, dtIntersect, dtLightning;
     dtRays = dtIntersect = dtLightning = 0;
-    dtRays = p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSGENERATE, dX, dY);
+    if(p_isOffset==true) {
+        dtRays = p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSGENERATEOFFSET, dX, dY);
+    } else {
+        dtRays = p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSGENERATE, dX, dY);
+    }
     #define NUM_BOUNCES 2
     for(unsigned i = 0; i<2; i++) {
-        dtIntersect += p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSINTERSECT, dX, dY);
+        dtIntersect += p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSINTERSECT,
+                                         dX, dY);
         dtLightning += p_cogFx->dispatch(m_devcon, Fxs_CS_LIGHTING, dX, dY);
     }
     Singleton<Ant>::get().setTimeRaysGenerate(dtRays);

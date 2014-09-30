@@ -82,7 +82,8 @@ HRESULT Dx::init() {
         m_cogCb = new CogCb();
         hr = m_cogCb->init(d3d.device);
 
-        CbPerInstance cbPerInstance; // Per instance CB only needs to be updated once:
+        // Per instance CB only needs to be updated once:
+        CbPerInstance cbPerInstance;
         cbPerInstance.screenWidth = m_win->getWidth();
         cbPerInstance.screenHeight = m_win->getHeight();
         m_cogCb->mapCbPerInstance(d3d.devcon, cbPerInstance);
@@ -100,28 +101,31 @@ HRESULT Dx::init() {
         hr = m_cogGeo->init(d3d.device, d3d.devcon);
     }
 
-    // Initialize the low fidelity fov:
+    // Initialize the low fidelity fov
+    DescFov descFov;
+    descFov.aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
+    descFov.fov = (float)RADIAN(45.0f);
     if(SUCCEEDED(hr)) {
-        float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
-        float fov = (float)RADIAN(45.0f);
-
-        unsigned w, h;
-        w = (unsigned)ceil((float)m_win->getWidth() / 4.0f); // dimensions are temp
-        h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        m_lo = new Fov(w, h, m_win->getWidth(), m_win->getHeight(), 0, 0,
-                       fov, aspect, d3d.device, d3d.devcon);
+        descFov.width = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
+        descFov.height = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
+        descFov.widthUpscale = m_win->getWidth();
+        descFov.heightUpscale = m_win->getHeight();
+        descFov.ofsX = 0;
+        descFov.ofsY = 0;
+        m_lo = new Fov(descFov, d3d.device, d3d.devcon);
         hr = m_lo->init();
     }
     // Initialize the high fidelity fov:
     if(SUCCEEDED(hr)) {
-        float aspect = ((float)m_win->getWidth()) / ((float)m_win->getHeight());
-        float fov = (float)RADIAN(45.0f);
-
-        unsigned w, h;
-        w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
-        h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
-        m_hi = new Fov(w, h, w, h, 300, 300,
-                       fov, aspect, d3d.device, d3d.devcon);
+        unsigned w = (unsigned)ceil((float)m_win->getWidth() / 4.0f);
+        unsigned h = (unsigned)ceil((float)m_win->getHeight() / 4.0f);
+        descFov.width = w;
+        descFov.height = h;
+        descFov.widthUpscale = w;
+        descFov.heightUpscale = h;
+        descFov.ofsX = 300;
+        descFov.ofsY = 300;
+        m_hi = new Fov(descFov, d3d.device, d3d.devcon);
         hr = m_hi->init();
     }
 
@@ -174,8 +178,8 @@ HRESULT Dx::render(double p_delta, Cam* p_cam,
     ID3D11SamplerState* sss[] = {m_cogSS->getSamplerState(SSs_default)};
     d3d.devcon->CSSetSamplers(0, 1, sss);
 
-    m_lo->renderToFov(m_cogFx, m_cogCb, p_cam);
-    m_hi->renderToFov(m_cogFx, m_cogCb, p_cam);
+    m_lo->renderToFov(m_cogFx, m_cogCb, p_cam, false);
+    m_hi->renderToFov(m_cogFx, m_cogCb, p_cam, true);
     
     // Unset SRVs:
     memset(srvs, NULL, sizeof(ID3D11ShaderResourceView*) * NUM_SRVS);

@@ -6,12 +6,14 @@ class TimerD3d;
 
 enum Fxs {
     Fxs_CS_RAYSGENERATE,
+    Fxs_CS_RAYSGENERATEOFFSET,
     Fxs_CS_RAYSINTERSECT,
     Fxs_CS_LIGHTING,
     Fxs_CS_COMBINE
 };
 
 static const LPCWSTR gFxCsoPathCsRaysGenerate = L"CsRaysGenerate.cso";
+static const LPCWSTR gFxCsoPathCsRaysGenerateOffset = L"CsRaysGenerateOffset.cso";
 static const LPCWSTR gFxCsoPathCsRaysIntersect = L"CsRaysIntersect.cso";
 static const LPCWSTR gFxCsoPathCsLighting = L"CsLighting.cso";
 static const LPCWSTR gFxCsoPathCsCombine = L"CsCombine.cso";
@@ -31,6 +33,7 @@ class CogFx {
     void fxUnset(ID3D11DeviceContext* p_devcon, Fxs p_fx);
     
     Fx* m_csRaysGenerate;
+    Fx* m_csRaysGenerateOffset;
     Fx* m_csRaysIntersect;
     Fx* m_csLighting;
     Fx* m_csCombine;

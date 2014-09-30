@@ -13,18 +13,28 @@ class FovTarget;
 class CogFx;
 class CogCb;
 
+struct DescFov {
+    unsigned width;
+    unsigned height;
+    unsigned widthUpscale;
+    unsigned heightUpscale;
+    unsigned ofsX;
+    unsigned ofsY;
+    float fov;
+    float aspect;
+};
+
 // Foveated View
 class Fov {
  public:
-    Fov(unsigned p_width, unsigned p_height, unsigned p_widthUpscale,
-        unsigned p_heightUpscale, unsigned p_ofsX, unsigned p_ofsY,
-        float p_fov, float p_aspect,
+    Fov(DescFov p_desc,
         ID3D11Device* p_device, ID3D11DeviceContext* p_devcon);
     ~Fov();
 
     HRESULT init();
 
-    void renderToFov(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam);
+    void renderToFov(CogFx* p_cogFx, CogCb* p_cogCb,
+                     Cam* p_cam, bool p_isOffset);
     void renderToBackbuffer(CogFx* p_cogFx, CogCb* p_cogCb,
                             ID3D11UnorderedAccessView* p_uavBackbuffer);
 

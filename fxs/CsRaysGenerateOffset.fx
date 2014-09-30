@@ -1,5 +1,5 @@
-#ifndef DV2520_CSRAYSGENERATE_FX
-#define DV2520_CSRAYSGENERATE_FX
+#ifndef DV2520_CSRAYSGENERATEOFFSET_FX
+#define DV2520_CSRAYSGENERATEOFFSET_FX
 
 #include <Common.fx>
 
@@ -9,7 +9,7 @@ void main(uint3 gThreadId : SV_DispatchThreadID) {
     const uint pixelIdx = gThreadId.y * fovWidth + gThreadId.x;
     
     float3 pixelPos = getNormalizedScreenCoordinates(gThreadId.xy,
-                                                     fovWidth, fovHeight);
+                                                     screenWidth, screenHeight);
     pixelPos = mul(float4(pixelPos, 1.0f), viewInv).xyz;
     float4 aux = mul(float4(0.0f, 0.0f, 0.0f, 1.0f), viewInv);
 
@@ -18,4 +18,4 @@ void main(uint3 gThreadId : SV_DispatchThreadID) {
     uavColor[pixelIdx] = float4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-#endif // DV2520_CSRAYSGENERATE_FX
+#endif // DV2520_CSRAYSGENERATEOFFSET_FX
