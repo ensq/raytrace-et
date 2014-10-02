@@ -14,15 +14,25 @@
 //   - )a          |- |
 //   ------------------
 //          700mm
-int getFovPixelWidth(const int p_fovDegrees, unsigned p_screenResolutionWidth) {
-    static const int distToScreenMm = 700;
-    static const int screenWidthMm = 510;
-    static const int screenHeightMm = 287;
+void getFovPixelDim(const int p_fovDegrees,
+                    unsigned p_screenWidth,
+                    unsigned p_screenHeight,
+                    unsigned& io_fovWidth,
+                    unsigned& io_fovHeight) {
+    const int distToScreenMm = 700;
+    const int screenWidthMm = 510;
+    const int screenHeightMm = 287;
+    const float pixelsPerMm = (float)p_screenHeight / (float)screenHeightMm;
 
-    float fovDegrees_2 = (float)p_fovDegrees / 2.0f;
-    float foveaMm = tan(RADIAN(fovDegrees_2)) * 700;
-    float foveaPx = (foveaMm / (float)screenWidthMm) * p_screenResolutionWidth;
-    return ceil(foveaPx);
+    float foveaDegrees_2 = (float)p_fovDegrees / 2.0f; // a
+    float foveaMm = tan(RADIAN(foveaDegrees_2)) * 700.0f; // x
+    float foveaPixels = foveaMm * pixelsPerMm;
+    
+    float foveaHeight = foveaPixels;
+    float foveaWidth = foveaHeight * ((float)p_screenWidth / (float)p_screenHeight);
+
+    io_fovWidth = ceil(foveaWidth);
+    io_fovHeight = ceil(foveaHeight);
 }
 
 CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
@@ -30,15 +40,12 @@ CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
                               m_screenHeight(p_screenHeight) {
     static const int foveaDegrees = 2;
     static const int parafoveaDegrees = 5;
-
-    int fovea = getFovPixelWidth(foveaDegrees, p_screenWidth);
-    int parafovea = getFovPixelWidth(parafoveaDegrees, p_screenWidth);
-
-    m_widthLo = parafovea;
-    m_heightLo = parafovea;
     
-    m_widthHi = parafovea;
-    m_heightHi = parafovea;
+    getFovPixelDim(parafoveaDegrees, p_screenWidth, p_screenHeight,
+                   m_widthHi, m_heightHi);
+
+    m_widthLo = 256;
+    m_heightLo = 144;
 
     m_descLo.fov = p_fov;
     m_descLo.width = m_widthLo;
