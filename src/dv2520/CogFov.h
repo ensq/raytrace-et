@@ -24,11 +24,11 @@ class CogFov {
     const unsigned m_screenWidth;
     const unsigned m_screenHeight;
     DescFov m_descLo;
-    DescFov m_descMi;
+    //DescFov m_descMi;
     DescFov m_descHi;
     
     Fov* m_lo; // Peripheral
-    Fov* m_mi; // Parafovea
+    // Fov* m_mi; // Parafovea
     Fov* m_hi; // Fovea
 };
 

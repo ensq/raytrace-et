@@ -22,7 +22,9 @@ void getFovPixelDim(const int p_fovDegrees,
     const int distToScreenMm = 700;
     const int screenWidthMm = 510;
     const int screenHeightMm = 287;
-    const float pixelsPerMm = (float)p_screenHeight / (float)screenHeightMm;
+    const int screenResX = 2048;
+    const int screenResY = 1152;
+    const float pixelsPerMm = (float)screenResY / (float)screenHeightMm;
 
     float foveaDegrees_2 = (float)p_fovDegrees / 2.0f; // a
     float foveaMm = tan(RADIAN(foveaDegrees_2)) * 700.0f; // x
@@ -43,14 +45,14 @@ CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
     
     unsigned m_widthLo;
     unsigned m_heightLo;
-    unsigned m_widthMi;
-    unsigned m_heightMi;
+    //unsigned m_widthMi;
+    //unsigned m_heightMi;
     unsigned m_widthHi;
     unsigned m_heightHi;
-    getFovPixelDim(foveaDegrees, p_screenWidth, p_screenHeight,
+    getFovPixelDim(parafoveaDegrees, m_screenWidth, m_screenHeight,
                    m_widthHi, m_heightHi);
-    getFovPixelDim(parafoveaDegrees, p_screenWidth, p_screenHeight,
-                   m_widthMi, m_heightMi);
+    //getFovPixelDim(parafoveaDegrees, m_screenWidth, m_screenHeight,
+    //                m_widthMi, m_heightMi);
 
     m_widthLo = ceil((float)p_screenWidth * 0.25f);
     m_heightLo = ceil((float)p_screenHeight * 0.25f);
@@ -64,14 +66,14 @@ CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
     m_descLo.ofsY = 0;
     m_descLo.aspect = (float)m_descLo.width / (float)m_descLo.height;
 
-    m_descMi.fov = p_fov;
-    m_descMi.width = ceil((float)m_widthMi);
-    m_descMi.height = ceil((float)m_heightMi);
-    m_descMi.widthUpscale = m_widthMi;
-    m_descMi.heightUpscale = m_heightMi;
-    m_descMi.ofsX = 0;
-    m_descMi.ofsY = 0;
-    m_descMi.aspect = (float)m_descMi.width / (float)m_descMi.height;
+    // m_descMi.fov = p_fov;
+    // m_descMi.width = ceil((float)m_widthMi * 0.5f);
+    // m_descMi.height = ceil((float)m_heightMi * 0.5f);
+    // m_descMi.widthUpscale = m_widthMi;
+    // m_descMi.heightUpscale = m_heightMi;
+    // m_descMi.ofsX = 0;
+    // m_descMi.ofsY = 0;
+    // m_descMi.aspect = (float)m_descMi.width / (float)m_descMi.height;
 
     m_descHi.fov = p_fov;
     m_descHi.width = m_widthHi;
@@ -87,26 +89,26 @@ CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
     assert(p_screenHeight>=m_heightHi);
 
     m_lo = nullptr;
-    m_mi = nullptr;
+    // m_mi = nullptr;
     m_hi = nullptr;
 }
 CogFov::~CogFov() {
     assert(m_lo!=nullptr);
-    assert(m_mi!=nullptr);
+    //assert(m_mi!=nullptr);
     assert(m_hi!=nullptr);
 
     ASSERT_DELETE(m_lo);
-    ASSERT_DELETE(m_mi);
+    //ASSERT_DELETE(m_mi);
     ASSERT_DELETE(m_hi);
 }
 
 HRESULT CogFov::init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
     m_lo = new Fov(m_descLo, p_device, p_devcon);
     HRESULT hr = m_lo->init();
-    if(SUCCEEDED(hr)) {
-        m_mi = new Fov(m_descMi, p_device, p_devcon);
-        hr = m_mi->init();
-    }
+    // if(SUCCEEDED(hr)) {
+    //     m_mi = new Fov(m_descMi, p_device, p_devcon);
+    //     hr = m_mi->init();
+    // }
     if(SUCCEEDED(hr)) {
         m_hi = new Fov(m_descHi, p_device, p_devcon);
         hr = m_hi->init();
@@ -132,18 +134,18 @@ void CogFov::render(CogFx* p_cogFx, CogCb* p_cogCb, Cam* p_cam,
                 m_screenWidth, m_screenHeight, pixelOfsX, pixelOfsY);
     m_hi->setOfs(pixelOfsX, pixelOfsY);
 
-    getPixelOfs(p_eyePosX, p_eyePosY, m_descMi.widthUpscale, m_descMi.heightUpscale,
-                m_screenWidth, m_screenHeight, pixelOfsX, pixelOfsY);
-    m_mi->setOfs(pixelOfsX, pixelOfsY);
+    // getPixelOfs(p_eyePosX, p_eyePosY, m_descMi.widthUpscale, m_descMi.heightUpscale,
+    //             m_screenWidth, m_screenHeight, pixelOfsX, pixelOfsY);
+    // m_mi->setOfs(pixelOfsX, pixelOfsY);
 
     m_lo->renderToFov(p_cogFx, p_cogCb, p_cam, false);
-    m_mi->renderToFov(p_cogFx, p_cogCb, p_cam, true);
+    //m_mi->renderToFov(p_cogFx, p_cogCb, p_cam, true);
     m_hi->renderToFov(p_cogFx, p_cogCb, p_cam, true);
 }
 
 void CogFov::combine(CogFx* p_cogFx, CogCb* p_cogCb,
                      ID3D11UnorderedAccessView* p_uavBackbuffer) {
     m_lo->renderToBackbuffer(p_cogFx, p_cogCb, p_uavBackbuffer);
-    m_mi->renderToBackbuffer(p_cogFx, p_cogCb, p_uavBackbuffer);
+    // m_mi->renderToBackbuffer(p_cogFx, p_cogCb, p_uavBackbuffer);
     m_hi->renderToBackbuffer(p_cogFx, p_cogCb, p_uavBackbuffer);
 }
