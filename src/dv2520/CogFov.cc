@@ -3,17 +3,46 @@
 #include <Cam.h>
 #include <CogFx.h>
 #include <CogCb.h>
-#include <CogFov.h>
+#include <CogFov.h>              
+
+// The height of the fovea (in mm) may be computed using:
+// x = tan(a) * 700mm
+//                  - |
+//               -    |
+//           -        | x
+//       -            |
+//   - )a          |- |
+//   ------------------
+//          700mm
+int getFovPixelWidth(const int p_fovDegrees, unsigned p_screenResolutionWidth) {
+    static const int distToScreenMm = 700;
+    static const int screenWidthMm = 510;
+    static const int screenHeightMm = 287;
+
+    float fovDegrees_2 = (float)p_fovDegrees / 2.0f;
+    float foveaMm = tan(RADIAN(fovDegrees_2)) * 700;
+    float foveaPx = (foveaMm / (float)screenWidthMm) * p_screenResolutionWidth;
+    return ceil(foveaPx);
+}
 
 CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
                float p_fov) : m_screenWidth(p_screenWidth),
                               m_screenHeight(p_screenHeight) {
-    assert(p_screenWidth>=s_widthHi);
-    assert(p_screenHeight>=s_heightHi);
+    static const int foveaDegrees = 2;
+    static const int parafoveaDegrees = 5;
+
+    int fovea = getFovPixelWidth(foveaDegrees, p_screenWidth);
+    int parafovea = getFovPixelWidth(parafoveaDegrees, p_screenWidth);
+
+    m_widthLo = parafovea;
+    m_heightLo = parafovea;
+    
+    m_widthHi = parafovea;
+    m_heightHi = parafovea;
 
     m_descLo.fov = p_fov;
-    m_descLo.width = s_widthLo;
-    m_descLo.height = s_heightLo;
+    m_descLo.width = m_widthLo;
+    m_descLo.height = m_heightLo;
     m_descLo.widthUpscale = p_screenWidth;
     m_descLo.heightUpscale = p_screenHeight;
     m_descLo.ofsX = 0;
@@ -21,14 +50,17 @@ CogFov::CogFov(unsigned p_screenWidth, unsigned p_screenHeight,
     m_descLo.aspect = (float)m_descLo.width / (float)m_descLo.height;
 
     m_descHi.fov = p_fov;
-    m_descHi.width = s_widthHi;
-    m_descHi.height = s_heightHi;
-    m_descHi.widthUpscale = s_widthHi;
-    m_descHi.heightUpscale = s_heightHi;
+    m_descHi.width = m_widthHi;
+    m_descHi.height = m_heightHi;
+    m_descHi.widthUpscale = m_widthHi;
+    m_descHi.heightUpscale = m_heightHi;
     // Only initial offset values:
-    m_descHi.ofsX = (p_screenWidth / 2) - s_widthHi / 2;
-    m_descHi.ofsY = (p_screenHeight / 2) - s_widthHi / 2;
+    m_descHi.ofsX = (p_screenWidth / 2) - m_widthHi / 2;
+    m_descHi.ofsY = (p_screenHeight / 2) - m_widthHi / 2;
     m_descHi.aspect = (float)m_descHi.width / (float)m_descHi.height;
+
+    assert(p_screenWidth>=m_widthHi);
+    assert(p_screenHeight>=m_heightHi);
 }
 CogFov::~CogFov() {
     assert(m_lo!=nullptr);

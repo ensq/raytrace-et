@@ -7,13 +7,6 @@ class CogCb;
 
 #include <Fov.h>
 
-// Lo and Hi resolution render target dimensions in pixels
-// (independant of total screen resolution):
-static const unsigned s_widthLo = 200;
-static const unsigned s_heightLo = 200;
-static const unsigned s_widthHi = 200;
-static const unsigned s_heightHi = 200;
-
 class CogFov {
  public:
     CogFov(unsigned p_screenWidth, unsigned p_screenHeight, float p_fov);
@@ -32,6 +25,13 @@ class CogFov {
     const unsigned m_screenHeight;
     DescFov m_descLo;
     DescFov m_descHi;
+
+    // Lo and Hi resolution render target dimensions in pixels
+    // (independant of total screen resolution):
+    unsigned m_widthLo;
+    unsigned m_heightLo;
+    unsigned m_widthHi;
+    unsigned m_heightHi;
     
     Fov* m_lo;
     Fov* m_hi;
