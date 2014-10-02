@@ -68,6 +68,9 @@ HRESULT Win::init() {
     return hr;
 }
 
+int Win::isWindowed() {
+    return m_desc.isWindowed;
+}
 unsigned Win::getWidth() {
     RECT rct;
     GetClientRect(m_hWnd, &rct);

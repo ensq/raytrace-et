@@ -5,8 +5,9 @@
 
 static const LPCTSTR g_winTitle = "dv2520";
 static const LPCTSTR g_winClassName = "dv2520Win";
-static const unsigned g_winWidth = 800;
-static const unsigned g_winHeight = 800;
+static const unsigned g_winWidth = 2048;
+static const unsigned g_winHeight = 1152;
+static const int g_isWindowed = 0;
 
 int WINAPI wWinMain(HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev,
                     LPWSTR p_lpCmdLine, int p_nCmdShow) {
@@ -23,6 +24,7 @@ int WINAPI wWinMain(HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev,
     desc.hInstancePrev = p_hInstancePrev;
     desc.lpCmdLine = p_lpCmdLine;
     desc.nCmdShow = p_nCmdShow;
+    desc.isWindowed = g_isWindowed;
     Win win(desc);
     hr = win.init();
 

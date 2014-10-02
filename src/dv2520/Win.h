@@ -13,6 +13,7 @@ struct WinDesc {
     LPCTSTR className;
     unsigned width;
     unsigned height;
+    int isWindowed;
 
     HINSTANCE hInstance;
     HINSTANCE hInstancePrev;
@@ -27,6 +28,7 @@ class Win {
 
     HRESULT init();
 
+    int isWindowed();
     unsigned getWidth();
     unsigned getHeight();
     HWND getHWnd() const;

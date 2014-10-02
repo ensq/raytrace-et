@@ -52,17 +52,18 @@ HRESULT CogD3d::initD3d() {
 
     DXGI_SWAP_CHAIN_DESC scd;
     ZERO_MEM(scd);
-    scd.BufferCount            = 1;
-    scd.OutputWindow        = hWnd;
-    scd.Windowed            = TRUE;
-    scd.BufferUsage            = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
-    scd.SampleDesc.Count    = 1;
-    scd.SampleDesc.Quality    = 0;
-    scd.BufferDesc.Width    = hWndWidth;
-    scd.BufferDesc.Height    = hWndHeight;
-    scd.BufferDesc.Format    = DXGI_FORMAT_R8G8B8A8_UNORM;
-    scd.BufferDesc.RefreshRate.Numerator    = 60;
-    scd.BufferDesc.RefreshRate.Denominator    = 1;
+    scd.BufferCount = 1;
+    scd.OutputWindow = hWnd;
+    scd.Windowed = m_win->isWindowed();
+    scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT
+        | DXGI_USAGE_UNORDERED_ACCESS;
+    scd.SampleDesc.Count = 1;
+    scd.SampleDesc.Quality = 0;
+    scd.BufferDesc.Width = hWndWidth;
+    scd.BufferDesc.Height = hWndHeight;
+    scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    scd.BufferDesc.RefreshRate.Numerator = 60;
+    scd.BufferDesc.RefreshRate.Denominator = 1;
 
     HRESULT hr = S_FALSE;
     D3D_FEATURE_LEVEL featureLevel;
