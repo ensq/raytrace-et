@@ -4,10 +4,10 @@
 #define VELOCITY_WALK 1.2f
 #define VELOCITY_ROTATE 2.0f
 
+#include <Et.h>
 #include <TimerDelta.h>
 
 class Dx;
-class Et;
 class Win;
 class Cam;
 
@@ -21,6 +21,8 @@ class Dv2520 {
     void gameloop(double p_delta);
   protected:
   private:
+bool m_isTracking;
+EtState m_state;
     Et* m_et;
     Dx* m_dx;
     Cam* m_cam;

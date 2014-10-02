@@ -156,6 +156,10 @@ void Win::wWinKeyProc(WPARAM wParam) {
     case VK_RIGHT:
         keyType = InputKeyTypes_RIGHT;
         break;
+
+    case VK_SPACE:
+        keyType = InputKeyTypes_SPACE;
+        break;
     }
     if(keyType!=InputKeyTypes_NA) {
         m_inputQueue.keyPush(InputKey(keyType));

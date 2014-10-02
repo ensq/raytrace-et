@@ -12,7 +12,9 @@ enum InputKeyTypes {
     InputKeyTypes_UP,
     InputKeyTypes_LEFT,
     InputKeyTypes_DOWN,
-    InputKeyTypes_RIGHT
+    InputKeyTypes_RIGHT,
+
+    InputKeyTypes_SPACE
 };
 
 class InputKey {

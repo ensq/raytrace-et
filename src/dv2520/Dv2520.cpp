@@ -15,6 +15,8 @@ Dv2520::Dv2520(Win& p_win) {
 #define Z_FAR 1000
     m_cam = new Cam(Z_NEAR, Z_FAR);
 
+    m_isTracking = true;
+
     m_dx = nullptr;
     m_et = nullptr;
 }
@@ -91,6 +93,10 @@ void Dv2520::gameloop(double p_delta) {
         case InputKeyTypes_RIGHT:
             m_cam->yaw(VELOCITY_ROTATE);
             break;
+
+        case InputKeyTypes_SPACE:
+            m_isTracking = !m_isTracking;
+            break;
         }
     }
 
@@ -103,14 +109,16 @@ void Dv2520::gameloop(double p_delta) {
     // Clear input:
     inputQueue.empty(); // Remember to clear the input.
 
-    EtState etState = m_et->getState();
-    Singleton<Ant>::get().setEyeFixation(etState.x, etState.y);
+    if(m_isTracking==true) {
+        m_state = m_et->getState();
+    }
+    Singleton<Ant>::get().setEyeFixation(m_state.x, m_state.y);
 
-double lX, lY;
-m_win->getLocalPos(etState.x, etState.y, lX, lY);
-Singleton<Ant>::get().setEyeFixation(lX, lY);
+    double lX, lY;
+    m_win->getLocalPos(m_state.x, m_state.y, lX, lY);
+    Singleton<Ant>::get().setEyeFixation(lX, lY);
     
-HRESULT hr = m_dx->render(p_delta, m_cam, lX, lY);
+    HRESULT hr = m_dx->render(p_delta, m_cam, lX, lY);
     if(FAILED(hr)) {
         ERR_HR(hr);
     }

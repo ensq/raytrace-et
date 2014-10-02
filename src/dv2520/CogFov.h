@@ -24,17 +24,12 @@ class CogFov {
     const unsigned m_screenWidth;
     const unsigned m_screenHeight;
     DescFov m_descLo;
+    DescFov m_descMi;
     DescFov m_descHi;
-
-    // Lo and Hi resolution render target dimensions in pixels
-    // (independant of total screen resolution):
-    unsigned m_widthLo;
-    unsigned m_heightLo;
-    unsigned m_widthHi;
-    unsigned m_heightHi;
     
-    Fov* m_lo;
-    Fov* m_hi;
+    Fov* m_lo; // Peripheral
+    Fov* m_mi; // Parafovea
+    Fov* m_hi; // Fovea
 };
 
 #endif // DV2520_COGFOV_H
