@@ -5,8 +5,8 @@
 
 static const LPCTSTR g_winTitle = "dv2520";
 static const LPCTSTR g_winClassName = "dv2520Win";
-static const unsigned g_winWidth = 800;
-static const unsigned g_winHeight = 800;
+static const unsigned g_winWidth = 1152;
+static const unsigned g_winHeight = 1152;
 static const int g_isWindowed = 1;
 
 int WINAPI wWinMain(HINSTANCE p_hInstance, HINSTANCE p_hInstancePrev,

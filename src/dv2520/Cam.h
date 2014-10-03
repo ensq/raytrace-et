@@ -5,7 +5,7 @@
 
 class Cam {
   public:
-    Cam(float p_zNear, float p_zFar);
+    Cam(Vec3F p_pos, Vec3F p_look, float p_zNear, float p_zFar);
     ~Cam();
 
     void getView(Mat4F& io_view);

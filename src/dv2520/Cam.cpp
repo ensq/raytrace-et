@@ -2,18 +2,19 @@
 
 #include <Cam.h>
 
-Cam::Cam(float p_zNear, float p_zFar) {
+Cam::Cam(Vec3F p_pos, Vec3F p_look, float p_zNear, float p_zFar) {
     m_zNear = p_zNear;
     m_zFar = p_zFar;
+
+    m_pos = p_pos;
+    m_look = p_look;
 
     m_fov = -1.0f;
     m_aspect = -1.0f;
 
-    m_pos = Vec3F(0.0f, 0.0f, -45.0f);
     m_right = Vec3F(1.0f, 0.0f, 0.0f);
     m_up = Vec3F(0.0f, 1.0f, 0.0f);
-    m_look = Vec3F(0.0f, 0.0f, 1.0f);
-}
+ }
 Cam::~Cam() {
 }
 

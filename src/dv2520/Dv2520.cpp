@@ -13,7 +13,9 @@ Dv2520::Dv2520(Win& p_win) {
 
 #define Z_NEAR 1
 #define Z_FAR 1000
-    m_cam = new Cam(Z_NEAR, Z_FAR);
+    Vec3F pos = Vec3F(0.0f, 8.86f, -10.42f); //Vec3F(0.0f, 0.0f, -45.0f);
+    Vec3F look = Vec3F(0.0f, -0.81f, 0.59f); // Vec3F(0.0f, 0.0f, 1.0f);
+    m_cam = new Cam(pos, look, Z_NEAR, Z_FAR);
 
     m_isTracking = true;
 
