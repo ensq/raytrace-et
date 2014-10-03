@@ -1,4 +1,6 @@
 # .gitignore
 
+d3dcompiler_46.dll
+
 \#*\#
 *~
