@@ -2,7 +2,6 @@
 
 #include <Obj.h>
 #include <lbo.h>
-#include <Bvh.h>
 #include <CogGeo.h>
 #include <geometry.h>
 #include <BufStreamSrv.h>
@@ -12,7 +11,6 @@ CogGeo::CogGeo() {
     m_srvStreamIndices = nullptr;
     m_srvStreamInstances = nullptr;
     m_srvStreamLights = nullptr;
-    m_srvStreamNodes = nullptr;
 
     m_lightsCnt = 0;
     m_instancesCnt = 0;
@@ -22,22 +20,16 @@ CogGeo::~CogGeo() {
     assert(m_srvStreamIndices!=nullptr);
     assert(m_srvStreamInstances!=nullptr);
     assert(m_srvStreamLights!=nullptr);
-    assert(m_srvStreamNodes!=nullptr);
 
     delete m_srvStreamVertices;
     delete m_srvStreamIndices;
     delete m_srvStreamInstances;
     delete m_srvStreamLights;
-    delete m_srvStreamNodes;
 
     for(size_t i = 0; i<m_objects.size(); i++) {
         assert(m_objects.at(i)!=nullptr);
         delete m_objects.at(i);
     }
-
-    // temp
-    assert(m_nodes!=nullptr);
-    delete[] m_nodes;
 }
 
 HRESULT CogGeo::init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
@@ -45,7 +37,6 @@ HRESULT CogGeo::init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
     m_srvStreamIndices = new BufStreamSrv<unsigned>();
     m_srvStreamInstances = new BufStreamSrv<ObjInstance>();
     m_srvStreamLights = new BufStreamSrv<LightPoint>();
-    m_srvStreamNodes = new BufStreamSrv<Bvh_Node_Flat>();
 
     bool success = true;
     for(unsigned i = 0; i<1 && success==true; i++) {
@@ -65,12 +56,6 @@ HRESULT CogGeo::init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
         Obj* obj = new Obj(vertices_struct.size(), indices.size(),
                            &vertices_struct.at(0), &indices.at(0));
 
-        Bvh bvh(obj, 2);
-        bvh.init();
-        numNodes = bvh.getNodesCnt();
-        m_nodes = new Bvh_Node_Flat[numNodes];
-        memcpy(m_nodes, bvh.getNodes(), sizeof(Bvh_Node_Flat) * numNodes);
-
         m_objects.push_back(obj);
     }
 
@@ -80,12 +65,10 @@ HRESULT CogGeo::init(ID3D11Device* p_device, ID3D11DeviceContext* p_devcon) {
                                           obj->getVerticesCnt());
         m_srvStreamIndices->pushElements(obj->getIndices(),
                                          obj->getIndicesCnt());
-        m_srvStreamNodes->pushElements(m_nodes, numNodes);
     }
     m_srvStreamVertices->updateBufStream(p_device, p_devcon);
     m_srvStreamIndices->updateBufStream(p_device, p_devcon);
     m_srvStreamInstances->updateBufStream(p_device, p_devcon);
-    m_srvStreamNodes->updateBufStream(p_device, p_devcon);
 
     return success==true ? S_OK : S_FALSE;
 }
@@ -166,7 +149,4 @@ ID3D11ShaderResourceView* CogGeo::getSrvInstances() {
 }
 ID3D11ShaderResourceView* CogGeo::getSrvLights() {
     return m_srvStreamLights->getSrv();
-}
-ID3D11ShaderResourceView* CogGeo::getSrvNodes() {
-    return m_srvStreamNodes->getSrv();
 }

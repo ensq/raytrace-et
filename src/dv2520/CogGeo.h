@@ -5,7 +5,6 @@ typedef long HRESULT;
 
 class Obj;
 
-#include <Bvh.h>
 #include <structs.h>
 #include <geometry.h>
 #include <BufStreamSrv.h>
@@ -24,7 +23,6 @@ class CogGeo {
     ID3D11ShaderResourceView* getSrvIndices();
     ID3D11ShaderResourceView* getSrvInstances();
     ID3D11ShaderResourceView* getSrvLights();
-    ID3D11ShaderResourceView* getSrvNodes();
  protected:
  private:
     size_t m_lightsCnt;
@@ -34,13 +32,8 @@ class CogGeo {
     BufStreamSrv<unsigned>* m_srvStreamIndices;
     BufStreamSrv<ObjInstance>* m_srvStreamInstances;
     BufStreamSrv<LightPoint>* m_srvStreamLights;
-    BufStreamSrv<Bvh_Node_Flat>* m_srvStreamNodes;
 
     std::vector<Obj*> m_objects;
-
-    // temp:
-    Bvh_Node_Flat* m_nodes;
-    unsigned numNodes;
 };
 
 #endif // DV2520_COGGEO_H

@@ -70,9 +70,6 @@
     <ClCompile Include="..\..\src\dv2520\lbo.cc">
       <Filter>Dx\IO\lbo</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dv2520\Bvh.cc">
-      <Filter>Dx</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dv2520\geometry.cc">
       <Filter>Dx</Filter>
     </ClCompile>
@@ -174,9 +171,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\lbo.h">
       <Filter>Dx\IO\lbo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dv2520\Bvh.h">
-      <Filter>Dx</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dv2520\geometry.h">
       <Filter>Dx</Filter>

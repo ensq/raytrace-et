@@ -127,9 +127,9 @@ void Fov::renderToBackbuffer(CogFx* p_cogFx, CogCb* p_cogCb,
     p_cogCb->mapCbPerFov(m_devcon, cbPerFov);
     p_cogCb->setCbs(m_devcon);
 
-#define NUM_SRVS 7
+#define NUM_SRVS 6
 #define NUM_UAVS 5
-    ID3D11ShaderResourceView* srvs[] = {NULL, NULL, NULL, NULL, NULL, NULL,
+    ID3D11ShaderResourceView* srvs[] = {NULL, NULL, NULL, NULL, NULL,
                                         m_target->getSrv()};
     ID3D11UnorderedAccessView* uavs[] = {NULL, NULL, NULL, NULL,
                                          p_uavBackbuffer};

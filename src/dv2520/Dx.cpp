@@ -120,13 +120,12 @@ HRESULT Dx::render(double p_delta, Cam* p_cam,
     m_cogCb->mapCbPerFrame(d3d.devcon, cbPerFrame);
     m_cogCb->setCbs(d3d.devcon);
 
-#define NUM_SRVS 6
+#define NUM_SRVS 5
     ID3D11ShaderResourceView* srvs[] = {
         m_cogGeo->getSrvVertices(),
         m_cogGeo->getSrvIndices(),
         m_cogGeo->getSrvInstances(),
         m_cogGeo->getSrvLights(),
-        m_cogGeo->getSrvNodes(),
         m_cogTex->getTex(d3d.device, Texs_default)->getSrv() // ought be array
     };
     d3d.devcon->CSSetShaderResources(0, NUM_SRVS, srvs);

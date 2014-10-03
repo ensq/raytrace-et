@@ -11,9 +11,8 @@ StructuredBuffer<Vertex> srvVertices : register(t0);
 StructuredBuffer<uint> srvIndices : register(t1);
 StructuredBuffer<ObjInstance> srvInstances : register(t2);
 StructuredBuffer<LightPoint> srvLights : register(t3);
-StructuredBuffer<ObjNode> srvNodes : register(t4);
-Texture2D texAlbedo : register( t5 ); // Make into texture array.
-Texture2D src : register(t6);
+Texture2D texAlbedo : register(t4); // Make into texture array.
+Texture2D src : register(t5);
 
 // u
 RWStructuredBuffer<Ray> uavRays : register(u0);

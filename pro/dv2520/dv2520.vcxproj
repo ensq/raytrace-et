@@ -97,7 +97,6 @@ copy /b /y $(SolutionDir)..\lib\$(ProjectName)\TobiiEyeXSdk-Cpp\lib\x86\*.dll $(
     <ClCompile Include="..\..\src\dv2520\Buf.cpp" />
     <ClCompile Include="..\..\src\dv2520\BufSrv.cpp" />
     <ClCompile Include="..\..\src\dv2520\BufUav.cpp" />
-    <ClCompile Include="..\..\src\dv2520\Bvh.cc" />
     <ClCompile Include="..\..\src\dv2520\Cam.cpp" />
     <ClCompile Include="..\..\src\dv2520\Cb.cpp" />
     <ClCompile Include="..\..\src\dv2520\CogCb.cpp" />
@@ -139,7 +138,6 @@ copy /b /y $(SolutionDir)..\lib\$(ProjectName)\TobiiEyeXSdk-Cpp\lib\x86\*.dll $(
     <ClInclude Include="..\..\src\dv2520\BufStream.h" />
     <ClInclude Include="..\..\src\dv2520\BufStreamSrv.h" />
     <ClInclude Include="..\..\src\dv2520\BufUav.h" />
-    <ClInclude Include="..\..\src\dv2520\Bvh.h" />
     <ClInclude Include="..\..\src\dv2520\Cam.h" />
     <ClInclude Include="..\..\src\dv2520\Cb.h" />
     <ClInclude Include="..\..\src\dv2520\Cbs.h" />
