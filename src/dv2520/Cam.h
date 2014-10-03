@@ -18,6 +18,7 @@ class Cam {
     void yaw(const float p_angle);
 
     Vec3F getPos() const;
+    Vec3F getLook() const;
   protected:
   private:
     void updateView();

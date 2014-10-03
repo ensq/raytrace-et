@@ -39,6 +39,20 @@ void Ant::init(ID3D11Device* p_device, unsigned p_screenWidth,
                &m_eyeFixPosX, "");
     TwAddVarRW(bar, "Eye fix Y", TW_TYPE_DOUBLE,
                &m_eyeFixPosY, "");
+
+    TwAddVarRW(bar, "Pos X", TW_TYPE_FLOAT,
+               &m_posX, "");
+    TwAddVarRW(bar, "Pos Y", TW_TYPE_FLOAT,
+               &m_posY, "");
+    TwAddVarRW(bar, "Pos Z", TW_TYPE_FLOAT,
+               &m_posZ, "");
+
+    TwAddVarRW(bar, "Look X", TW_TYPE_FLOAT,
+               &m_lookX, "");
+    TwAddVarRW(bar, "Look Y", TW_TYPE_FLOAT,
+               &m_lookY, "");
+    TwAddVarRW(bar, "Look Z", TW_TYPE_FLOAT,
+               &m_lookZ, "");
 }
 void Ant::render() {
     TwDraw();
@@ -69,4 +83,15 @@ void Ant::setTimeLighting(double p_time) {
 void Ant::setEyeFixation(double p_x, double p_y) {
     m_eyeFixPosX = p_x;
     m_eyeFixPosY = p_y;
+
+}
+void Ant::setPos(float p_x, float p_y, float p_z) {
+    m_posX = p_x;
+    m_posY = p_y;
+    m_posZ = p_z;
+}
+void Ant::setLook(float p_x, float p_y, float p_z) {
+    m_lookX = p_x;
+    m_lookY = p_y;
+    m_lookZ = p_z;
 }

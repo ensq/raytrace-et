@@ -50,6 +50,9 @@ void Cam::yaw(const float p_angle) {
 Vec3F Cam::getPos() const {
     return m_pos;
 }
+Vec3F Cam::getLook() const {
+    return m_look;
+}
 
 void Cam::updateView() {
     m_look.normalize();

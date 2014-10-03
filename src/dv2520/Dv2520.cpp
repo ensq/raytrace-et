@@ -114,6 +114,11 @@ void Dv2520::gameloop(double p_delta) {
     }
     Singleton<Ant>::get().setEyeFixation(m_state.x, m_state.y);
 
+    Vec3F pos = m_cam->getPos();
+    Vec3F look = m_cam->getLook();
+    Singleton<Ant>::get().setPos(pos.x, pos.y, pos.z);
+    Singleton<Ant>::get().setLook(look.x, look.y, look.z);
+
     double lX, lY;
     m_win->getLocalPos(m_state.x, m_state.y, lX, lY);
     Singleton<Ant>::get().setEyeFixation(lX, lY);

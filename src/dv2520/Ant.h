@@ -22,6 +22,8 @@ class Ant {
     void setTimeRaysInterect(double p_time);
     void setTimeLighting(double p_time);
     void setEyeFixation(double p_x, double p_y);
+    void setPos(float p_x, float p_y, float p_z);
+    void setLook(float p_x, float p_y, float p_z);
   protected:
   private:
     double m_timeRaysGenerate;
@@ -30,6 +32,14 @@ class Ant {
 
     double m_eyeFixPosX;
     double m_eyeFixPosY;
+
+    float m_posX;
+    float m_posY;
+    float m_posZ;
+
+    float m_lookX;
+    float m_lookY;
+    float m_lookZ;
 };
 
 #endif DV2520_ANT_H
