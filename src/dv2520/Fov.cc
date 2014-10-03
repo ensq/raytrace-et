@@ -97,22 +97,27 @@ void Fov::renderToFov(CogFx* p_cogFx, CogCb* p_cogCb,
 
     unsigned dX = (unsigned)ceil((float)m_width  / (float)BLOCK_SIZE);
     unsigned dY = (unsigned)ceil((float)m_height / (float)BLOCK_SIZE);
-    double dtRays, dtIntersect, dtLightning;
-    dtRays = dtIntersect = dtLightning = 0;
+    double dtRays, dtIntersect, dtLighting;
+    dtRays = dtIntersect = dtLighting = 0;
     if(p_isOffset==true) {
         dtRays = p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSGENERATEOFFSET, dX, dY);
     } else {
         dtRays = p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSGENERATE, dX, dY);
     }
-    #define NUM_BOUNCES 2
-    for(unsigned i = 0; i<2; i++) {
+    #define NUM_BOUNCES 3
+    for(unsigned i = 0; i<NUM_BOUNCES; i++) {
         dtIntersect += p_cogFx->dispatch(m_devcon, Fxs_CS_RAYSINTERSECT,
                                          dX, dY);
-        dtLightning += p_cogFx->dispatch(m_devcon, Fxs_CS_LIGHTING, dX, dY);
+        dtLighting += p_cogFx->dispatch(m_devcon, Fxs_CS_LIGHTING, dX, dY);
     }
+    
+    dtRays += Singleton<Ant>::get().getTimeRaysGenerate();
+    dtIntersect += Singleton<Ant>::get().getTimeRaysIntersect();
+    dtLighting += Singleton<Ant>::get().getTimeLighting();
+
     Singleton<Ant>::get().setTimeRaysGenerate(dtRays);
     Singleton<Ant>::get().setTimeRaysInterect(dtIntersect);
-    Singleton<Ant>::get().setTimeLighting(dtLightning);
+    Singleton<Ant>::get().setTimeLighting(dtLighting);
 
     memset(uavs, 0, sizeof(ID3D11UnorderedAccessView*) * NUM_UAVS);
     m_devcon->CSSetUnorderedAccessViews(0, NUM_UAVS, uavs, NULL);

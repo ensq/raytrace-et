@@ -118,6 +118,9 @@ void Dv2520::gameloop(double p_delta) {
     m_win->getLocalPos(m_state.x, m_state.y, lX, lY);
     Singleton<Ant>::get().setEyeFixation(lX, lY);
     
+    Singleton<Ant>::get().setTimeRaysGenerate(0.0);
+    Singleton<Ant>::get().setTimeRaysInterect(0.0);
+    Singleton<Ant>::get().setTimeLighting(0.0);
     HRESULT hr = m_dx->render(p_delta, m_cam, lX, lY);
     if(FAILED(hr)) {
         ERR_HR(hr);
