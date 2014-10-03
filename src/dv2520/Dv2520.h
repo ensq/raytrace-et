@@ -10,6 +10,7 @@
 class Dx;
 class Win;
 class Cam;
+class Printer;
 
 class Dv2520 {
   public:
@@ -21,12 +22,13 @@ class Dv2520 {
     void gameloop(double p_delta);
   protected:
   private:
-bool m_isTracking;
-EtState m_state;
+    bool m_isTracking;
+    EtState m_state;
     Et* m_et;
     Dx* m_dx;
     Cam* m_cam;
     TimerDelta m_timerDelta;
+    Printer* m_printer;
 
     Win* m_win;
 };

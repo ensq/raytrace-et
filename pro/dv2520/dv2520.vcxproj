@@ -124,6 +124,7 @@ copy /b /y $(SolutionDir)..\lib\$(ProjectName)\TobiiEyeXSdk-Cpp\lib\x86\*.dll $(
     <ClCompile Include="..\..\src\dv2520\main.cpp" />
     <ClCompile Include="..\..\src\dv2520\MathSimple.cpp" />
     <ClCompile Include="..\..\src\dv2520\Obj.cpp" />
+    <ClCompile Include="..\..\src\dv2520\Printer.cc" />
     <ClCompile Include="..\..\src\dv2520\Timer.cpp" />
     <ClCompile Include="..\..\src\dv2520\TimerD3d.cpp" />
     <ClCompile Include="..\..\src\dv2520\TimerDelta.cpp" />
@@ -166,6 +167,7 @@ copy /b /y $(SolutionDir)..\lib\$(ProjectName)\TobiiEyeXSdk-Cpp\lib\x86\*.dll $(
     <ClInclude Include="..\..\src\dv2520\lbo_vertex.h" />
     <ClInclude Include="..\..\src\dv2520\MathSimple.h" />
     <ClInclude Include="..\..\src\dv2520\Obj.h" />
+    <ClInclude Include="..\..\src\dv2520\Printer.h" />
     <ClInclude Include="..\..\src\dv2520\Singleton.h" />
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
     <ClInclude Include="..\..\src\dv2520\structs.h" />

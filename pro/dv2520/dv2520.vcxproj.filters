@@ -88,6 +88,7 @@
     <ClCompile Include="..\..\src\dv2520\CogFov.cc">
       <Filter>Dx</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dv2520\Printer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dv2520\stdafx.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="..\..\src\dv2520\CogFov.h">
       <Filter>Dx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dv2520\Printer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dx">

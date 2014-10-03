@@ -7,6 +7,9 @@
 #include <Ant.h>
 #include <Timer.h>
 #include <Dv2520.h>
+#include <Printer.h>
+
+#define TRACK_EYES
 
 Dv2520::Dv2520(Win& p_win) {
     m_win = &p_win;
@@ -17,7 +20,16 @@ Dv2520::Dv2520(Win& p_win) {
     Vec3F look = Vec3F(0.0f, -0.81f, 0.59f); // Vec3F(0.0f, 0.0f, 1.0f);
     m_cam = new Cam(pos, look, Z_NEAR, Z_FAR);
 
+    m_isTracking = false;
+#ifdef TRACK_EYES
     m_isTracking = true;
+#endif // TRACK_EYES
+    m_state.x = 576;
+    m_state.y = 576; // note that these specify eye position for the
+                     // entire screen; independant of where the window
+                     // is actually positioned.
+
+    m_printer = new Printer("res.txt");
 
     m_dx = nullptr;
     m_et = nullptr;
@@ -49,14 +61,16 @@ int Dv2520::run() {
     m_timerDelta.reset();
     m_timerDelta.start();
 
+int numFrames = 1000;
     MSG msgWin = { 0 };
-    while(WM_QUIT!=msgWin.message) {
+while(WM_QUIT!=msgWin.message && numFrames>0) {
         if(PeekMessage(&msgWin, NULL, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msgWin);
             DispatchMessage(&msgWin);
         } else {
             double delta = m_timerDelta.tick();
             gameloop(delta);
+numFrames--;
         }
     }
     return (int)msgWin.wParam;
@@ -132,4 +146,8 @@ void Dv2520::gameloop(double p_delta) {
     if(FAILED(hr)) {
         ERR_HR(hr);
     }
+float dtRaysGenerate = Singleton<Ant>::get().getTimeRaysGenerate();
+float dtRaysLighting = Singleton<Ant>::get().getTimeRaysIntersect();
+float dtLighting = Singleton<Ant>::get().getTimeLighting();
+m_printer->printFrame(dtRaysGenerate, dtRaysLighting, dtLighting);
 }
