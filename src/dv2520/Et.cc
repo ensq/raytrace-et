@@ -227,11 +227,6 @@ void onFixationEvent(TX_HANDLE p_fixationDataBehavior) {
             eventDesc = "Begin";
             break;
         }
-        // char str[256];
-        // sprintf_s(str, sizeof(str), "%.0f ms: [%.1f, %.1f] (Fixation %s)\n",
-        //           eventParams.Timestamp, eventParams.X, eventParams.Y,
-        //           eventDesc);
-        // OutputDebugString(str);
 
         BOOL wait = TRUE;
         DWORD waitResult;
